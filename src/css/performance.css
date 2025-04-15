@@ -1,0 +1,4 @@
+/* Only use for elements that animate frequently */
+.frequently-animated {
+  will-change: transform, opacity;
+}

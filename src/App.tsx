@@ -30,21 +30,43 @@ function App() {
       rootMargin: '0px 0px -50px 0px'
     };
 
-    const observer = new IntersectionObserver((entries) => {
+    // Observer for sections
+    const sectionObserver = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
           entry.target.classList.add('animate-fade-in');
-          observer.unobserve(entry.target);
+          sectionObserver.unobserve(entry.target);
+        }
+      });
+    }, observerOptions);
+
+    // Observer for staggered card items
+    const cardObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          // Add a small delay before animation starts
+          setTimeout(() => {
+            entry.target.classList.add('animate-in');
+            cardObserver.unobserve(entry.target);
+          }, 150);
         }
       });
     }, observerOptions);
 
     // Observe all sections
     document.querySelectorAll('section').forEach(section => {
-      observer.observe(section);
+      sectionObserver.observe(section);
     });
 
-    return () => observer.disconnect();
+    // Observe all stagger items
+    document.querySelectorAll('.stagger-item').forEach(item => {
+      cardObserver.observe(item);
+    });
+
+    return () => {
+      sectionObserver.disconnect();
+      cardObserver.disconnect();
+    };
   }, []);
 
   return (
@@ -103,7 +125,7 @@ function App() {
       {/* Main Content */}
       <main>
         {/* Hero Section */}
-        <section id="home" className="pt-20 pb-32 px-4 bg-gradient-to-br from-indigo-50 to-white dark:from-gray-800 dark:to-gray-900">
+        <section id="home" className="section pt-20 pb-32 px-4 bg-gradient-to-br from-indigo-50 to-white dark:from-gray-800 dark:to-gray-900">
           <div className="max-w-7xl mx-auto flex flex-col-reverse lg:flex-row items-center justify-between">
             <div className="lg:w-1/2 mt-10 lg:mt-0 animate-fade-in">
               <h1 className="text-4xl lg:text-6xl font-bold text-gray-900 dark:text-white mb-6">
@@ -138,7 +160,7 @@ function App() {
         </section>
 
         {/* About Section */}
-        <section id="about" className="py-20 px-4 bg-white dark:bg-gray-900">
+        <section id="about" className="section py-20 px-4 bg-white dark:bg-gray-900">
           <div className="max-w-7xl mx-auto">
             <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-8 animate-fade-in">About Me</h2>
             <div className="grid lg:grid-cols-2 gap-12">
@@ -173,14 +195,14 @@ function App() {
         </section>
 
         {/* Skills Section */}
-        <section id="skills" className="py-20 px-4 bg-gray-50 dark:bg-gray-800">
+        <section id="skills" className="section py-20 px-4 bg-gray-50 dark:bg-gray-800">
           <div className="max-w-7xl mx-auto">
             <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-12 animate-fade-in">Skills & Expertise</h2>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
               {Object.entries(skills).map(([category, items], index) => (
                 <div
                   key={category}
-                  className="animate-scale-in bg-white dark:bg-gray-900 p-6 rounded-lg shadow-lg"
+                  className="stagger-item bg-white dark:bg-gray-900 p-6 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300"
                   style={{ animationDelay: `${index * 0.1}s` }}
                 >
                   <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4 capitalize">
@@ -201,14 +223,14 @@ function App() {
         </section>
 
         {/* Projects Section */}
-        <section id="projects" className="py-20 px-4 bg-white dark:bg-gray-900">
+        <section id="projects" className="section py-20 px-4 bg-white dark:bg-gray-900">
           <div className="max-w-7xl mx-auto">
             <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-12 animate-fade-in">Featured Projects</h2>
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="projects-grid stagger-container grid md:grid-cols-2 lg:grid-cols-3 gap-8">
               {projects.map((project, index) => (
                 <div
                   key={project.title}
-                  className="project-card bg-gray-50 dark:bg-gray-800 rounded-lg overflow-hidden shadow-lg animate-scale-in"
+                  className="project-card stagger-item bg-gray-50 dark:bg-gray-800 rounded-lg overflow-hidden shadow-lg animate-scale-in"
                   style={{ animationDelay: `${index * 0.1}s` }}
                 >
                   <img src={project.image} alt={project.title} className="w-full h-48 object-cover" />
@@ -255,7 +277,7 @@ function App() {
         </section>
 
         {/* Contact Section */}
-        <section id="contact" className="py-20 px-4 bg-gray-50 dark:bg-gray-800">
+        <section id="contact" className="section py-20 px-4 bg-gray-50 dark:bg-gray-800">
           <div className="max-w-7xl mx-auto">
             <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-12 animate-fade-in">Get in Touch</h2>
             <div className="grid lg:grid-cols-2 gap-12">

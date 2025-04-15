@@ -1,0 +1,11 @@
+/* Scroll progress indicator */
+.scroll-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 3px;
+  background: linear-gradient(to right, #0088ff, #00ffaa);
+  width: 0%;
+  z-index: 1000;
+  transition: width 0.1s ease;
+}

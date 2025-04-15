@@ -1,0 +1,48 @@
+/* Base styles for scroll animations */
+.scroll-animate {
+  opacity: 0;
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+/* Different animation types */
+.fade-up {
+  transform: translateY(30px);
+}
+
+.fade-in {
+  opacity: 0;
+}
+
+.slide-left {
+  transform: translateX(30px);
+}
+
+.slide-right {
+  transform: translateX(-30px);
+}
+
+/* Applied when element is in view */
+.scroll-animate.animated {
+  opacity: 1;
+  transform: translate(0);
+}
+
+/* Skills section specific animations */
+.skill-bar {
+  width: 100%;
+  background-color: #f0f0f0;
+  border-radius: 4px;
+  margin-bottom: 15px;
+}
+
+.skill-progress {
+  height: 10px;
+  background-color: #0088ff; /* Use your accent color */
+  border-radius: 4px;
+  width: 0; /* Start at 0 */
+  transition: width 1s ease-in-out;
+}
+
+.skill-bar.animated .skill-progress {
+  width: var(--progress, 80%); /* Will be set inline or via CSS variable */
+}

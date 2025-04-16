@@ -1,17 +1,28 @@
 // Create a scroll progress indicator
 document.addEventListener('DOMContentLoaded', () => {
-  // Create progress bar element
-  const progressBar = document.createElement('div');
-  progressBar.className = 'scroll-progress';
-  document.body.appendChild(progressBar);
-  
-  // Update progress on scroll
-  window.addEventListener('scroll', () => {
-    const windowHeight = window.innerHeight;
-    const documentHeight = document.documentElement.scrollHeight - windowHeight;
-    const scrollTop = window.scrollY;
+  // Create scroll line if it doesn't exist
+  if (!document.querySelector('.scroll-line')) {
+    const scrollLine = document.createElement('div');
+    scrollLine.classList.add('scroll-line');
+    document.body.appendChild(scrollLine);
+  }
+
+  // Update scroll progress
+  function updateScrollProgress() {
+    const scrollLine = document.querySelector('.scroll-line');
+    const windowHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const scrolled = (window.scrollY / windowHeight) * 100;
     
-    const scrollPercentage = (scrollTop / documentHeight) * 100;
-    progressBar.style.width = `${scrollPercentage}%`;
+    if (scrollLine) {
+      scrollLine.style.width = `${scrolled}%`;
+    }
+  }
+
+  // Initial call
+  updateScrollProgress();
+
+  // Update on scroll
+  window.addEventListener('scroll', () => {
+    updateScrollProgress();
   });
 });

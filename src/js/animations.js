@@ -233,6 +233,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   `;
   document.head.appendChild(styleSheet);
+
+  // Initialize scroll indicator animations
+  initScrollIndicatorAnimations();
 });
 
 // Create particle effects for skill icons
@@ -582,4 +585,92 @@ function init3DTiltEffect(element) {
     element.style.transform = 'perspective(1000px) rotateY(0) rotateX(0) scale3d(1, 1, 1)';
     element.style.backgroundImage = 'none';
   });
+}
+
+function initRevealAnimations() {
+  const observerOptions = {
+    threshold: 0.1,
+    rootMargin: '0px 0px -50px 0px'
+  };
+
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('reveal');
+        revealObserver.unobserve(entry.target);
+      }
+    });
+  }, observerOptions);
+
+  document.querySelectorAll('.reveal-on-scroll').forEach(element => {
+    revealObserver.observe(element);
+  });
+}
+
+function initPageLoadAnimations() {
+  // Fade in main sections
+  document.querySelectorAll('section').forEach((section, index) => {
+    section.style.opacity = '0';
+    section.style.transform = 'translateY(20px)';
+    section.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+    setTimeout(() => {
+      section.style.opacity = '1';
+      section.style.transform = 'translateY(0)';
+    }, index * 200);
+  });
+
+  // Animate skill icons
+  document.querySelectorAll('.skill-icon').forEach((icon, index) => {
+    icon.style.opacity = '0';
+    icon.style.transform = 'scale(0.8)';
+    icon.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+    setTimeout(() => {
+      icon.style.opacity = '1';
+      icon.style.transform = 'scale(1)';
+    }, index * 100);
+  });
+}
+
+// Scroll Indicator Animations
+function initScrollIndicatorAnimations() {
+  const scrollDot = document.querySelector('.scroll-dot');
+  const sectionIndicators = document.querySelectorAll('.section-indicator');
+  
+  if (!scrollDot || !sectionIndicators.length) return;
+
+  // Add hover effects to section indicators
+  sectionIndicators.forEach(indicator => {
+    indicator.addEventListener('mouseenter', () => {
+      indicator.style.transform = 'scale(1.1) translateX(-5px)';
+      scrollDot.style.transform = 'scale(1.2)';
+      scrollDot.style.boxShadow = '0 0 20px var(--primary-color), 0 0 40px var(--primary-color)';
+    });
+
+    indicator.addEventListener('mouseleave', () => {
+      indicator.style.transform = '';
+      scrollDot.style.transform = '';
+      scrollDot.style.boxShadow = '';
+    });
+  });
+
+  // Add smooth transitions when changing sections
+  let lastScrollTop = 0;
+  
+  window.addEventListener('scroll', () => {
+    const st = window.pageYOffset || document.documentElement.scrollTop;
+    const scrollDirection = st > lastScrollTop ? 'down' : 'up';
+    
+    if (scrollDot) {
+      // Add momentum effect
+      const momentum = scrollDirection === 'down' ? 5 : -5;
+      scrollDot.style.transform = `translateY(${momentum}px)`;
+      
+      // Reset transform after transition
+      setTimeout(() => {
+        scrollDot.style.transform = '';
+      }, 300);
+    }
+    
+    lastScrollTop = st <= 0 ? 0 : st;
+  }, false);
 }

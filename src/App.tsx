@@ -1,6 +1,70 @@
 import React, { useState, useEffect } from 'react';
 import { Menu, X, Moon, Sun, Github, Linkedin, Mail, ExternalLink, Download, ArrowRight } from 'lucide-react';
 import { skills, projects } from './data';
+import { Scene3D } from './components/Scene3D'
+import { AnimatedBackground } from './components/AnimatedBackground'
+import { FaReact, FaNodeJs, FaPython, FaDatabase, FaAws } from 'react-icons/fa';
+import { SiTypescript } from 'react-icons/si';
+
+function ScrollIndicator() {
+  const [activeSection, setActiveSection] = useState('home');
+
+  useEffect(() => {
+    const sections = ['home', 'about', 'skills', 'projects', 'contact'];
+    const sectionElements = sections.map(id => document.getElementById(id));
+    
+    const handleScroll = () => {
+      const scrollPosition = window.scrollY;
+      const windowHeight = window.innerHeight;
+      const documentHeight = document.documentElement.scrollHeight;
+      
+      // Calculate relative scroll position (0 to 1)
+      const scrollPercentage = scrollPosition / (documentHeight - windowHeight);
+      
+      // Update dot position using CSS custom property
+      const dot = document.querySelector('.scroll-dot') as HTMLElement;
+      if (dot) {
+        dot.style.setProperty('--scroll-position', `${scrollPercentage * windowHeight}px`);
+      }
+      
+      // Find active section
+      let currentSection = sections[0];
+      sectionElements.forEach((section, index) => {
+        if (section) {
+          const rect = section.getBoundingClientRect();
+          if (rect.top <= windowHeight * 0.5 && rect.bottom >= windowHeight * 0.5) {
+            currentSection = sections[index];
+          }
+        }
+      });
+      
+      setActiveSection(currentSection);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    handleScroll(); // Initial call
+    
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  return (
+    <div className="scroll-indicator">
+      <div className="scroll-dot" />
+      {['home', 'about', 'skills', 'projects', 'contact'].map((section, index) => (
+        <div
+          key={section}
+          className={`section-indicator ${activeSection === section ? 'active' : ''}`}
+          style={{ '--indicator-position': `${index * 25}%` } as React.CSSProperties}
+          onClick={() => {
+            document.getElementById(section)?.scrollIntoView({ behavior: 'smooth' });
+          }}
+        >
+          {section.charAt(0).toUpperCase() + section.slice(1)}
+        </div>
+      ))}
+    </div>
+  );
+}
 
 function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -44,7 +108,6 @@ function App() {
     const cardObserver = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
-          // Add a small delay before animation starts
           setTimeout(() => {
             entry.target.classList.add('animate-in');
             cardObserver.unobserve(entry.target);
@@ -63,48 +126,22 @@ function App() {
       cardObserver.observe(item);
     });
 
-    // Create background elements for hero section
-    const bgElements = document.querySelector('.bg-elements');
-    if (bgElements) {
-      for (let i = 0; i < 15; i++) {
-        const element = document.createElement('div');
-        element.classList.add('bg-element');
-        
-        // Random size between 50px and 300px
-        const size = Math.floor(Math.random() * 250) + 50;
-        element.style.width = `${size}px`;
-        element.style.height = `${size}px`;
-        
-        // Random position
-        element.style.left = `${Math.floor(Math.random() * 100)}%`;
-        element.style.top = `${Math.floor(Math.random() * 100)}%`;
-        
-        // Random animation delay
-        element.style.animationDelay = `${Math.floor(Math.random() * 10)}s`;
-        
-        bgElements.appendChild(element);
-      }
-    }
-
-    // Custom cursor effect
-    const cursor = document.querySelector('.cursor');
-    if (cursor) {
-      document.addEventListener('mousemove', (e) => {
-        cursor.setAttribute('style', `left: ${e.clientX}px; top: ${e.clientY}px;`);
-      });
-    }
-
     return () => {
       sectionObserver.disconnect();
       cardObserver.disconnect();
-      if (cursor) {
-        document.removeEventListener('mousemove', () => {});
-      }
     };
   }, []);
 
   return (
-    <div className="min-h-screen bg-white dark:bg-gray-900 transition-colors duration-200">
+    <div className="min-h-screen bg-transparent transition-colors duration-200">
+      {/* Scene3D and background elements are site-wide */}
+      <div className="fixed inset-0 z-0 pointer-events-none">
+        <Scene3D />
+        <AnimatedBackground />
+        <div className="pattern-bg"></div>
+      </div>
+      
+      <ScrollIndicator />
       {/* Custom cursor */}
       <div className="cursor hidden md:block"></div>
       
@@ -159,14 +196,9 @@ function App() {
         )}
       </nav>
 
-      {/* Main Content */}
-      <main>
+      <main className="relative z-1">
         {/* Hero Section - 13g inspired design */}
         <section id="home" className="section min-h-screen pt-20 flex items-center relative overflow-hidden">
-          <div className="pattern-bg"></div>
-          <div className="bg-elements absolute inset-0 pointer-events-none">
-            {/* Background elements will be added via JS */}
-          </div>
           <div className="container mx-auto px-4 z-10">
             <div className="hero-content text-center fade-in">
               <h1 className="display-text text-gray-900 dark:text-white mb-6">
@@ -193,141 +225,80 @@ function App() {
           </div>
         </section>
 
-        {/* About Section - 13g inspired diagonal section */}
-        <section id="about" className="section py-24 px-4 bg-white dark:bg-gray-900 diagonal-top">
+        {/* About Section */}
+        <section id="about" className="section py-24 px-4 bg-white/50 dark:bg-gray-900/50 backdrop-blur-sm">
           <div className="container mx-auto">
             <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4 text-center fade-in">About <span className="text-gradient">Me</span></h2>
-            <p className="text-gray-600 dark:text-gray-400 mb-16 text-center max-w-2xl mx-auto alt-text">
+            <p className="text-lg font-medium text-gray-800 dark:text-gray-200 mb-16 text-center max-w-2xl mx-auto alt-text">
               Passionate about creating beautiful, responsive, and user-friendly web experiences
             </p>
-            <div className="about-content flex flex-col md:flex-row items-center gap-12">
-              <div className="about-image md:w-1/2 fade-in image-mask">
+            <div className="about-content flex flex-col md:flex-row items-stretch gap-0">
+              <div className="about-image md:w-1/2 fade-in">
                 <img
                   src="./assets/profile.jpg"
                   alt="Profile"
-                  className="rounded-lg shadow-xl w-full transition-transform duration-300 hover:scale-105"
+                  className="w-full h-full object-cover rounded-l-lg shadow-xl transition-transform duration-300"
                 />
               </div>
               <div className="about-text md:w-1/2 fade-in">
-                <p className="text-gray-600 dark:text-gray-300 mb-6">
-                  Dynamic Front-End Engineer with a solid foundation in web development and a commitment to creating innovative solutions since September 2021. Expertise in modern technologies, including JavaScript and React, paired with a full grasp of HTML and CSS, drives the development of user-centric web applications.
-                </p>
-                <p className="text-gray-600 dark:text-gray-300 mb-6">
-                  Known for optimizing performance and enhancing accessibility through responsive design, while maintaining project organization with version control systems. Passionate about continuous learning and collaboration, aiming to elevate user experiences and functionality in fast-paced environments.
-                </p>
-                <div className="skills flex flex-wrap gap-3 mt-8">
-                  {Object.values(skills.core).map((skill) => (
-                    <span key={skill.name} className="skill px-4 py-2 bg-gray-100 dark:bg-gray-800 rounded-full text-gray-700 dark:text-gray-300 transition-transform hover:scale-105">
-                      {skill.name}
-                    </span>
-                  ))}
+                <div className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm p-8 h-full rounded-r-lg shadow-xl transition-all duration-500 flex flex-col justify-between">
+                  <div className="flex flex-col justify-center h-full">
+                    <p className="text-lg font-medium text-gray-800 dark:text-gray-200 mb-6 leading-relaxed text-center">
+                      Dynamic Front-End Engineer with a solid foundation in web development and a commitment to creating innovative solutions since September 2021. Expertise in modern technologies, including JavaScript and React, paired with a full grasp of HTML and CSS, drives the development of user-centric web applications.
+                    </p>
+                    <p className="text-lg font-medium text-gray-800 dark:text-gray-200 mb-6 leading-relaxed text-center">
+                      Known for optimizing performance and enhancing accessibility through responsive design, while maintaining project organization with version control systems. Passionate about continuous learning and collaboration, aiming to elevate user experiences and functionality in fast-paced environments.
+                    </p>
+                  </div>
+                  <div className="text-center">
+                    <div className="skills flex flex-wrap gap-3 mb-8 justify-center">
+                      {Object.values(skills.core).map((skill) => (
+                        <span key={skill.name} className="skill px-4 py-2 bg-gray-100/80 dark:bg-gray-700/80 rounded-full text-gray-800 dark:text-gray-200 font-semibold transition-transform hover:scale-105">
+                          {skill.name}
+                        </span>
+                      ))}
+                    </div>
+                    <a
+                      href="./assets/resume.pdf"
+                      className="button-hover-effect inline-flex items-center px-6 py-3 bg-gray-100/80 dark:bg-gray-700/80 text-gray-800 dark:text-gray-200 font-semibold rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition duration-300"
+                    >
+                      <Download size={20} className="mr-2" />
+                      Download Resume
+                    </a>
+                  </div>
                 </div>
-                <a
-                  href="./assets/resume.pdf"
-                  className="button-hover-effect inline-flex items-center px-6 py-3 mt-8 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition duration-300"
-                >
-                  <Download size={20} className="mr-2" />
-                  Download Resume
-                </a>
               </div>
             </div>
           </div>
         </section>
 
         {/* Skills Section */}
-        <section id="skills" className="section py-24 px-4 bg-gray-50 dark:bg-gray-800 diagonal-bottom">
-          <div className="container mx-auto">
-            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4 text-center fade-in">Skills & <span className="text-gradient">Expertise</span></h2>
-            <p className="text-gray-600 dark:text-gray-400 mb-16 text-center max-w-2xl mx-auto alt-text">
-              A collection of technologies I've worked with to create exceptional digital experiences
-            </p>
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {Object.entries(skills).map(([category, items], index) => (
-                <div
-                  key={category}
-                  className="stagger-item bg-white dark:bg-gray-900 p-8 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2"
-                  style={{ animationDelay: `${index * 0.15}s` }}
-                >
-                  <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-6 capitalize">
-                    {category}
-                  </h3>
-                  <div className="space-y-5">
-                    {items.map((skill, skillIndex) => (
-                      <div 
-                        key={skill.name} 
-                        className="skill-icon flex items-center space-x-3 transform transition-all duration-300 hover:translate-x-1"
-                        style={{ transitionDelay: `${skillIndex * 0.05}s` }}
-                      >
-                        <div className="p-2 rounded-md bg-indigo-50 dark:bg-gray-800">
-                          <skill.icon size={20} className="text-indigo-600 dark:text-indigo-400" />
-                        </div>
-                        <span className="text-gray-700 dark:text-gray-300">{skill.name}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
+        <SkillsSection />
 
-        {/* Projects Section - 13g inspired cards */}
-        <section id="projects" className="section py-24 px-4 bg-white dark:bg-gray-900">
+        {/* Projects Section */}
+        <section id="projects" className="section py-24 px-4 bg-white/50 dark:bg-gray-900/50 backdrop-blur-sm" style={{ marginBottom: '200px', paddingBottom: '100px' }}>
           <div className="container mx-auto">
-            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4 text-center fade-in"><span className="text-gradient">Featured</span> Projects</h2>
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4 text-center fade-in">
+              <span className="text-gradient">Featured</span> Projects
+            </h2>
             <p className="text-gray-600 dark:text-gray-400 mb-16 text-center max-w-2xl mx-auto alt-text">
               A selection of my recent work, showcasing my skills and expertise
             </p>
-            <div className="projects grid md:grid-cols-2 lg:grid-cols-3 gap-10">
+            <div className="projects-grid relative" style={{ zIndex: 20, marginBottom: '100px' }}>
               {projects.map((project, index) => (
-                <div
-                  key={project.title}
-                  className="project project-card fade-in bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-all duration-500 hover:-translate-y-3 flex flex-col"
-                >
-                  <div className="project-image h-64 overflow-hidden">
-                    <img 
-                      src={project.image} 
-                      alt={project.title} 
-                      className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
-                    />
-                  </div>
-                  <div className="project-info p-6 flex-grow flex flex-col">
-                    <h3 className="project-title text-xl font-semibold text-gray-900 dark:text-white mb-2">
-                      {project.title}
-                    </h3>
-                    <div className="project-category text-indigo-600 dark:text-indigo-400 text-sm mb-3 alt-text">
-                      {project.technologies[0]}
-                    </div>
-                    <p className="project-description text-gray-600 dark:text-gray-300 mb-6 flex-grow">
-                      {project.description}
-                    </p>
-                    <div className="flex flex-col sm:flex-row gap-3 mt-auto">
-                      <a
-                        href={project.demo}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="btn px-8 py-3 bg-indigo-600 text-white rounded-full text-sm hover:bg-indigo-700 transition-colors duration-300"
-                      >
-                        <ExternalLink size={16} /> <span>Live Demo</span>
-                      </a>
-                      <a
-                        href={project.github}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="btn px-8 py-3 border border-indigo-600 text-indigo-600 dark:text-indigo-400 rounded-full text-sm hover:bg-indigo-50 dark:hover:bg-gray-700 transition-colors duration-300"
-                      >
-                        <Github size={16} /> <span>View Code</span>
-                      </a>
-                    </div>
-                  </div>
+                <div key={project.title} className="project-card-wrapper" style={{ 
+                  marginBottom: index >= projects.length - 3 ? '150px' : '80px' // Add extra margin to last row
+                }}>
+                  <ProjectCard project={project} />
                 </div>
               ))}
+              <div className="project-card-overlay" />
             </div>
           </div>
         </section>
 
-        {/* Contact Section - 13g inspired layout */}
-        <section id="contact" className="section py-24 px-4 bg-gray-50 dark:bg-gray-800 diagonal-top">
+        {/* Contact Section */}
+        <section id="contact" className="section py-24 px-4 bg-gray-50/50 dark:bg-gray-800/50 backdrop-blur-sm" style={{ position: 'relative', zIndex: 10 }}>
           <div className="container mx-auto">
             <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4 text-center fade-in">Get In <span className="text-gradient">Touch</span></h2>
             <p className="text-gray-600 dark:text-gray-400 mb-16 text-center max-w-2xl mx-auto alt-text">
@@ -340,7 +311,7 @@ function App() {
                   I'm always open to discussing new projects, creative ideas or opportunities to be part of your vision.
                 </p>
                 <div className="contact-links space-y-6">
-                  <a href="gn_farag02@outlook.com" className="contact-link flex items-center text-gray-700 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors duration-300">
+                  <a href="mailto:gn_farag02@outlook.com" className="contact-link flex items-center text-gray-700 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors duration-300">
                     <Mail size={24} className="mr-4" />
                     Mail
                   </a>
@@ -348,43 +319,43 @@ function App() {
                     <Github size={24} className="mr-4" />
                     Github
                   </a>
-                  <a href="www.linkedin.com/in/andrew-george-610535309" target="_blank" rel="noopener noreferrer" className="contact-link flex items-center text-gray-700 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors duration-300">
+                  <a href="https://www.linkedin.com/in/andrew-george-610535309" target="_blank" rel="noopener noreferrer" className="contact-link flex items-center text-gray-700 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors duration-300">
                     <Linkedin size={24} className="mr-4" />
                     Linkedin
                   </a>
                 </div>
               </div>
               <div className="contact-form md:w-1/2 fade-in">
-                <form className="bg-white dark:bg-gray-900 p-8 rounded-lg shadow-lg">
+                <form className="bg-white/70 dark:bg-gray-900/70 backdrop-blur-sm p-8 rounded-lg shadow-lg">
                   <div className="form-group mb-6">
                     <label htmlFor="name" className="form-label block mb-2 text-gray-700 dark:text-gray-300">Name</label>
-                    <input 
-                      type="text" 
-                      id="name" 
+                    <input
+                      type="text"
+                      id="name"
                       className="form-input input-focus-effect w-full p-3 border border-gray-300 dark:border-gray-700 dark:bg-gray-800 rounded-lg text-gray-700 dark:text-gray-300" 
                       required 
                     />
                   </div>
                   <div className="form-group mb-6">
                     <label htmlFor="email" className="form-label block mb-2 text-gray-700 dark:text-gray-300">Email</label>
-                    <input 
-                      type="email" 
-                      id="email" 
+                    <input
+                      type="email"
+                      id="email"
                       className="form-input input-focus-effect w-full p-3 border border-gray-300 dark:border-gray-700 dark:bg-gray-800 rounded-lg text-gray-700 dark:text-gray-300" 
                       required 
                     />
                   </div>
                   <div className="form-group mb-6">
                     <label htmlFor="message" className="form-label block mb-2 text-gray-700 dark:text-gray-300">Message</label>
-                    <textarea 
-                      id="message" 
+                    <textarea
+                      id="message"
                       rows={5}
                       className="form-textarea input-focus-effect w-full p-3 border border-gray-300 dark:border-gray-700 dark:bg-gray-800 rounded-lg text-gray-700 dark:text-gray-300 resize-y" 
                       required
                     ></textarea>
                   </div>
-                  <button 
-                    type="submit" 
+                  <button
+                    type="submit"
                     className="button-hover-effect w-full py-3 bg-indigo-600 text-white rounded-full hover:bg-indigo-700 transition-colors duration-300 flex items-center justify-center"
                   >
                     Send Message <ArrowRight className="ml-2" size={18} />
@@ -414,10 +385,10 @@ function App() {
               <a href="https://github.com/AGeorge556" target="_blank" rel="noopener noreferrer" className="social-link hover:text-indigo-400 transition-colors duration-300">
                 <Github size={20} />
               </a>
-              <a href="www.linkedin.com/in/andrew-george-610535309" target="_blank" rel="noopener noreferrer" className="social-link hover:text-indigo-400 transition-colors duration-300">
+              <a href="https://www.linkedin.com/in/andrew-george-610535309" target="_blank" rel="noopener noreferrer" className="social-link hover:text-indigo-400 transition-colors duration-300">
                 <Linkedin size={20} />
               </a>
-              <a href="gn_farag02@outlook.com" className="social-link hover:text-indigo-400 transition-colors duration-300">
+              <a href="mailto:gn_farag02@outlook.com" className="social-link hover:text-indigo-400 transition-colors duration-300">
                 <Mail size={20} />
               </a>
             </div>
@@ -427,6 +398,187 @@ function App() {
           </div>
         </div>
       </footer>
+    </div>
+  );
+}
+
+function SkillsSection() {
+  return (
+    <section id="skills" className="py-20 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-sm">
+      <div className="container mx-auto px-4">
+        <h2 className="text-3xl font-bold text-center mb-12">Technical Skills</h2>
+        {Object.entries(skills).map(([category, categorySkills]) => (
+          <div key={category} className="mb-12">
+            <h3 className="text-2xl font-semibold text-center mb-8 capitalize">{category}</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {categorySkills.map((skill) => (
+                <div key={skill.name} className="skill-card bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm p-6 rounded-lg shadow-lg hover:shadow-xl transition-all duration-500">
+                  <div className="flex items-center mb-4">
+                    <div className="w-12 h-12 bg-indigo-100 dark:bg-indigo-900 rounded-lg flex items-center justify-center mr-4">
+                      <skill.icon size={24} className="text-indigo-600 dark:text-indigo-400" />
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-semibold">{skill.name}</h3>
+                      <div className="flex items-center mt-1">
+                        <div className="w-24 h-2 bg-gray-200 dark:bg-gray-700 rounded-full">
+                          <div 
+                            className="h-full bg-indigo-600 dark:bg-indigo-400 rounded-full"
+                            style={{ width: `${skill.level === 'Advanced' ? '90%' : skill.level === 'Intermediate' ? '70%' : '50%'}` }}
+                          />
+                        </div>
+                        <span className="ml-2 text-sm text-gray-500 dark:text-gray-400">{skill.level}</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="space-y-3">
+                    <h4 className="text-sm font-semibold text-gray-500 dark:text-gray-400">Key Achievements</h4>
+                    <ul className="space-y-2">
+                      {skill.achievements.map((achievement, index) => (
+                        <li key={index} className="flex items-start">
+                          <span className="text-indigo-500 mr-2">•</span>
+                          <span className="text-sm text-gray-600 dark:text-gray-300">{achievement}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+interface Project {
+  title: string;
+  description: string;
+  image: string;
+  technologies: string[];
+  demo?: string;
+  github?: string;
+  metrics?: {
+    performance?: string;
+    accessibility?: string;
+    userSatisfaction?: string;
+    bookingTime?: string;
+    userEngagement?: string;
+    loadTime?: string;
+  };
+  technicalHighlights?: string[];
+  challenges?: Array<{
+    problem: string;
+    solution: string;
+    impact: string;
+  }>;
+}
+
+function ProjectCard({ project }: { project: Project }) {
+  const [isHovered, setIsHovered] = useState(false);
+
+  return (
+    <div 
+      className={`project-card bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm rounded-lg overflow-hidden shadow-lg transition-all duration-500 ${
+        isHovered ? 'hover-expanded' : ''
+      }`}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      <div className="project-image relative h-64 overflow-hidden">
+        <img 
+          src={project.image} 
+          alt={project.title}
+          className="w-full h-full object-cover transition-transform duration-700"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent opacity-100 transition-opacity duration-300">
+          <div className="absolute bottom-0 left-0 right-0 p-4">
+            <h3 className="text-2xl font-extrabold text-white mb-2 project-title drop-shadow-lg">{project.title}</h3>
+            <div className="flex flex-wrap gap-2">
+              {project.technologies.map((tech: string, index: number) => (
+                <span key={index} className="px-2 py-1 bg-white/20 text-white text-sm font-semibold rounded-full backdrop-blur-sm">
+                  {tech}
+                </span>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className={`p-6 transition-all duration-500`}>
+        <p className="text-gray-800 dark:text-gray-200 text-lg font-medium mb-4">{project.description}</p>
+        
+        {isHovered && (
+          <>
+            {project.metrics && (
+              <div className="mb-6 animate-fade-in">
+                <h4 className="text-base font-bold text-gray-700 dark:text-gray-300 mb-2">Key Metrics</h4>
+                <div className="grid grid-cols-2 gap-2">
+                  {Object.entries(project.metrics).map(([key, value]) => (
+                    <div key={key} className="bg-gray-50 dark:bg-gray-700 p-2 rounded">
+                      <div className="text-sm font-semibold text-gray-600 dark:text-gray-300">{key}</div>
+                      <div className="text-base font-bold text-gray-800 dark:text-gray-100">{value}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {project.technicalHighlights && (
+              <div className="mb-6 animate-fade-in">
+                <h4 className="text-base font-bold text-gray-700 dark:text-gray-300 mb-2">Technical Highlights</h4>
+                <ul className="space-y-2">
+                  {project.technicalHighlights.map((highlight: string, index: number) => (
+                    <li key={index} className="flex items-start">
+                      <span className="text-indigo-500 mr-2">•</span>
+                      <span className="text-base font-medium text-gray-800 dark:text-gray-200">{highlight}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {project.challenges && (
+              <div className="mb-6 animate-fade-in">
+                <h4 className="text-base font-bold text-gray-700 dark:text-gray-300 mb-2">Key Challenges</h4>
+                <div className="space-y-4">
+                  {project.challenges.map((challenge, index: number) => (
+                    <div key={index} className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
+                      <div className="text-base font-bold text-gray-900 dark:text-white mb-1">Problem: {challenge.problem}</div>
+                      <div className="text-base font-medium text-gray-800 dark:text-gray-200 mb-2">Solution: {challenge.solution}</div>
+                      <div className="text-sm font-semibold text-indigo-600 dark:text-indigo-400">Impact: {challenge.impact}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </>
+        )}
+
+        <div className="flex space-x-4">
+          {project.demo && (
+            <a
+              href={project.demo}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn px-4 py-2 bg-indigo-600 text-white rounded-full hover:bg-indigo-700 transition-colors duration-300"
+            >
+              <ExternalLink size={16} className="mr-2" />
+              Live Demo
+            </a>
+          )}
+          {project.github && (
+            <a
+              href={project.github}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn px-4 py-2 border border-indigo-600 text-indigo-600 dark:text-indigo-400 rounded-full hover:bg-indigo-50 dark:hover:bg-gray-700 transition-colors duration-300"
+            >
+              <Github size={16} className="mr-2" />
+              View Code
+            </a>
+          )}
+        </div>
+      </div>
     </div>
   );
 }

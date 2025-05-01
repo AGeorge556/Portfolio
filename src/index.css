@@ -38,43 +38,6 @@
   padding: 0 20px;
 }
 
-/* Diagonal section dividers inspired by 13g.fr */
-.diagonal-top {
-  position: relative;
-  padding-top: 8rem;
-}
-
-.diagonal-top::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 8rem;
-  background: inherit;
-  clip-path: polygon(0 0, 100% 100%, 100% 0);
-  z-index: 1;
-  transform: translateY(-100%);
-}
-
-.diagonal-bottom {
-  position: relative;
-  padding-bottom: 8rem;
-}
-
-.diagonal-bottom::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 8rem;
-  background: inherit;
-  clip-path: polygon(0 100%, 100% 0, 0 0);
-  z-index: 1;
-  transform: translateY(100%);
-}
-
 /* Large text inspired by 13g.fr */
 .display-text {
   font-size: clamp(2.5rem, 5vw, 5rem);
@@ -268,7 +231,13 @@
 /* Section styling */
 .section {
   position: relative;
-  overflow: hidden;
+  z-index: 1;
+  background-color: transparent !important;
+  backdrop-filter: blur(4px);
+}
+
+.dark .section {
+  background-color: transparent !important;
 }
 
 /* 13g-inspired text gradient effect */
@@ -337,14 +306,15 @@
 
 /* Pattern background inspired by 13g.fr */
 .pattern-bg {
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
   background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%234f46e5' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
   opacity: 0.5;
-  z-index: -1;
+  z-index: -3;
+  pointer-events: none;
 }
 
 /* Scroll indicator line */
@@ -603,4 +573,365 @@
 .project:hover {
   transform: translateY(-12px) scale(1.01);
   box-shadow: 0 20px 30px rgba(0, 0, 0, 0.1), 0 0 20px rgba(99, 102, 241, 0.2);
+}
+
+/* Add these styles to your existing CSS */
+.app {
+  position: relative;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Ensure project cards have proper perspective */
+.project-card {
+  transform-origin: center center;
+  backface-visibility: hidden;
+  will-change: transform;
+  position: relative;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  opacity: 1 !important;
+  background-color: rgba(255, 255, 255, 0.7) !important;
+  backdrop-filter: blur(8px);
+}
+
+.dark .project-card {
+  background-color: rgba(17, 24, 39, 0.7) !important;
+}
+
+/* Add smooth transitions for 3D effects */
+.project-card:hover {
+  transform: translateZ(20px);
+  transition: transform 0.3s ease-out;
+}
+
+/* Ensure proper 3D rendering */
+.scene3d-container {
+  position: fixed !important;
+  top: 0;
+  left: 0;
+  width: 100% !important;
+  height: 100% !important;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.scene3d-container canvas {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* Remove any existing canvas styles that might conflict */
+canvas {
+  position: fixed !important;
+  top: 0;
+  left: 0;
+  width: 100% !important;
+  height: 100% !important;
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* Project card hover animations */
+.project-card-wrapper {
+  position: relative;
+  z-index: 1;
+  transition: z-index 0s 0.4s;
+  min-height: 500px;
+}
+
+.project-card-wrapper:hover {
+  z-index: 50;
+  transition-delay: 0s;
+}
+
+.hover-expanded {
+  position: absolute !important;
+  left: -20%;
+  right: -20%;
+  top: -20px;
+  width: 140%;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.35);
+  background: white;
+  border-radius: 0.5rem;
+  z-index: 30;
+}
+
+.dark .hover-expanded {
+  background: #1f2937; /* dark mode background */
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(1);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-out forwards;
+}
+
+/* Ensure smooth transitions */
+.project-card,
+.project-card * {
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Add depth to hovered card */
+.hover-expanded::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle at center,
+    rgba(99, 102, 241, 0.1),
+    transparent 70%
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+  z-index: -1;
+  border-radius: 0.5rem;
+}
+
+.hover-expanded:hover::after {
+  opacity: 1;
+}
+
+/* Project grid layout */
+.projects-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  position: relative;
+  isolation: isolate;
+  padding-bottom: 100px;
+}
+
+@media (min-width: 768px) {
+  .projects-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .projects-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* Enhanced hover effect */
+.project-card-wrapper:hover .project-card {
+  transform: translateY(-10px) scale(1.02);
+}
+
+.hover-expanded .project-image img {
+  transform: scale(1.05);
+}
+
+/* Overlay effect for non-hovered cards */
+.project-card-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  z-index: 25;
+}
+
+.project-card-wrapper:hover ~ .project-card-overlay {
+  opacity: 1;
+}
+
+/* Ensure proper stacking context */
+#projects {
+  z-index: 20;
+  position: relative;
+  overflow: visible !important;
+}
+
+#contact {
+  z-index: 10;
+  position: relative;
+  margin-top: 100px;
+}
+
+/* Scroll Indicator Styles */
+.scroll-indicator {
+  position: fixed;
+  right: 2rem;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  z-index: 50;
+  mix-blend-mode: difference;
+  pointer-events: auto;
+}
+
+.scroll-dot {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background-color: white;
+  border-radius: 50%;
+  transition: transform 0.3s ease;
+  z-index: 2;
+  transform: translateY(var(--scroll-position, 0));
+}
+
+.section-indicator {
+  cursor: pointer;
+  padding: 0.5rem;
+  position: relative;
+  transform: translateY(var(--indicator-position));
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.section-indicator.active {
+  color: white;
+  opacity: 1;
+  transform: translateY(var(--indicator-position)) scale(1.1);
+}
+
+.section-indicator:hover {
+  opacity: 1;
+}
+
+.section-indicator::before {
+  content: '';
+  position: absolute;
+  right: -1.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 4px;
+  height: 4px;
+  background-color: white;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+}
+
+.section-indicator:hover::before {
+  transform: translateY(-50%) scale(1.5);
+}
+
+@media (max-width: 768px) {
+  .scroll-indicator {
+    display: none;
+  }
+}
+
+/* Ensure content sections have transparent backgrounds */
+section {
+  position: relative;
+  background-color: transparent !important;
+  backdrop-filter: blur(4px);
+}
+
+.dark section {
+  background-color: transparent !important;
+}
+
+/* Fix navigation background */
+nav {
+  backdrop-filter: blur(12px);
+  background-color: rgba(255, 255, 255, 0.8) !important;
+  z-index: 50 !important;
+}
+
+.dark nav {
+  background-color: rgba(17, 24, 39, 0.8) !important;
+}
+
+/* Project card and form backgrounds */
+.project-card,
+.contact-form form,
+.skill-card {
+  background-color: rgba(255, 255, 255, 0.7) !important;
+  backdrop-filter: blur(8px);
+}
+
+.dark .project-card,
+.dark .contact-form form,
+.dark .skill-card {
+  background-color: rgba(17, 24, 39, 0.7) !important;
+}
+
+/* Background Elements Animation */
+.bg-elements {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  z-index: -2;
+}
+
+.bg-element {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(circle at center, rgba(99, 102, 241, 0.1) 0%, transparent 70%);
+  animation: float 20s infinite;
+  pointer-events: none;
+}
+
+@keyframes float {
+  0% {
+    transform: translate(0, 0) rotate(0deg) scale(1);
+  }
+  25% {
+    transform: translate(10%, 10%) rotate(90deg) scale(1.1);
+  }
+  50% {
+    transform: translate(-5%, 15%) rotate(180deg) scale(0.9);
+  }
+  75% {
+    transform: translate(-10%, -5%) rotate(270deg) scale(1.05);
+  }
+  100% {
+    transform: translate(0, 0) rotate(360deg) scale(1);
+  }
+}
+
+/* Add different animation durations for variety */
+.bg-element:nth-child(2n) {
+  animation-duration: 25s;
+}
+
+.bg-element:nth-child(3n) {
+  animation-duration: 30s;
+}
+
+.bg-element:nth-child(4n) {
+  animation-duration: 35s;
+}
+
+.bg-element:nth-child(5n) {
+  animation-duration: 40s;
+}
+
+/* Fix z-index stacking for main content */
+main {
+  position: relative;
+  z-index: 1;
+}
+
+/* Ensure footer is clickable */
+footer {
+  position: relative;
+  z-index: 1;
+}
+
+/* Ensure links and buttons are clickable */
+a, button {
+  position: relative;
+  z-index: 2;
 }

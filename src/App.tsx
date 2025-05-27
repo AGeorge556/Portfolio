@@ -277,21 +277,31 @@ function App() {
 
         {/* Projects Section */}
         <section id="projects" className="section py-24 px-4 bg-white/50 dark:bg-gray-900/50 backdrop-blur-sm" style={{ marginBottom: '200px', paddingBottom: '100px' }}>
-          <div className="container mx-auto">
+          <div className="w-full max-w-[1800px] mx-auto px-2 md:px-8">
             <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4 text-center fade-in">
               <span className="text-gradient">Featured</span> Projects
             </h2>
             <p className="text-gray-600 dark:text-gray-400 mb-16 text-center max-w-2xl mx-auto alt-text">
               A selection of my recent work, showcasing my skills and expertise
             </p>
-            <div className="projects-grid relative" style={{ zIndex: 20, marginBottom: '100px' }}>
-              {projects.map((project, index) => (
-                <div key={project.title} className="project-card-wrapper" style={{ 
-                  marginBottom: index >= projects.length - 3 ? '150px' : '80px' // Add extra margin to last row
-                }}>
-                  <ProjectCard project={project} />
-                </div>
-              ))}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-12 justify-items-center relative" style={{ zIndex: 20, marginBottom: '100px' }}>
+              {projects.map((project, index) => {
+                // 2-column layout: even index = left, odd = right
+                const isLeft = index % 2 === 0;
+                return (
+                  <div
+                    key={project.title}
+                    className="project-hover-area flex items-stretch justify-center h-full"
+                    style={{ padding: 32, boxSizing: 'border-box', height: '100%' }}
+                    onMouseEnter={e => e.currentTarget.querySelector('.project-card')?.dispatchEvent(new Event('mouseenter', { bubbles: true }))}
+                    onMouseLeave={e => e.currentTarget.querySelector('.project-card')?.dispatchEvent(new Event('mouseleave', { bubbles: true }))}
+                  >
+                    <div className="project-card-wrapper w-full flex justify-center h-full" style={{ height: '100%' }}>
+                      <ProjectCard project={project} direction={isLeft ? 'right' : 'left'} />
+                    </div>
+                  </div>
+                );
+              })}
               <div className="project-card-overlay" />
             </div>
           </div>
@@ -405,47 +415,38 @@ function App() {
 function SkillsSection() {
   return (
     <section id="skills" className="py-20 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-sm">
-      <div className="container mx-auto px-4">
-        <h2 className="text-3xl font-bold text-center mb-12">Technical Skills</h2>
-        {Object.entries(skills).map(([category, categorySkills]) => (
-          <div key={category} className="mb-12">
-            <h3 className="text-2xl font-semibold text-center mb-8 capitalize">{category}</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {categorySkills.map((skill) => (
-                <div key={skill.name} className="skill-card bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm p-6 rounded-lg shadow-lg hover:shadow-xl transition-all duration-500">
-                  <div className="flex items-center mb-4">
-                    <div className="w-12 h-12 bg-indigo-100 dark:bg-indigo-900 rounded-lg flex items-center justify-center mr-4">
-                      <skill.icon size={24} className="text-indigo-600 dark:text-indigo-400" />
-                    </div>
-                    <div>
-                      <h3 className="text-xl font-semibold">{skill.name}</h3>
-                      <div className="flex items-center mt-1">
-                        <div className="w-24 h-2 bg-gray-200 dark:bg-gray-700 rounded-full">
-                          <div 
-                            className="h-full bg-indigo-600 dark:bg-indigo-400 rounded-full"
-                            style={{ width: `${skill.level === 'Advanced' ? '90%' : skill.level === 'Intermediate' ? '70%' : '50%'}` }}
-                          />
-                        </div>
-                        <span className="ml-2 text-sm text-gray-500 dark:text-gray-400">{skill.level}</span>
+      <div className="w-full max-w-[1800px] mx-auto px-2 md:px-8">
+        <h2 className="text-4xl font-bold text-center mb-16">Technical Skills</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
+          {Object.entries(skills).map(([category, categorySkills]) => (
+            <div key={category} className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg rounded-2xl p-10 shadow-2xl flex flex-col items-center">
+              <h3 className="text-2xl font-bold text-center mb-8 capitalize tracking-wide">{category}</h3>
+              <div className="flex flex-col gap-6 w-full">
+                {categorySkills.map((skill) => (
+                  <div key={skill.name} className="relative group w-full">
+                    <div className="flex items-center w-full cursor-pointer">
+                      <div className="w-14 h-14 bg-indigo-200 dark:bg-indigo-900 rounded-xl flex items-center justify-center mr-5 transition-transform hover:scale-110">
+                        <skill.icon size={32} className="text-indigo-700 dark:text-indigo-300" />
                       </div>
+                      <h3 className="text-lg font-semibold">{skill.name}</h3>
+                    </div>
+                    {/* Dropdown appears below the icon row, not over it */}
+                    <div className="absolute left-0 right-0 top-full mt-2 z-20 bg-white dark:bg-gray-900 rounded-xl shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 p-5 min-w-[220px]">
+                      <ul className="space-y-3">
+                        {skill.achievements.map((achievement, index) => (
+                          <li key={index} className="flex items-start">
+                            <span className="text-indigo-500 mr-2 text-base">•</span>
+                            <span className="text-sm text-gray-700 dark:text-gray-200">{achievement}</span>
+                          </li>
+                        ))}
+                      </ul>
                     </div>
                   </div>
-                  <div className="space-y-3">
-                    <h4 className="text-sm font-semibold text-gray-500 dark:text-gray-400">Key Achievements</h4>
-                    <ul className="space-y-2">
-                      {skill.achievements.map((achievement, index) => (
-                        <li key={index} className="flex items-start">
-                          <span className="text-indigo-500 mr-2">•</span>
-                          <span className="text-sm text-gray-600 dark:text-gray-300">{achievement}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </section>
   );
@@ -474,16 +475,18 @@ interface Project {
   }>;
 }
 
-function ProjectCard({ project }: { project: Project }) {
+function ProjectCard({ project, direction }: { project: Project, direction: string }) {
   const [isHovered, setIsHovered] = useState(false);
 
   return (
     <div 
-      className={`project-card bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm rounded-lg overflow-hidden shadow-lg transition-all duration-500 ${
-        isHovered ? 'hover-expanded' : ''
+      className={`project-card relative rounded-lg overflow-hidden shadow-lg transition-all duration-500 ${
+        isHovered ? 'hovered' : ''
       }`}
+      data-direction={direction}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
+      style={{ width: '100%', maxWidth: '600px' }}
     >
       <div className="project-image relative h-64 overflow-hidden">
         <img 
@@ -504,56 +507,35 @@ function ProjectCard({ project }: { project: Project }) {
           </div>
         </div>
       </div>
-      <div className={`p-6 transition-all duration-500`}>
+      <div className={`p-6 transition-all duration-500 relative z-10`}>
         <p className="text-gray-800 dark:text-gray-200 text-lg font-medium mb-4">{project.description}</p>
-        
-        {isHovered && (
-          <>
-            {project.metrics && (
-              <div className="mb-6 animate-fade-in">
-                <h4 className="text-base font-bold text-gray-700 dark:text-gray-300 mb-2">Key Metrics</h4>
-                <div className="grid grid-cols-2 gap-2">
-                  {Object.entries(project.metrics).map(([key, value]) => (
-                    <div key={key} className="bg-gray-50 dark:bg-gray-700 p-2 rounded">
-                      <div className="text-sm font-semibold text-gray-600 dark:text-gray-300">{key}</div>
-                      <div className="text-base font-bold text-gray-800 dark:text-gray-100">{value}</div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {project.technicalHighlights && (
-              <div className="mb-6 animate-fade-in">
-                <h4 className="text-base font-bold text-gray-700 dark:text-gray-300 mb-2">Technical Highlights</h4>
-                <ul className="space-y-2">
-                  {project.technicalHighlights.map((highlight: string, index: number) => (
-                    <li key={index} className="flex items-start">
-                      <span className="text-indigo-500 mr-2">•</span>
-                      <span className="text-base font-medium text-gray-800 dark:text-gray-200">{highlight}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-
-            {project.challenges && (
-              <div className="mb-6 animate-fade-in">
-                <h4 className="text-base font-bold text-gray-700 dark:text-gray-300 mb-2">Key Challenges</h4>
-                <div className="space-y-4">
-                  {project.challenges.map((challenge, index: number) => (
-                    <div key={index} className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
-                      <div className="text-base font-bold text-gray-900 dark:text-white mb-1">Problem: {challenge.problem}</div>
-                      <div className="text-base font-medium text-gray-800 dark:text-gray-200 mb-2">Solution: {challenge.solution}</div>
-                      <div className="text-sm font-semibold text-indigo-600 dark:text-indigo-400">Impact: {challenge.impact}</div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-          </>
+        {isHovered && project.technicalHighlights && (
+          <div className="mb-6 animate-fade-in">
+            <h4 className="text-base font-bold text-gray-700 dark:text-gray-300 mb-2">Technical Highlights</h4>
+            <ul className="space-y-2">
+              {project.technicalHighlights.map((highlight: string, index: number) => (
+                <li key={index} className="flex items-start">
+                  <span className="text-indigo-500 mr-2">•</span>
+                  <span className="text-base font-medium text-gray-800 dark:text-gray-200">{highlight}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
         )}
-
+        {isHovered && project.challenges && (
+          <div className="mb-6 animate-fade-in">
+            <h4 className="text-base font-bold text-gray-700 dark:text-gray-300 mb-2">Key Challenges</h4>
+            <div className="space-y-4">
+              {project.challenges.map((challenge, index: number) => (
+                <div key={index} className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
+                  <div className="text-base font-bold text-gray-900 dark:text-white mb-1">Problem: {challenge.problem}</div>
+                  <div className="text-base font-medium text-gray-800 dark:text-gray-200 mb-2">Solution: {challenge.solution}</div>
+                  <div className="text-sm font-semibold text-indigo-600 dark:text-indigo-400">Impact: {challenge.impact}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
         <div className="flex space-x-4">
           {project.demo && (
             <a
@@ -564,17 +546,6 @@ function ProjectCard({ project }: { project: Project }) {
             >
               <ExternalLink size={16} className="mr-2" />
               Live Demo
-            </a>
-          )}
-          {project.github && (
-            <a
-              href={project.github}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn px-4 py-2 border border-indigo-600 text-indigo-600 dark:text-indigo-400 rounded-full hover:bg-indigo-50 dark:hover:bg-gray-700 transition-colors duration-300"
-            >
-              <Github size={16} className="mr-2" />
-              View Code
             </a>
           )}
         </div>

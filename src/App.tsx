@@ -5,6 +5,7 @@ import { Scene3D } from './components/Scene3D'
 import { AnimatedBackground } from './components/AnimatedBackground'
 import { FaReact, FaNodeJs, FaPython, FaDatabase, FaAws } from 'react-icons/fa';
 import { SiTypescript } from 'react-icons/si';
+import { useForm, ValidationError } from '@formspree/react';
 
 function ScrollIndicator() {
   const [activeSection, setActiveSection] = useState('home');
@@ -131,6 +132,9 @@ function App() {
       cardObserver.disconnect();
     };
   }, []);
+
+  // Initialize useForm hook for contact form
+  const [state, handleSubmit] = useForm("meogyobe");
 
   return (
     <div className="min-h-screen bg-transparent transition-colors duration-200">
@@ -336,41 +340,63 @@ function App() {
                 </div>
               </div>
               <div className="contact-form md:w-1/2 fade-in">
-                <form className="bg-white/70 dark:bg-gray-900/70 backdrop-blur-sm p-8 rounded-lg shadow-lg">
-                  <div className="form-group mb-6">
-                    <label htmlFor="name" className="form-label block mb-2 text-gray-700 dark:text-gray-300">Name</label>
-                    <input
-                      type="text"
-                      id="name"
-                      className="form-input input-focus-effect w-full p-3 border border-gray-300 dark:border-gray-700 dark:bg-gray-800 rounded-lg text-gray-700 dark:text-gray-300" 
-                      required 
-                    />
+                {/* Check if the form has been submitted successfully */}
+                {state.succeeded ? (
+                  <div className="bg-white/70 dark:bg-gray-900/70 backdrop-blur-sm p-8 rounded-lg shadow-lg text-center">
+                    <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Thank you for your message!</h3>
+                    <p className="text-gray-700 dark:text-gray-300">I will get back to you as soon as possible.</p>
                   </div>
-                  <div className="form-group mb-6">
-                    <label htmlFor="email" className="form-label block mb-2 text-gray-700 dark:text-gray-300">Email</label>
-                    <input
-                      type="email"
-                      id="email"
-                      className="form-input input-focus-effect w-full p-3 border border-gray-300 dark:border-gray-700 dark:bg-gray-800 rounded-lg text-gray-700 dark:text-gray-300" 
-                      required 
-                    />
-                  </div>
-                  <div className="form-group mb-6">
-                    <label htmlFor="message" className="form-label block mb-2 text-gray-700 dark:text-gray-300">Message</label>
-                    <textarea
-                      id="message"
-                      rows={5}
-                      className="form-textarea input-focus-effect w-full p-3 border border-gray-300 dark:border-gray-700 dark:bg-gray-800 rounded-lg text-gray-700 dark:text-gray-300 resize-y" 
-                      required
-                    ></textarea>
-                  </div>
-                  <button
-                    type="submit"
-                    className="button-hover-effect w-full py-3 bg-indigo-600 text-white rounded-full hover:bg-indigo-700 transition-colors duration-300 flex items-center justify-center"
-                  >
-                    Send Message <ArrowRight className="ml-2" size={18} />
-                  </button>
-                </form>
+                ) : (
+                  <form onSubmit={handleSubmit} className="bg-white/70 dark:bg-gray-900/70 backdrop-blur-sm p-8 rounded-lg shadow-lg">
+                    <div className="form-group mb-6">
+                      <label htmlFor="name" className="form-label block mb-2 text-gray-700 dark:text-gray-300">Name</label>
+                      <input
+                        type="text"
+                        id="name"
+                        name="name"
+                        className="form-input input-focus-effect w-full p-3 border border-gray-300 dark:border-gray-700 dark:bg-gray-800 rounded-lg text-gray-700 dark:text-gray-300"
+                        required
+                      />
+                    </div>
+                    <div className="form-group mb-6">
+                      <label htmlFor="email" className="form-label block mb-2 text-gray-700 dark:text-gray-300">Email</label>
+                      <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        className="form-input input-focus-effect w-full p-3 border border-gray-300 dark:border-gray-700 dark:bg-gray-800 rounded-lg text-gray-700 dark:text-gray-300"
+                        required
+                      />
+                      <ValidationError
+                        prefix="Email"
+                        field="email"
+                        errors={state.errors}
+                      />
+                    </div>
+                    <div className="form-group mb-6">
+                      <label htmlFor="message" className="form-label block mb-2 text-gray-700 dark:text-gray-300">Message</label>
+                      <textarea
+                        id="message"
+                        name="message"
+                        rows={5}
+                        className="form-textarea input-focus-effect w-full p-3 border border-gray-300 dark:border-gray-700 dark:bg-gray-800 rounded-lg text-gray-700 dark:text-gray-300 resize-y"
+                        required
+                      ></textarea>
+                      <ValidationError
+                        prefix="Message"
+                        field="message"
+                        errors={state.errors}
+                      />
+                    </div>
+                    <button
+                      type="submit"
+                      disabled={state.submitting}
+                      className="button-hover-effect w-full py-3 bg-indigo-600 text-white rounded-full hover:bg-indigo-700 transition-colors duration-300 flex items-center justify-center"
+                    >
+                      Send Message <ArrowRight className="ml-2" size={18} />
+                    </button>
+                  </form>
+                )}
               </div>
             </div>
           </div>

@@ -14,9 +14,13 @@
   },
   "dependencies": {
     "@formspree/react": "^3.0.0",
+    "@gsap/react": "^2.1.2",
+    "@react-spring/web": "^10.0.1",
     "@react-three/drei": "^10.0.8",
     "@react-three/fiber": "^9.1.2",
     "@react-three/postprocessing": "^3.0.4",
+    "framer-motion": "^12.18.1",
+    "gsap": "^3.13.0",
     "lucide-react": "^0.344.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",

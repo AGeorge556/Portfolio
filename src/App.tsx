@@ -1,10 +1,11 @@
+/// <reference types="node" />
 import React, { useState, useEffect, useRef } from 'react';
 import { Menu, X, Moon, Sun, Github, Linkedin, Mail, ExternalLink, Download, ArrowRight, ArrowDown, MapPin, Phone } from 'lucide-react';
 import { motion, useScroll, useTransform, useInView } from 'framer-motion';
 import { skills, projects } from './data';
 import { Scene3D } from './components/Scene3D'
 import { AnimatedBackground } from './components/AnimatedBackground'
-import { FaReact, FaNodeJs, FaPython, FaDatabase, FaAws } from 'react-icons/fa';
+import { FaReact /*, FaNodeJs, FaPython, FaDatabase, FaAws */ } from 'react-icons/fa';
 import { SiTypescript, SiNextdotjs, SiTailwindcss, SiMongodb } from 'react-icons/si';
 import { useForm, ValidationError } from '@formspree/react';
 
@@ -16,26 +17,49 @@ const scrollToSection = (sectionId: string) => {
   }
 };
 
-// Animated section wrapper with enhanced scroll detection
+// Animated section wrapper with mobile-responsive scroll detection
 const AnimatedSection = ({ children, className = '', id }: { children: React.ReactNode, className?: string, id?: string }) => {
   const ref = useRef(null);
-  const isInView = useInView(ref, { 
-    once: false, 
-    amount: 0.1,
-    margin: "0px 0px -100px 0px"
-  });
+  const [screenSize, setScreenSize] = useState({ width: 0, height: 0 });
   
+  // Track screen size changes for responsive animation settings
+  useEffect(() => {
+    const updateScreenSize = () => {
+      setScreenSize({ width: window.innerWidth, height: window.innerHeight });
+    };
+    
+    updateScreenSize();
+    window.addEventListener('resize', updateScreenSize);
+    return () => window.removeEventListener('resize', updateScreenSize);
+  }, []);
+  
+  // Mobile-responsive intersection observer settings
+  const isMobile = screenSize.width <= 768;
+  const isTablet = screenSize.width <= 1024;
+  
+  const intersectionConfig = {
+    once: false,
+    amount: isMobile ? 0.2 : isTablet ? 0.25 : 0.3,
+    rootMargin: isMobile ? "0px 0px -10% 0px" : isTablet ? "0px 0px -15% 0px" : "0px 0px -20% 0px"
+  };
+  
+  const isInView = useInView(ref, intersectionConfig);
+  
+  // Mobile-responsive animation timing
+  const animationDuration = isMobile ? 1.0 : isTablet ? 0.9 : 0.8;
+  const animationEase = isMobile ? [0.25, 0.46, 0.45, 0.94] as const : [0.25, 0.25, 0.25, 0.75] as const;
+
   return (
     <motion.section
       ref={ref}
       id={id}
       className={className}
-      initial={{ opacity: 0, y: 60 }}
-      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 60 }}
+      initial={{ opacity: 0, y: isMobile ? 40 : 60 }}
+      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: isMobile ? 40 : 60 }}
       transition={{ 
-        duration: 0.8, 
-        ease: [0.25, 0.25, 0.25, 0.75],
-        staggerChildren: 0.1
+        duration: animationDuration, 
+        ease: animationEase,
+        staggerChildren: isMobile ? 0.15 : 0.1
       }}
     >
       {children}
@@ -49,24 +73,33 @@ function Navigation({ isDarkMode, toggleDarkMode }: { isDarkMode: boolean, toggl
   const [activeSection, setActiveSection] = useState('home');
 
   useEffect(() => {
+    let timeoutId: NodeJS.Timeout;
+    
     const handleScroll = () => {
-      const sections = ['home', 'about', 'skills', 'projects', 'contact'];
-      const scrollPosition = window.scrollY + 100;
-      
-      for (const section of sections) {
-        const element = document.getElementById(section);
-        if (element) {
-          const { offsetTop, offsetHeight } = element;
-          if (scrollPosition >= offsetTop && scrollPosition < offsetTop + offsetHeight) {
-            setActiveSection(section);
-            break;
+      // Debounce scroll events for better mobile performance
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => {
+        const sections = ['home', 'about', 'skills', 'projects', 'contact'];
+        const scrollPosition = window.scrollY + 100;
+        
+        for (const section of sections) {
+          const element = document.getElementById(section);
+          if (element) {
+            const { offsetTop, offsetHeight } = element;
+            if (scrollPosition >= offsetTop && scrollPosition < offsetTop + offsetHeight) {
+              setActiveSection(section);
+              break;
+            }
           }
         }
-      }
+      }, 10); // 10ms debounce for smooth but responsive updates
     };
 
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      clearTimeout(timeoutId);
+    };
   }, []);
 
   const navItems = [
@@ -84,7 +117,7 @@ function Navigation({ isDarkMode, toggleDarkMode }: { isDarkMode: boolean, toggl
       animate={{ y: 0 }}
       transition={{ duration: 0.6 }}
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <motion.div 
@@ -97,7 +130,7 @@ function Navigation({ isDarkMode, toggleDarkMode }: { isDarkMode: boolean, toggl
           </motion.div>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-8">
+            <div className="hidden md:flex items-center space-x-8">
             {navItems.map((item) => (
               <motion.button
                 key={item.id}
@@ -123,16 +156,16 @@ function Navigation({ isDarkMode, toggleDarkMode }: { isDarkMode: boolean, toggl
             ))}
             
             <motion.button
-              onClick={toggleDarkMode}
+                onClick={toggleDarkMode}
               className="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200"
               whileHover={{ scale: 1.1, rotate: 180 }}
               whileTap={{ scale: 0.9 }}
-            >
-              {isDarkMode ? <Sun size={20} /> : <Moon size={20} />}
+              >
+                {isDarkMode ? <Sun size={20} /> : <Moon size={20} />}
             </motion.button>
-          </div>
+            </div>
 
-          {/* Mobile menu button */}
+            {/* Mobile menu button */}
           <div className="md:hidden flex items-center space-x-2">
             <motion.button
               onClick={toggleDarkMode}
@@ -143,15 +176,15 @@ function Navigation({ isDarkMode, toggleDarkMode }: { isDarkMode: boolean, toggl
               {isDarkMode ? <Sun size={20} /> : <Moon size={20} />}
             </motion.button>
             <motion.button
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
               className="p-2 text-gray-700 dark:text-gray-300"
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
-            >
-              {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+              >
+                {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
             </motion.button>
+            </div>
           </div>
-        </div>
 
         {/* Mobile menu */}
         {isMenuOpen && (
@@ -194,7 +227,16 @@ function HeroSection() {
   const { scrollY } = useScroll();
   const y = useTransform(scrollY, [0, 500], [0, 150]);
   const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, amount: 0.2 });
+  
+  // Mobile-responsive settings for hero section
+  const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768;
+  const isTablet = typeof window !== 'undefined' && window.innerWidth <= 1024;
+  
+  const isInView = useInView(ref, { 
+    once: false, 
+    amount: isMobile ? 0.15 : isTablet ? 0.2 : 0.25,
+    Margin: isMobile ? "0px 0px -5% 0px" : "0px 0px -10% 0px"
+  });
   
   return (
     <section id="home" className="relative min-h-screen flex items-center justify-center overflow-hidden">
@@ -312,7 +354,7 @@ function HeroSection() {
                   <Icon size={24} />
                 </motion.div>
               ))}
-            </div>
+              </div>
           </motion.div>
         </motion.div>
         
@@ -330,23 +372,19 @@ function HeroSection() {
           <ArrowDown className="text-gray-400 dark:text-gray-600" size={24} />
         </motion.div>
       </motion.div>
-    </section>
+        </section>
   );
 }
 
 // About Section
 function AboutSection() {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: false, amount: 0.3 });
-  
   return (
     <AnimatedSection id="about" className="py-24 bg-white/30 dark:bg-gray-900/30">
       <div className="max-w-6xl mx-auto px-4">
         <motion.div 
-          ref={ref}
           className="text-center mb-16"
           initial={{ opacity: 0, y: 30 }}
-          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
           <h2 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
@@ -361,23 +399,23 @@ function AboutSection() {
           <motion.div 
             className="relative"
             initial={{ opacity: 0, x: -50 }}
-            animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -50 }}
+            animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
           >
             <div className="relative rounded-2xl overflow-hidden shadow-xl">
-              <img 
-                src="./assets/profile.jpg" 
+                <img
+                  src="./assets/profile.jpg"
                 alt="Andrew George"
                 className="w-full h-[300px] lg:h-[400px] object-cover"
-              />
+                />
               <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
-            </div>
+              </div>
           </motion.div>
           
           <motion.div 
             className="space-y-6"
             initial={{ opacity: 0, x: 50 }}
-            animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: 50 }}
+            animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6, delay: 0.4 }}
           >
             <div>
@@ -389,8 +427,8 @@ function AboutSection() {
               </p>
               <p className="text-gray-600 dark:text-gray-400 leading-relaxed mb-6">
                 My journey in development has equipped me with expertise across the entire stack, specializing in React, Next.js, and modern backend technologies that deliver scalable, high-performance applications.
-              </p>
-            </div>
+                    </p>
+                  </div>
             
             <div>
               <h4 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
@@ -410,13 +448,13 @@ function AboutSection() {
                   <span>Accessibility as a priority, not an afterthought</span>
                 </li>
               </ul>
-            </div>
+                    </div>
             
             {/* Download CV Button */}
             <motion.div
               className="pt-4"
               initial={{ opacity: 0, y: 20 }}
-              animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.8 }}
             >
               <a
@@ -436,21 +474,21 @@ function AboutSection() {
                 <div className="flex items-center space-x-2 mb-2">
                   <span className="text-xl">👨‍💻</span>
                   <span className="font-semibold text-gray-900 dark:text-white">Name</span>
-                </div>
+                  </div>
                 <p className="text-gray-600 dark:text-gray-400">Andrew George</p>
-              </div>
+                </div>
               <div>
                 <div className="flex items-center space-x-2 mb-2">
                   <span className="text-xl">✉️</span>
                   <span className="font-semibold text-gray-900 dark:text-white">Email</span>
-                </div>
-                <p className="text-gray-600 dark:text-gray-400">gn_farag02@outlook.com</p>
               </div>
+                <p className="text-gray-600 dark:text-gray-400">gn_farag02@outlook.com</p>
+            </div>
               <div>
                 <div className="flex items-center space-x-2 mb-2">
                   <span className="text-xl">📍</span>
                   <span className="font-semibold text-gray-900 dark:text-white">Location</span>
-                </div>
+          </div>
                 <p className="text-gray-600 dark:text-gray-400">Cairo,Egypt</p>
               </div>
               <div>
@@ -473,6 +511,125 @@ function AboutSection() {
           </motion.div>
         </div>
     </div>
+    </AnimatedSection>
+  );
+}
+
+// Skills Section
+function SkillsSection() {
+  return (
+    <AnimatedSection id="skills" className="py-24 bg-white/30 dark:bg-gray-900/30">
+      <div className="max-w-6xl mx-auto px-4">
+        <motion.div 
+          className="text-center mb-16"
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+        >
+          <h2 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
+            My <span className="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">Skills</span>
+            </h2>
+          <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+            I've worked with a variety of technologies in front-end development. Here are some of my key areas of expertise:
+          </p>
+        </motion.div>
+        
+        {/* Main Skills Grid */}
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
+          {Object.entries(skills).map(([category, skillList], categoryIndex) => {
+            const categoryTitles = {
+              'core': 'Front-End Development',
+              'frameworks': 'Styling & UI Frameworks', 
+              'tools': 'State Management',
+              'backend': 'Back-End Integration'
+            };
+            
+            const categoryDescs = {
+              'core': 'Building responsive and optimized web applications with modern frameworks.',
+              'frameworks': 'Crafting modern and maintainable UI components with efficient styling techniques.',
+              'tools': 'Handling application state efficiently for scalable applications.',
+              'backend': 'Connecting front-end applications to databases and back-end services.'
+            };
+            
+                return (
+              <motion.div 
+                key={category} 
+                className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm p-6 rounded-xl shadow-lg border border-gray-200/20 dark:border-gray-700/20 hover:shadow-xl transition-all duration-300 group"
+                initial={{ opacity: 0, y: 60, scale: 0.9 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                transition={{ 
+                  duration: 0.6, 
+                  delay: categoryIndex * 0.15,
+                  ease: [0.25, 0.25, 0.25, 0.75] as const
+                }}
+                whileHover={{ y: -8, scale: 1.03 }}
+              >
+                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
+                  {categoryTitles[category as keyof typeof categoryTitles] || category}
+                </h3>
+                <p className="text-sm text-gray-600 dark:text-gray-400 mb-6">
+                  {categoryDescs[category as keyof typeof categoryDescs]}
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {skillList.map((skill, skillIndex) => (
+                    <motion.span
+                      key={skill.name}
+                      className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 hover:bg-indigo-200 dark:hover:bg-indigo-900/50 transition-colors duration-200"
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ duration: 0.3, delay: (categoryIndex * 0.1) + (skillIndex * 0.05) }}
+                      whileHover={{ scale: 1.05 }}
+                    >
+                      {skill.name}
+                    </motion.span>
+                  ))}
+                    </div>
+              </motion.div>
+                );
+              })}
+            </div>
+        
+        {/* Development Tools Section */}
+        <motion.div 
+          className="text-center"
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.5 }}
+        >
+          <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-8">
+            Development Tools
+          </h3>
+          <p className="text-gray-600 dark:text-gray-400 mb-8 max-w-2xl mx-auto">
+            Optimizing workflows with modern development and build tools.
+          </p>
+          <div className="flex flex-wrap justify-center gap-4">
+            {[
+              { name: 'Webpack', desc: 'Module bundling' },
+              { name: 'ESLint', desc: 'Code quality' },
+              { name: 'Prettier', desc: 'Code formatting' },
+              { name: 'Git', desc: 'Version control' },
+              { name: 'GitHub', desc: 'Code collaboration' },
+              { name: 'Vercel', desc: 'Deployment' }
+            ].map((tool, index) => (
+              <motion.div
+                key={tool.name}
+                className="flex flex-col items-center p-4 rounded-lg bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, delay: 0.7 + (index * 0.1) }}
+                whileHover={{ scale: 1.05, y: -5 }}
+              >
+                <div className="text-lg font-semibold text-gray-900 dark:text-white mb-1">
+                  {tool.name}
+          </div>
+                <div className="text-sm text-gray-600 dark:text-gray-400">
+                  {tool.desc}
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </motion.div>
+      </div>
     </AnimatedSection>
   );
 }
@@ -535,7 +692,7 @@ function App() {
             >
               <h2 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
                 My <span className="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">Work</span>
-            </h2>
+              </h2>
               <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
                 Explore my collection of projects showcasing different technologies and solutions I've built.
               </p>
@@ -590,7 +747,7 @@ function App() {
                   >
                     <div className="w-12 h-12 bg-indigo-100 dark:bg-indigo-900/30 rounded-lg flex items-center justify-center">
                       <MapPin className="text-indigo-600 dark:text-indigo-400" size={20} />
-                    </div>
+              </div>
                     <div>
                       <h4 className="font-semibold text-gray-900 dark:text-white">Location</h4>
                       <p className="text-gray-600 dark:text-gray-400">Cairo, Egypt</p>
@@ -649,8 +806,8 @@ function App() {
                     >
                       <Linkedin size={20} />
                     </motion.a>
+                  </div>
                 </div>
-              </div>
               </motion.div>
               
               {/* Contact Form */}
@@ -704,8 +861,8 @@ function App() {
                         id="email"
                         name="email"
                           className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-colors duration-200"
-                          required
-                        />
+                        required
+                      />
                         <ValidationError prefix="Email" field="email" errors={state.errors} />
                       </div>
                     </div>
@@ -756,163 +913,147 @@ function App() {
                   </form>
                 )}
               </motion.div>
+              </div>
             </div>
-          </div>
         </AnimatedSection>
       </main>
 
-      {/* Footer - Updated with modern design */}
-      <footer className="bg-gray-900/30 dark:bg-gray-800/30 text-white py-12 border-t border-gray-800/50">
-        <div className="max-w-6xl mx-auto px-4">
-          <div className="text-center">
-            <div className="text-2xl font-bold mb-4">
-              <span className="bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">
-                AG
-              </span>
+      {/* Enhanced Footer */}
+      <AnimatedSection className="bg-gray-900/50 dark:bg-gray-800/50 text-white border-t border-gray-800/30">
+        <footer className="py-16">
+          <div className="max-w-6xl mx-auto px-4">
+            <div className="grid md:grid-cols-4 gap-8 mb-12">
+              {/* Brand Section */}
+              <motion.div 
+                className="md:col-span-2"
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6 }}
+              >
+                <div className="text-3xl font-bold mb-4">
+                  <span className="bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">
+                    Andrew George
+                  </span>
             </div>
-            <p className="text-gray-400 mb-8 max-w-md mx-auto">
-              Thank you for visiting my portfolio. Let's create something amazing together.
-            </p>
-            <div className="border-t border-gray-800 pt-8">
-              <p className="text-gray-500 text-sm">
-                © {new Date().getFullYear()} Andrew George. All rights reserved.
-              </p>
+                <p className="text-gray-400 mb-6 max-w-md leading-relaxed">
+                  Full-Stack Developer passionate about creating exceptional digital experiences. 
+                  Let's build something amazing together.
+                </p>
+                <div className="flex space-x-4">
+                  <motion.a
+                    href="https://github.com/AGeorge556"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-10 h-10 bg-gray-800 dark:bg-gray-700 rounded-lg flex items-center justify-center text-gray-400 hover:bg-indigo-600 hover:text-white transition-all duration-300"
+                    whileHover={{ scale: 1.1, y: -2 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                <Github size={20} />
+                  </motion.a>
+                  <motion.a
+                    href="https://www.linkedin.com/in/andrew-george-610535309"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-10 h-10 bg-gray-800 dark:bg-gray-700 rounded-lg flex items-center justify-center text-gray-400 hover:bg-indigo-600 hover:text-white transition-all duration-300"
+                    whileHover={{ scale: 1.1, y: -2 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                <Linkedin size={20} />
+                  </motion.a>
+                  <motion.a
+                    href="mailto:gn_farag02@outlook.com"
+                    className="w-10 h-10 bg-gray-800 dark:bg-gray-700 rounded-lg flex items-center justify-center text-gray-400 hover:bg-indigo-600 hover:text-white transition-all duration-300"
+                    whileHover={{ scale: 1.1, y: -2 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                <Mail size={20} />
+                  </motion.a>
             </div>
-          </div>
+              </motion.div>
+              
+              {/* Quick Links */}
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+              >
+                <h4 className="text-lg font-semibold text-white mb-4">Quick Links</h4>
+                <ul className="space-y-2">
+                  {[
+                    { label: 'Home', id: 'home' },
+                    { label: 'About', id: 'about' },
+                    { label: 'Skills', id: 'skills' },
+                    { label: 'Projects', id: 'projects' },
+                    { label: 'Contact', id: 'contact' }
+                  ].map((link) => (
+                    <li key={link.id}>
+                      <motion.button
+                        onClick={() => scrollToSection(link.id)}
+                        className="text-gray-400 hover:text-indigo-400 transition-colors duration-200 text-left"
+                        whileHover={{ x: 5 }}
+                      >
+                        {link.label}
+                      </motion.button>
+                          </li>
+                        ))}
+                      </ul>
+              </motion.div>
+              
+              {/* Contact Info */}
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.4 }}
+              >
+                <h4 className="text-lg font-semibold text-white mb-4">Get In Touch</h4>
+                <div className="space-y-3">
+                  <div className="flex items-center space-x-2 text-gray-400">
+                    <MapPin size={16} />
+                    <span className="text-sm">Cairo, Egypt</span>
+                    </div>
+                  <div className="flex items-center space-x-2 text-gray-400">
+                    <Mail size={16} />
+                    <a 
+                      href="mailto:gn_farag02@outlook.com" 
+                      className="text-sm hover:text-indigo-400 transition-colors duration-200"
+                    >
+                      gn_farag02@outlook.com
+                    </a>
+                  </div>
+                  <div className="flex items-center space-x-2 text-gray-400">
+                    <Phone size={16} />
+                    <span className="text-sm">+201020012398</span>
+              </div>
+            </div>
+              </motion.div>
         </div>
-      </footer>
+            
+            {/* Bottom Section */}
+            <motion.div 
+              className="border-t border-gray-800/50 pt-8"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.6, delay: 0.6 }}
+            >
+              <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+                <div className="text-gray-500 text-sm">
+                  © {new Date().getFullYear()} Andrew George. All rights reserved.
+      </div>
+                <div className="flex items-center space-x-6 text-sm text-gray-400">
+                  <span>Built with React & TypeScript</span>
+                  <span>•</span>
+                  <span>Designed with ❤️</span>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        </footer>
+      </AnimatedSection>
     </div>
   );
 }
 
-function SkillsSection() {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: false, amount: 0.3 });
-  
-  return (
-    <AnimatedSection id="skills" className="py-24 bg-white/30 dark:bg-gray-900/30">
-      <div className="max-w-6xl mx-auto px-4">
-        <motion.div 
-          ref={ref}
-          className="text-center mb-16"
-          initial={{ opacity: 0, y: 30 }}
-          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
-          transition={{ duration: 0.6 }}
-        >
-          <h2 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
-            My <span className="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">Skills</span>
-          </h2>
-          <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-            I've worked with a variety of technologies in front-end development. Here are some of my key areas of expertise:
-          </p>
-        </motion.div>
-        
-        {/* Main Skills Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
-          {Object.entries(skills).map(([category, skillList], categoryIndex) => {
-            const categoryTitles = {
-              'core': 'Front-End Development',
-              'frameworks': 'Styling & UI Frameworks', 
-              'tools': 'State Management',
-              'backend': 'Back-End Integration'
-            };
-            
-            const categoryDescs = {
-              'core': 'Building responsive and optimized web applications with modern frameworks.',
-              'frameworks': 'Crafting modern and maintainable UI components with efficient styling techniques.',
-              'tools': 'Handling application state efficiently for scalable applications.',
-              'backend': 'Connecting front-end applications to databases and back-end services.'
-            };
-            
-            return (
-              <motion.div 
-                key={category} 
-                className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm p-6 rounded-xl shadow-lg border border-gray-200/20 dark:border-gray-700/20 hover:shadow-xl transition-all duration-300 group"
-                initial={{ opacity: 0, y: 60, scale: 0.9 }}
-                animate={isInView ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 60, scale: 0.9 }}
-                transition={{ 
-                  duration: 0.6, 
-                  delay: categoryIndex * 0.15,
-                  ease: [0.25, 0.25, 0.25, 0.75]
-                }}
-                whileHover={{ y: -8, scale: 1.03 }}
-                whileInView={{ 
-                  opacity: 1, 
-                  y: 0, 
-                  scale: 1,
-                  transition: { duration: 0.6, delay: categoryIndex * 0.1 }
-                }}
-                viewport={{ once: true, amount: 0.3 }}
-              >
-                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
-                  {categoryTitles[category as keyof typeof categoryTitles] || category}
-                </h3>
-                <p className="text-sm text-gray-600 dark:text-gray-400 mb-6">
-                  {categoryDescs[category as keyof typeof categoryDescs]}
-                </p>
-                <div className="flex flex-wrap gap-2">
-                  {skillList.map((skill, skillIndex) => (
-                    <motion.span
-                      key={skill.name}
-                      className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 hover:bg-indigo-200 dark:hover:bg-indigo-900/50 transition-colors duration-200"
-                      initial={{ opacity: 0, scale: 0.8 }}
-                      animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.8 }}
-                      transition={{ duration: 0.3, delay: (categoryIndex * 0.1) + (skillIndex * 0.05) }}
-                      whileHover={{ scale: 1.05 }}
-                    >
-                      {skill.name}
-                    </motion.span>
-                  ))}
-                    </div>
-              </motion.div>
-            );
-          })}
-                  </div>
-        
-        {/* Development Tools Section */}
-        <motion.div 
-          className="text-center"
-          initial={{ opacity: 0, y: 30 }}
-          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
-          transition={{ duration: 0.6, delay: 0.5 }}
-        >
-          <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-8">
-            Development Tools
-          </h3>
-          <p className="text-gray-600 dark:text-gray-400 mb-8 max-w-2xl mx-auto">
-            Optimizing workflows with modern development and build tools.
-          </p>
-          <div className="flex flex-wrap justify-center gap-4">
-            {[
-              { name: 'Webpack', desc: 'Module bundling' },
-              { name: 'ESLint', desc: 'Code quality' },
-              { name: 'Prettier', desc: 'Code formatting' },
-              { name: 'Git', desc: 'Version control' },
-              { name: 'GitHub', desc: 'Code collaboration' },
-              { name: 'Vercel', desc: 'Deployment' }
-            ].map((tool, index) => (
-              <motion.div
-                key={tool.name}
-                className="flex flex-col items-center p-4 rounded-lg bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200"
-                initial={{ opacity: 0, y: 20 }}
-                animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-                transition={{ duration: 0.4, delay: 0.7 + (index * 0.1) }}
-                whileHover={{ scale: 1.05, y: -5 }}
-              >
-                <div className="text-lg font-semibold text-gray-900 dark:text-white mb-1">
-                  {tool.name}
-              </div>
-                <div className="text-sm text-gray-600 dark:text-gray-400">
-                  {tool.desc}
-            </div>
-              </motion.div>
-          ))}
-        </div>
-        </motion.div>
-      </div>
-    </AnimatedSection>
-  );
-}
+
 
 interface Project {
   title: string;
@@ -939,16 +1080,25 @@ interface Project {
 
 function ProjectCard({ project, direction }: { project: Project, direction: string }) {
   const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, amount: 0.3 });
-  const [isHovered, setIsHovered] = useState(false);
+  // const [isHovered, setIsHovered] = useState(false);
+  
+  // Mobile-responsive settings for project cards
+  const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768;
+  const isTablet = typeof window !== 'undefined' && window.innerWidth <= 1024;
+  
+  const isInView = useInView(ref, { 
+    once: false, 
+    amount: isMobile ? 0.2 : isTablet ? 0.25 : 0.3,
+    rootMargin: isMobile ? "0px 0px -10% 0px" : "0px 0px -15% 0px"
+  });
 
   return (
     <motion.div 
       ref={ref}
       className={`grid lg:grid-cols-2 gap-8 items-center ${direction === 'right' ? 'lg:grid-flow-col-dense' : ''}`}
-      initial={{ opacity: 0, y: 50 }}
-      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
-      transition={{ duration: 0.6 }}
+      initial={{ opacity: 0, y: isMobile ? 30 : 50 }}
+      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: isMobile ? 30 : 50 }}
+      transition={{ duration: isMobile ? 0.8 : 0.6 }}
     >
       {/* Project Image */}
       <motion.div 
@@ -991,9 +1141,9 @@ function ProjectCard({ project, direction }: { project: Project, direction: stri
       {/* Project Content */}
       <motion.div 
         className={`space-y-6 ${direction === 'right' ? 'lg:col-start-1 lg:text-right' : ''}`}
-        initial={{ opacity: 0, x: direction === 'right' ? 50 : -50 }}
-        animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: direction === 'right' ? 50 : -50 }}
-        transition={{ duration: 0.6, delay: 0.2 }}
+        initial={{ opacity: 0, x: direction === 'right' ? (isMobile ? 30 : 50) : (isMobile ? -30 : -50) }}
+        animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: direction === 'right' ? (isMobile ? 30 : 50) : (isMobile ? -30 : -50) }}
+        transition={{ duration: isMobile ? 0.8 : 0.6, delay: 0.2 }}
       >
         <div>
           <h3 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
@@ -1003,8 +1153,8 @@ function ProjectCard({ project, direction }: { project: Project, direction: stri
             <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
               {project.description}
             </p>
+      </div>
           </div>
-        </div>
 
         {/* Metrics */}
         {project.metrics && (

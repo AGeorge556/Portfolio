@@ -2,18 +2,22 @@
 function initScrollAnimations() {
   const animatedElements = document.querySelectorAll('.scroll-animate');
   
-  // Create observer
+  // Create observer with improved settings for better timing
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
-        entry.target.classList.add('animated');
+        // Add a small delay before triggering animation for better pacing
+        setTimeout(() => {
+          entry.target.classList.add('animated');
+        }, 150); // 150ms delay for better timing
+        
         // Unobserve after animation is triggered
         observer.unobserve(entry.target);
       }
     });
   }, {
-    threshold: 0.2, // Trigger when 20% of the element is visible
-    rootMargin: '0px 0px -50px 0px' // Adjust based on when you want animations to trigger
+    threshold: 0.3, // Adjusted from 0.4 - trigger when 30% of the element is visible (more reasonable)
+    rootMargin: '0px 0px -80px 0px' // Adjusted from -100px for better balance
   });
   
   // Observe all elements

@@ -1,12 +1,13 @@
 /* Base styles for scroll animations */
 .scroll-animate {
   opacity: 0;
-  transition: opacity 0.6s ease, transform 0.6s ease;
+  transition: opacity 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94), 
+              transform 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94); /* Increased from 0.6s */
 }
 
 /* Different animation types */
 .fade-up {
-  transform: translateY(30px);
+  transform: translateY(40px); /* Increased from 30px for more dramatic effect */
 }
 
 .fade-in {
@@ -14,11 +15,11 @@
 }
 
 .slide-left {
-  transform: translateX(30px);
+  transform: translateX(40px); /* Increased from 30px */
 }
 
 .slide-right {
-  transform: translateX(-30px);
+  transform: translateX(-40px); /* Increased from -30px */
 }
 
 /* Applied when element is in view */
@@ -40,7 +41,7 @@
   background-color: #0088ff; /* Use your accent color */
   border-radius: 4px;
   width: 0; /* Start at 0 */
-  transition: width 1s ease-in-out;
+  transition: width 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94); /* Increased from 1s */
 }
 
 .skill-bar.animated .skill-progress {

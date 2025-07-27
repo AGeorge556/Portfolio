@@ -329,7 +329,7 @@ function initScrollAnimations() {
           if (skillsTitle) {
             skillsTitle.style.opacity = '0';
             skillsTitle.style.transform = 'scale(0.5)';
-            skillsTitle.style.transition = 'opacity 0.7s cubic-bezier(0.17, 0.67, 0.83, 0.67), transform 0.7s cubic-bezier(0.17, 0.67, 0.83, 0.67)';
+            skillsTitle.style.transition = 'opacity 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94)'; // Increased from 0.7s
             
             setTimeout(() => {
               skillsTitle.style.opacity = '1';
@@ -345,7 +345,7 @@ function initScrollAnimations() {
               lightRay.style.backgroundColor = 'rgba(99, 102, 241, 0.6)';
               lightRay.style.boxShadow = '0 0 20px 5px rgba(99, 102, 241, 0.4)';
               lightRay.style.transform = 'translateX(-50%)';
-              lightRay.style.transition = 'height 1s cubic-bezier(0.22, 1, 0.36, 1)';
+              lightRay.style.transition = 'height 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94)'; // Increased from 1s
               lightRay.style.zIndex = '-1';
               
               skillsTitle.parentNode.style.position = 'relative';
@@ -353,8 +353,8 @@ function initScrollAnimations() {
               
               setTimeout(() => {
                 lightRay.style.height = '120px';
-              }, 100);
-            }, 300);
+              }, 200); // Increased from 100ms
+            }, 500); // Increased from 300ms
           }
           
           // Super entrance for skill cards with dramatic scale
@@ -362,21 +362,21 @@ function initScrollAnimations() {
           skillCards.forEach((card, index) => {
             card.style.opacity = '0';
             card.style.transform = 'translateY(100px) scale(0.8) rotate(-5deg)';
-            card.style.transition = 'all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1)';
+            card.style.transition = 'all 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94)'; // Increased from 0.8s
             
             setTimeout(() => {
               card.style.opacity = '1';
               card.style.transform = 'translateY(0) scale(1) rotate(0deg)';
               
               // Add pulsing border effect
-              card.style.animation = 'cardPulse 2s cubic-bezier(0.22, 1, 0.36, 1)';
+              card.style.animation = 'cardPulse 2.5s cubic-bezier(0.25, 0.46, 0.45, 0.94)'; // Increased from 2s
               card.style.boxShadow = '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1), 0 0 0 2px rgba(99, 102, 241, 0.3)';
               
               setTimeout(() => {
                 card.style.boxShadow = '';
                 card.style.animation = '';
-              }, 2000);
-            }, 400 + (index * 200));
+              }, 2500); // Increased from 2000ms
+            }, 600 + (index * 300)); // Increased delays for better spacing
           });
         }
         
@@ -385,8 +385,8 @@ function initScrollAnimations() {
           const projectsTitle = entry.target.querySelector('h2');
           if (projectsTitle) {
             projectsTitle.style.opacity = '0';
-            projectsTitle.style.transform = 'translateY(30px)';
-            projectsTitle.style.transition = 'all 0.7s cubic-bezier(0.22, 1, 0.36, 1)';
+            projectsTitle.style.transform = 'translateY(40px)'; // Increased from 30px
+            projectsTitle.style.transition = 'all 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94)'; // Increased from 0.7s
             
             setTimeout(() => {
               projectsTitle.style.opacity = '1';
@@ -397,8 +397,8 @@ function initScrollAnimations() {
               projectsTitle.style.backgroundSize = '200% auto';
               projectsTitle.style.WebkitBackgroundClip = 'text';
               projectsTitle.style.WebkitTextFillColor = 'transparent';
-              projectsTitle.style.animation = 'gradientFlow 2s ease infinite';
-            }, 300);
+              projectsTitle.style.animation = 'gradientFlow 2.5s ease infinite'; // Increased from 2s
+            }, 500); // Increased from 300ms
           }
           
           // Dramatic entrance for project cards
@@ -406,9 +406,9 @@ function initScrollAnimations() {
           projectCards.forEach((card, index) => {
             // Initial state - use a gentler animation
             card.style.opacity = '0';
-            card.style.transform = 'perspective(1000px) rotateY(10deg) translateX(-30px) scale(0.95)';
+            card.style.transform = 'perspective(1000px) rotateY(10deg) translateX(-40px) scale(0.95)'; // Increased from -30px
             card.style.transformOrigin = 'left center';
-            card.style.transition = 'all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1)';
+            card.style.transition = 'all 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94)'; // Increased from 0.8s
             
             // Animate each project with staggered timing
             setTimeout(() => {
@@ -418,17 +418,17 @@ function initScrollAnimations() {
               // After the entrance animation completes, remove the transform to allow hover effects
               setTimeout(() => {
                 card.style.transform = '';
-              }, 1000);
+              }, 1200); // Increased from 1000ms
               
               // Add reveal effect to project image
               const projectImage = card.querySelector('.project-image img');
               if (projectImage) {
                 projectImage.style.clipPath = 'inset(100% 0 0 0)';
-                projectImage.style.transition = 'clip-path 1.2s cubic-bezier(0.77, 0, 0.175, 1) 0.2s';
+                projectImage.style.transition = 'clip-path 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.3s'; // Increased from 1.2s and 0.2s
                 
                 setTimeout(() => {
                   projectImage.style.clipPath = 'inset(0 0 0 0)';
-                }, 100);
+                }, 200); // Increased from 100ms
               }
               
               // Staggered animation for project content
@@ -441,21 +441,21 @@ function initScrollAnimations() {
               
               elements.forEach((el, i) => {
                 el.style.opacity = '0';
-                el.style.transform = 'translateY(20px)';
-                el.style.transition = `opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1) ${0.3 + (i * 0.1)}s, transform 0.6s cubic-bezier(0.22, 1, 0.36, 1) ${0.3 + (i * 0.1)}s`;
+                el.style.transform = 'translateY(25px)'; // Increased from 20px
+                el.style.transition = `opacity 1.0s cubic-bezier(0.25, 0.46, 0.45, 0.94) ${0.4 + (i * 0.15)}s, transform 1.0s cubic-bezier(0.25, 0.46, 0.45, 0.94) ${0.4 + (i * 0.15)}s`; // Increased from 0.6s and 0.3s
                 
                 setTimeout(() => {
                   el.style.opacity = '1';
                   el.style.transform = 'translateY(0)';
-                }, 800 + (i * 100));
+                }, 1000 + (i * 150)); // Increased from 800ms and 100ms
               });
               
               // Add floating effect to buttons
               const buttons = card.querySelectorAll('.btn');
               buttons.forEach(button => {
-                button.style.animation = 'buttonFloat 3s ease-in-out infinite';
+                button.style.animation = 'buttonFloat 3.5s ease-in-out infinite'; // Increased from 3s
               });
-            }, 500 + (index * 200)); // Reduced delay between cards
+            }, 800 + (index * 300)); // Increased delays for better spacing
           });
         }
         
@@ -463,7 +463,7 @@ function initScrollAnimations() {
         observer.unobserve(entry.target);
       }
     });
-  }, { threshold: 0.2 });
+  }, { threshold: 0.3 }); // Adjusted from 0.4 - more reasonable threshold
   
   // Observe main sections
   const sections = document.querySelectorAll('.skills-section, .projects-section');

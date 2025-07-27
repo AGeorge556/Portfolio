@@ -33,33 +33,35 @@ const AnimatedSection = ({ children, className = '', id }: { children: React.Rea
     return () => window.removeEventListener('resize', updateScreenSize);
   }, []);
   
-  // Mobile-responsive intersection observer settings
+  // Mobile-responsive intersection observer settings with increased buffer
   const isMobile = screenSize.width <= 768;
   const isTablet = screenSize.width <= 1024;
   
   const intersectionConfig = {
     once: false,
-    amount: isMobile ? 0.2 : isTablet ? 0.25 : 0.3,
-    rootMargin: isMobile ? "0px 0px -10% 0px" : isTablet ? "0px 0px -15% 0px" : "0px 0px -20% 0px"
+    amount: isMobile ? 0.25 : isTablet ? 0.3 : 0.35, // Adjusted threshold - more reasonable but still improved
+    rootMargin: isMobile ? "0px 0px -20% 0px" : isTablet ? "0px 0px -25% 0px" : "0px 0px -30% 0px" // Adjusted buffer
   };
   
   const isInView = useInView(ref, intersectionConfig);
   
-  // Mobile-responsive animation timing
-  const animationDuration = isMobile ? 1.0 : isTablet ? 0.9 : 0.8;
+  // Mobile-responsive animation timing with longer durations
+  const animationDuration = isMobile ? 1.4 : isTablet ? 1.2 : 1.0; // Increased from 1.0/0.9/0.8
   const animationEase = isMobile ? [0.25, 0.46, 0.45, 0.94] as const : [0.25, 0.25, 0.25, 0.75] as const;
+  const staggerDelay = isMobile ? 0.25 : 0.2; // Increased stagger delay
 
   return (
     <motion.section
       ref={ref}
       id={id}
       className={className}
-      initial={{ opacity: 0, y: isMobile ? 40 : 60 }}
-      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: isMobile ? 40 : 60 }}
+      initial={{ opacity: 0, y: isMobile ? 50 : 70 }} // Increased initial offset
+      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: isMobile ? 50 : 70 }}
       transition={{ 
         duration: animationDuration, 
         ease: animationEase,
-        staggerChildren: isMobile ? 0.15 : 0.1
+        staggerChildren: staggerDelay,
+        delay: 0.1 // Small initial delay for better timing
       }}
     >
       {children}
@@ -234,8 +236,8 @@ function HeroSection() {
   
   const isInView = useInView(ref, { 
     once: false, 
-    amount: isMobile ? 0.15 : isTablet ? 0.2 : 0.25,
-    Margin: isMobile ? "0px 0px -5% 0px" : "0px 0px -10% 0px"
+    amount: isMobile ? 0.25 : isTablet ? 0.3 : 0.35, // Increased thresholds
+    margin: isMobile ? "0px 0px -15% 0px" : "0px 0px -20% 0px" // Increased margins
   });
   
   return (
@@ -256,22 +258,22 @@ function HeroSection() {
         <motion.div
           initial={{ opacity: 0 }}
           animate={isInView ? { opacity: 1 } : { opacity: 0 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
+          transition={{ duration: 1.0, delay: 0.3 }} // Increased from 0.6s and 0.2s
         >
           <motion.p 
             className="text-lg text-indigo-600 dark:text-indigo-400 font-medium mb-4"
-            initial={{ opacity: 0, y: 30 }}
-            animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
-            transition={{ duration: 0.6, delay: 0.4 }}
+            initial={{ opacity: 0, y: 40 }} // Increased from 30px
+            animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
+            transition={{ duration: 1.0, delay: 0.5 }} // Increased from 0.6s and 0.4s
           >
             Available for Freelance Work
           </motion.p>
           
           <motion.h1 
             className="text-4xl md:text-6xl lg:text-7xl font-bold text-gray-900 dark:text-white mb-6 leading-tight"
-            initial={{ opacity: 0, y: 40 }}
-            animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
-            transition={{ duration: 0.8, delay: 0.6 }}
+            initial={{ opacity: 0, y: 50 }} // Increased from 40px
+            animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
+            transition={{ duration: 1.2, delay: 0.7 }} // Increased from 0.8s and 0.6s
           >
             Hi, I'm{' '}
             <span className="bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent">
@@ -281,27 +283,27 @@ function HeroSection() {
           
           <motion.h2 
             className="text-2xl md:text-3xl font-semibold text-gray-700 dark:text-gray-300 mb-8"
-            initial={{ opacity: 0, y: 30 }}
-            animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
-            transition={{ duration: 0.8, delay: 0.8 }}
+            initial={{ opacity: 0, y: 40 }} // Increased from 30px
+            animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
+            transition={{ duration: 1.2, delay: 0.9 }} // Increased from 0.8s and 0.8s
           >
             Full-Stack Developer
           </motion.h2>
           
           <motion.p 
             className="text-lg text-gray-600 dark:text-gray-400 mb-12 max-w-2xl mx-auto leading-relaxed"
-            initial={{ opacity: 0, y: 30 }}
-            animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
-            transition={{ duration: 0.8, delay: 1 }}
+            initial={{ opacity: 0, y: 40 }} // Increased from 30px
+            animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
+            transition={{ duration: 1.2, delay: 1.1 }} // Increased from 0.8s and 1s
           >
             I craft responsive web applications where technologies meet creativity. Building exceptional digital experiences with modern full stack frameworks.
           </motion.p>
           
           <motion.div 
             className="flex flex-col sm:flex-row gap-4 justify-center items-center"
-            initial={{ opacity: 0, y: 30 }}
-            animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
-            transition={{ duration: 0.8, delay: 1.2 }}
+            initial={{ opacity: 0, y: 40 }} // Increased from 30px
+            animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
+            transition={{ duration: 1.2, delay: 1.3 }} // Increased from 0.8s and 1.2s
           >
             <motion.button
               onClick={() => scrollToSection('projects')}
@@ -310,7 +312,7 @@ function HeroSection() {
               whileTap={{ scale: 0.95 }}
               initial={{ opacity: 0, scale: 0.8 }}
               animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.8 }}
-              transition={{ duration: 0.5, delay: 1.4 }}
+              transition={{ duration: 0.8, delay: 1.5 }} // Increased from 0.5s and 1.4s
             >
               <span>View My Work</span>
               <ArrowRight size={20} />
@@ -323,7 +325,7 @@ function HeroSection() {
               whileTap={{ scale: 0.95 }}
               initial={{ opacity: 0, scale: 0.8 }}
               animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.8 }}
-              transition={{ duration: 0.5, delay: 1.5 }}
+              transition={{ duration: 0.8, delay: 1.6 }} // Increased from 0.5s and 1.5s
             >
               Contact Me
             </motion.button>
@@ -333,7 +335,7 @@ function HeroSection() {
             className="mt-16 text-center"
             initial={{ opacity: 0 }}
             animate={isInView ? { opacity: 1 } : { opacity: 0 }}
-            transition={{ duration: 0.8, delay: 1.6 }}
+            transition={{ duration: 1.2, delay: 1.7 }} // Increased from 0.8s and 1.6s
           >
             <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">Tech I work with:</p>
             <div className="flex justify-center space-x-6 text-gray-600 dark:text-gray-400">
@@ -346,9 +348,9 @@ function HeroSection() {
               ].map(({ Icon, color }, index) => (
                 <motion.div 
                   key={index}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-                  transition={{ duration: 0.5, delay: 1.8 + (index * 0.1) }}
+                  initial={{ opacity: 0, y: 25 }} // Increased from 20px
+                  animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 25 }}
+                  transition={{ duration: 0.8, delay: 1.9 + (index * 0.15) }} // Increased from 0.5s, 1.8s, and 0.1s
                   whileHover={{ scale: 1.2, color }}
                 >
                   <Icon size={24} />
@@ -365,8 +367,8 @@ function HeroSection() {
             opacity: isInView ? 1 : 0
           }}
           transition={{ 
-            y: { duration: 2, repeat: Infinity, ease: "easeInOut" },
-            opacity: { duration: 0.8, delay: 2 }
+            y: { duration: 2.5, repeat: Infinity, ease: "easeInOut" }, // Increased from 2s
+            opacity: { duration: 1.2, delay: 2.2 } // Increased from 0.8s and 2s
           }}
         >
           <ArrowDown className="text-gray-400 dark:text-gray-600" size={24} />
@@ -383,9 +385,9 @@ function AboutSection() {
       <div className="max-w-6xl mx-auto px-4">
         <motion.div 
           className="text-center mb-16"
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 40 }} // Increased from 30px
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
+          transition={{ duration: 1.2 }} // Increased from 0.6s
         >
           <h2 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
             About <span className="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">Me</span>
@@ -398,9 +400,9 @@ function AboutSection() {
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           <motion.div 
             className="relative"
-            initial={{ opacity: 0, x: -50 }}
+            initial={{ opacity: 0, x: -60 }} // Increased from -50px
             animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
+            transition={{ duration: 1.2, delay: 0.3 }} // Increased from 0.6s and 0.2s
           >
             <div className="relative rounded-2xl overflow-hidden shadow-xl">
                 <img
@@ -414,9 +416,9 @@ function AboutSection() {
           
           <motion.div 
             className="space-y-6"
-            initial={{ opacity: 0, x: 50 }}
+            initial={{ opacity: 0, x: 60 }} // Increased from 50px
             animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6, delay: 0.4 }}
+            transition={{ duration: 1.2, delay: 0.5 }} // Increased from 0.6s and 0.4s
           >
             <div>
               <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
@@ -686,9 +688,9 @@ function App() {
           <div className="max-w-6xl mx-auto px-4">
             <motion.div 
               className="text-center mb-16"
-              initial={{ opacity: 0, y: 30 }}
+              initial={{ opacity: 0, y: 40 }} // Increased from 30px
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
+              transition={{ duration: 1.2 }} // Increased from 0.6s
             >
               <h2 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
                 My <span className="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">Work</span>
@@ -1088,17 +1090,17 @@ function ProjectCard({ project, direction }: { project: Project, direction: stri
   
   const isInView = useInView(ref, { 
     once: false, 
-    amount: isMobile ? 0.2 : isTablet ? 0.25 : 0.3,
-    rootMargin: isMobile ? "0px 0px -10% 0px" : "0px 0px -15% 0px"
+    amount: isMobile ? 0.15 : isTablet ? 0.2 : 0.25, // Adjusted to be more reasonable
+    margin: isMobile ? "0px 0px -15% 0px" : "0px 0px -20% 0px" // Increased buffer but not too much
   });
 
   return (
     <motion.div 
       ref={ref}
       className={`grid lg:grid-cols-2 gap-8 items-center ${direction === 'right' ? 'lg:grid-flow-col-dense' : ''}`}
-      initial={{ opacity: 0, y: isMobile ? 30 : 50 }}
-      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: isMobile ? 30 : 50 }}
-      transition={{ duration: isMobile ? 0.8 : 0.6 }}
+      initial={{ opacity: 0, y: isMobile ? 40 : 60 }} // Increased from 30/50
+      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: isMobile ? 40 : 60 }}
+      transition={{ duration: isMobile ? 1.2 : 1.0 }} // Increased from 0.8/0.6
     >
       {/* Project Image */}
       <motion.div 
@@ -1141,9 +1143,9 @@ function ProjectCard({ project, direction }: { project: Project, direction: stri
       {/* Project Content */}
       <motion.div 
         className={`space-y-6 ${direction === 'right' ? 'lg:col-start-1 lg:text-right' : ''}`}
-        initial={{ opacity: 0, x: direction === 'right' ? (isMobile ? 30 : 50) : (isMobile ? -30 : -50) }}
-        animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: direction === 'right' ? (isMobile ? 30 : 50) : (isMobile ? -30 : -50) }}
-        transition={{ duration: isMobile ? 0.8 : 0.6, delay: 0.2 }}
+        initial={{ opacity: 0, x: direction === 'right' ? (isMobile ? 40 : 60) : (isMobile ? -40 : -60) }} // Increased from 30/50
+        animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: direction === 'right' ? (isMobile ? 40 : 60) : (isMobile ? -40 : -60) }}
+        transition={{ duration: isMobile ? 1.2 : 1.0, delay: 0.3 }} // Increased from 0.8/0.6 and 0.2
       >
         <div>
           <h3 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">

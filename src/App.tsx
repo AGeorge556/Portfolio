@@ -39,24 +39,24 @@ const AnimatedSection = ({ children, className = '', id }: { children: React.Rea
   
   const intersectionConfig = {
     once: false,
-    amount: isMobile ? 0.25 : isTablet ? 0.3 : 0.35, // Adjusted threshold - more reasonable but still improved
-    rootMargin: isMobile ? "0px 0px -20% 0px" : isTablet ? "0px 0px -25% 0px" : "0px 0px -30% 0px" // Adjusted buffer
+    amount: isMobile ? 0.1 : isTablet ? 0.2 : 0.3, // Much lower threshold for mobile - only 10% visibility required
+    rootMargin: isMobile ? "0px 0px -10% 0px" : isTablet ? "0px 0px -20% 0px" : "0px 0px -25% 0px" // Reduced buffer for mobile
   };
   
   const isInView = useInView(ref, intersectionConfig);
   
-  // Mobile-responsive animation timing with longer durations
-  const animationDuration = isMobile ? 1.4 : isTablet ? 1.2 : 1.0; // Increased from 1.0/0.9/0.8
+  // Mobile-responsive animation timing with optimized durations
+  const animationDuration = isMobile ? 0.8 : isTablet ? 1.0 : 1.2; // Faster animations for mobile
   const animationEase = isMobile ? [0.25, 0.46, 0.45, 0.94] as const : [0.25, 0.25, 0.25, 0.75] as const;
-  const staggerDelay = isMobile ? 0.25 : 0.2; // Increased stagger delay
+  const staggerDelay = isMobile ? 0.1 : 0.2; // Faster staggering for mobile
 
   return (
     <motion.section
       ref={ref}
       id={id}
       className={className}
-      initial={{ opacity: 0, y: isMobile ? 50 : 70 }} // Increased initial offset
-      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: isMobile ? 50 : 70 }}
+      initial={{ opacity: 0, y: isMobile ? 30 : 60 }} // Reduced offset for mobile
+      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: isMobile ? 30 : 60 }}
       transition={{ 
         duration: animationDuration, 
         ease: animationEase,
@@ -460,7 +460,7 @@ function AboutSection() {
               transition={{ duration: 0.6, delay: 0.8 }}
             >
               <a
-                href="/Portfolio/assets/resume.pdf"
+                href="/assets/resume.pdf"
                 download="Andrew_George_Resume.pdf"
                 className="inline-flex items-center space-x-2 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 hover:shadow-lg"
               >
@@ -1090,17 +1090,17 @@ function ProjectCard({ project, direction }: { project: Project, direction: stri
   
   const isInView = useInView(ref, { 
     once: false, 
-    amount: isMobile ? 0.15 : isTablet ? 0.2 : 0.25, // Adjusted to be more reasonable
-    margin: isMobile ? "0px 0px -15% 0px" : "0px 0px -20% 0px" // Increased buffer but not too much
+    amount: isMobile ? 0.05 : isTablet ? 0.15 : 0.2, // Much lower threshold for mobile - only 5% visibility required
+    margin: isMobile ? "0px 0px -5% 0px" : "0px 0px -15% 0px" // Reduced buffer for mobile
   });
 
   return (
     <motion.div 
       ref={ref}
       className={`grid lg:grid-cols-2 gap-8 items-center ${direction === 'right' ? 'lg:grid-flow-col-dense' : ''}`}
-      initial={{ opacity: 0, y: isMobile ? 40 : 60 }} // Increased from 30/50
-      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: isMobile ? 40 : 60 }}
-      transition={{ duration: isMobile ? 1.2 : 1.0 }} // Increased from 0.8/0.6
+      initial={{ opacity: 0, y: isMobile ? 25 : 50 }} // Reduced offset for mobile
+      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: isMobile ? 25 : 50 }}
+      transition={{ duration: isMobile ? 0.8 : 1.0 }} // Faster animations for mobile
     >
       {/* Project Image */}
       <motion.div 
@@ -1143,9 +1143,9 @@ function ProjectCard({ project, direction }: { project: Project, direction: stri
       {/* Project Content */}
       <motion.div 
         className={`space-y-6 ${direction === 'right' ? 'lg:col-start-1 lg:text-right' : ''}`}
-        initial={{ opacity: 0, x: direction === 'right' ? (isMobile ? 40 : 60) : (isMobile ? -40 : -60) }} // Increased from 30/50
-        animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: direction === 'right' ? (isMobile ? 40 : 60) : (isMobile ? -40 : -60) }}
-        transition={{ duration: isMobile ? 1.2 : 1.0, delay: 0.3 }} // Increased from 0.8/0.6 and 0.2
+        initial={{ opacity: 0, x: direction === 'right' ? (isMobile ? 25 : 50) : (isMobile ? -25 : -50) }} // Reduced offset for mobile
+        animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: direction === 'right' ? (isMobile ? 25 : 50) : (isMobile ? -25 : -50) }}
+        transition={{ duration: isMobile ? 0.8 : 1.0, delay: 0.2 }} // Faster animations for mobile
       >
         <div>
           <h3 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">

@@ -8,4 +8,14 @@ export default defineConfig({
     exclude: ['lucide-react'],
   },
   base: '/',
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          three: ['three', '@react-three/fiber', '@react-three/drei', '@react-three/postprocessing'],
+          'framer-motion': ['framer-motion'],
+        }
+      }
+    }
+  }
 });

@@ -1,14 +1,8 @@
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
-import { OrbitControls, Float } from '@react-three/drei'
+import { Float } from '@react-three/drei'
 import { EffectComposer, Bloom } from '@react-three/postprocessing'
 import { useRef, useMemo, useEffect, useState } from 'react'
 import * as THREE from 'three'
-
-// Utility: detect mobile
-function useIsMobile() {
-  const { size } = useThree()
-  return size.width < 768
-}
 
 // Utility: detect theme
 function useTheme() {
@@ -69,7 +63,7 @@ function GeometricShape({ scale = 2, color = '#4f46e5', shimmer = false, breathi
 
 function BokehParticles({ count = 120, color = '#6366f1', size = 0.18, twinkle = true, parallax = true, speed = 0.01, opacity = 0.18 }) {
   const particlesRef = useRef<THREE.Points>(null)
-  const { mouse, size: viewport } = useThree()
+  const { mouse } = useThree()
   // Sprite texture: soft white circle
   const sprite = useMemo(() => {
     const canvas = document.createElement('canvas')
@@ -158,6 +152,8 @@ export function Scene3D() {
     }}>
       <Canvas
         camera={{ position: [0, 0, 8], fov: 45 }}
+        dpr={[1, 1.5]}
+        gl={{ antialias: false, powerPreference: 'high-performance', alpha: true, stencil: false, depth: false }}
         style={{ background: 'transparent', width: '100%', height: '100%' }}
       >
         <ambientLight intensity={0.18} />
@@ -170,14 +166,11 @@ export function Scene3D() {
         <BokehParticles count={isMobile ? 40 : 90} color={particles1Color} size={isMobile ? 0.09 : 0.18} />
         {/* Second layer, different color/size */}
         <BokehParticles count={isMobile ? 30 : 60} color={particles2Color} size={isMobile ? 0.07 : 0.13} speed={0.005} opacity={0.12} />
-        <EffectComposer>
-          <Bloom luminanceThreshold={0.1} luminanceSmoothing={0.8} intensity={isMobile ? 0.5 : 1.1} />
-        </EffectComposer>
-        <OrbitControls 
-          enableZoom={false}
-          enablePan={false}
-          enableRotate={false}
-        />
+        {!isMobile && (
+          <EffectComposer multisampling={0}>
+            <Bloom luminanceThreshold={0.2} luminanceSmoothing={0.9} intensity={0.8} mipmapBlur levels={3} />
+          </EffectComposer>
+        )}
       </Canvas>
     </div>
   )

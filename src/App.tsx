@@ -1,13 +1,14 @@
 /// <reference types="node" />
-import React, { useState, useEffect, useRef } from 'react';
-import { Menu, X, Moon, Sun, Github, Linkedin, Mail, ExternalLink, Download, ArrowRight, ArrowDown, MapPin, Phone } from 'lucide-react';
+import React, { useState, useEffect, useRef, Suspense } from 'react';
+import { Menu, X, Moon, Sun, Github, Linkedin, Mail, ExternalLink, ArrowRight, ArrowDown, MapPin, Phone } from 'lucide-react';
 import { motion, useScroll, useTransform, useInView } from 'framer-motion';
 import { skills, projects } from './data';
-import { Scene3D } from './components/Scene3D'
 import { AnimatedBackground } from './components/AnimatedBackground'
-import { FaReact /*, FaNodeJs, FaPython, FaDatabase, FaAws */ } from 'react-icons/fa';
-import { SiTypescript, SiNextdotjs, SiTailwindcss, SiMongodb } from 'react-icons/si';
 import { useForm, ValidationError } from '@formspree/react';
+
+const Scene3D = React.lazy(() =>
+  import('./components/Scene3D').then(m => ({ default: m.Scene3D }))
+);
 
 // Smooth scroll utility
 const scrollToSection = (sectionId: string) => {
@@ -245,8 +246,6 @@ function HeroSection() {
       {/* Background */}
       <div className="absolute inset-0 z-0">
         <div className="absolute inset-0 bg-gradient-to-br from-indigo-50/50 via-white/30 to-purple-50/50 dark:from-gray-900/50 dark:via-gray-900/30 dark:to-indigo-900/10" />
-        <Scene3D />
-        <AnimatedBackground />
       </div>
       
       {/* Content */}
@@ -340,20 +339,22 @@ function HeroSection() {
             <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">Tech I work with:</p>
             <div className="flex justify-center space-x-6 text-gray-600 dark:text-gray-400">
               {[
-                { Icon: SiTypescript, color: "#3B82F6" },
-                { Icon: FaReact, color: "#61DAFB" },
-                { Icon: SiNextdotjs, color: "#000000" },
-                { Icon: SiTailwindcss, color: "#06B6D4" },
-                { Icon: SiMongodb, color: "#47A248" }
-              ].map(({ Icon, color }, index) => (
-                <motion.div 
+                { label: "TypeScript", color: "#3B82F6", path: "M0 12v12h24V0H0zm19.34-1.47c.64.15 1.13.41 1.52.83.2.22.49.63.51.72l-1.77 1.2c-.07-.1-.23-.33-.4-.47-.42-.33-.96-.47-1.65-.42-.5.04-.73.12-.95.3-.22.2-.34.46-.34.78 0 .3.08.47.28.65.26.21.55.32 1.78.7 2.27.7 3.24 1.16 3.87 1.86.7.77.86 2 .4 3.03-.5 1.12-1.74 1.88-3.46 2.1-.53.07-1.79.04-2.37-.05-1.27-.2-2.48-.77-3.2-1.5-.28-.28-.83-1.02-.78-1.05l.48-.3.97-.57.75-.44.16.23c.22.33.72.77 1.02.9.87.39 2.07.34 2.66-.1.12-.1.24-.3.28-.47.05-.2.03-.62-.04-.8-.1-.24-.34-.44-.82-.66-.25-.11-1.3-.5-1.63-.6-1.55-.48-2.7-1.27-3.2-2.2-.2-.37-.4-1.02-.43-1.4-.04-.46.02-1.35.12-1.7.5-1.67 1.9-2.68 3.86-2.82.6-.04 2.2.05 2.8.17zm-6.7 1.52L12.65 12h2.35v9.65h-2.37V12h2.35l.01.05z" },
+                { label: "React", color: "#61DAFB", path: "M14.23 12.004a2.236 2.236 0 0 1-2.235 2.236 2.236 2.236 0 0 1-2.236-2.236 2.236 2.236 0 0 1 2.235-2.236 2.236 2.236 0 0 1 2.236 2.236zm2.648-10.69c-1.346 0-3.107.96-4.888 2.622-1.78-1.653-3.542-2.602-4.887-2.602-.31 0-.592.06-.838.174C4.498.652 3.834 2.158 4.19 4.776c-2.07.75-3.446 1.86-3.446 3.228 0 1.37 1.388 2.49 3.467 3.238-.366 2.63.318 4.14 2.094 5.166.246.114.528.174.838.174 1.346 0 3.107-.96 4.888-2.624 1.78 1.654 3.542 2.603 4.887 2.603.31 0 .592-.06.838-.174 1.776-1.026 2.46-2.536 2.094-5.166 2.08-.748 3.467-1.868 3.467-3.238 0-1.37-1.386-2.478-3.446-3.228.356-2.618-.328-4.124-2.104-5.15a1.955 1.955 0 0 0-.838-.175zM21.1 6.12c.209 1.524-.065 2.65-.648 3.12-.084-.07-.177-.14-.28-.21l-.485-.303c.088-.405.14-.82.16-1.24.04-.88-.07-1.73-.32-2.46.24.02.49.08.72.19.36.19.63.5.85.9zM12 15.55c-.354-.37-.705-.78-1.048-1.222.35.018.7.028 1.048.028s.7-.01 1.048-.028c-.343.442-.694.852-1.048 1.222zm-3.9-4.04c-.063.41-.093.83-.093 1.26 0 .418.03.828.088 1.228-.63.3-1.18.6-1.63.88-.1.06-.19.13-.27.19-.58-.47-.85-1.6-.64-3.12.06-.02.12-.04.19-.05.52-.1 1.2-.12 2.02-.04.11-.11.22-.23.33-.35zm7.8 0l.33.35c.82-.08 1.5-.06 2.02.04.07.01.13.03.19.05.21 1.52-.06 2.65-.64 3.12-.08-.06-.17-.13-.27-.19-.46-.28-1-.58-1.63-.88.057-.4.088-.81.088-1.228 0-.43-.03-.85-.09-1.26zM12 8.45c.354.37.705.78 1.048 1.222-.35-.018-.7-.028-1.048-.028s-.7.01-1.048.028c.343-.442.694-.852 1.048-1.222zM7.148 5.21c.25.73.36 1.58.4 2.46.02.42.07.835.16 1.24l-.485.303c-.103.07-.196.14-.28.21-.583-.47-.857-1.596-.648-3.12.22-.11.47-.17.71-.19.05 0 .1 0 .14.01v.09zm-.3 10.69c-.59-.34-.98-.74-1.15-1.2-.17-.44-.14-.92.09-1.45.35.36.77.69 1.26 1 .49.3 1 .55 1.52.74-.28.37-.5.67-.65.88-.04.06-.08.1-.1.14-.33-.03-.66-.07-.97-.11zm10.3 0c-.31.04-.64.08-.97.11-.02-.04-.06-.08-.1-.14-.15-.21-.37-.51-.65-.88.52-.19 1.03-.44 1.52-.74.49-.31.91-.64 1.26-1 .23.53.26 1.01.09 1.45-.17.46-.56.86-1.15 1.2z" },
+                { label: "Next.js", color: "#000000", path: "M11.572 0c-.176 0-.31.001-.358.007a19.76 19.76 0 0 1-.364.033C7.443.346 4.25 2.185 2.228 5.012a11.875 11.875 0 0 0-2.119 5.243c-.096.659-.108.854-.108 1.747s.012 1.089.108 1.748c.652 4.506 3.86 8.292 8.209 9.695.779.25 1.6.422 2.534.525.363.04 1.935.04 2.299 0 1.611-.178 2.977-.577 4.323-1.264.207-.106.247-.134.219-.158-.02-.013-.9-1.193-1.955-2.62l-1.919-2.592-2.404-3.558a338.739 338.739 0 0 0-2.422-3.556c-.009-.002-.018 1.579-.023 3.51-.007 3.38-.01 3.515-.052 3.595a.426.426 0 0 1-.206.214c-.075.037-.14.044-.495.044H7.81l-.108-.068a.438.438 0 0 1-.157-.171l-.049-.106.006-4.703.007-4.705.073-.091a.637.637 0 0 1 .174-.143c.096-.047.134-.051.54-.051.478 0 .558.018.682.154.035.038 1.337 1.999 2.895 4.361a10513.38 10513.38 0 0 0 4.735 7.17l1.9 2.879.096-.063a12.317 12.317 0 0 0 2.466-2.163 11.944 11.944 0 0 0 2.824-6.134c.096-.66.108-.854.108-1.748 0-.893-.012-1.088-.108-1.747-.652-4.506-3.859-8.292-8.208-9.695a12.597 12.597 0 0 0-2.499-.523A33.119 33.119 0 0 0 11.573 0zm4.069 7.217c.347 0 .408.005.486.047a.473.473 0 0 1 .237.277c.018.06.023 1.365.018 4.304l-.006 4.218-.744-1.14-.746-1.14v-3.066c0-1.982.01-3.097.023-3.15a.478.478 0 0 1 .233-.296c.096-.05.13-.054.5-.054z" },
+                { label: "Tailwind CSS", color: "#06B6D4", path: "M12.001 4.8c-3.2 0-5.2 1.6-6 4.8 1.2-1.6 2.6-2.2 4.2-1.8.913.228 1.565.89 2.288 1.624C13.666 10.618 15.027 12 18.001 12c3.2 0 5.2-1.6 6-4.8-1.2 1.6-2.6 2.2-4.2 1.8-.913-.228-1.565-.89-2.288-1.624C16.337 6.182 14.976 4.8 12.001 4.8zm-6 7.2c-3.2 0-5.2 1.6-6 4.8 1.2-1.6 2.6-2.2 4.2-1.8.913.228 1.565.89 2.288 1.624 1.177 1.194 2.538 2.576 5.512 2.576 3.2 0 5.2-1.6 6-4.8-1.2 1.6-2.6 2.2-4.2 1.8-.913-.228-1.565-.89-2.288-1.624C10.337 13.382 8.976 12 6.001 12z" },
+                { label: "MongoDB", color: "#47A248", path: "M17.193 9.555c-1.264-5.58-4.252-7.414-4.573-8.115-.28-.394-.53-.954-.735-1.44-.036.495-.055.685-.523 1.184-.723.566-4.438 3.682-4.74 10.02-.282 5.912 4.27 9.435 4.888 9.884l.07.05A73.49 73.49 0 0 1 11.91 24h.208c.063-.33.186-.67.31-.998 3.49-1.178 5.58-4.122 5.58-7.73 0-2.107-.73-4.224-1.815-5.717zm-5.638 10.033s-.84-.69-.97-.993c-.135-.327-.24-.676-.242-.992 0 0 .55.397.857.986.27.518.355 1 .355 1z" }
+              ].map(({ label, color, path }, index) => (
+                <motion.div
                   key={index}
-                  initial={{ opacity: 0, y: 25 }} // Increased from 20px
+                  initial={{ opacity: 0, y: 25 }}
                   animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 25 }}
-                  transition={{ duration: 0.8, delay: 1.9 + (index * 0.15) }} // Increased from 0.5s, 1.8s, and 0.1s
+                  transition={{ duration: 0.8, delay: 1.9 + (index * 0.15) }}
                   whileHover={{ scale: 1.2, color }}
                 >
-                  <Icon size={24} />
+                  <svg width={24} height={24} viewBox="0 0 24 24" fill="currentColor" aria-label={label}>
+                    <path d={path} />
+                  </svg>
                 </motion.div>
               ))}
               </div>
@@ -407,8 +408,10 @@ function AboutSection() {
             <div className="relative rounded-2xl overflow-hidden shadow-xl">
                 <img
                   src="./assets/profile.jpg"
-                alt="Andrew George"
-                className="w-full h-[300px] lg:h-[400px] object-cover"
+                  alt="Andrew George"
+                  className="w-full h-[300px] lg:h-[400px] object-cover"
+                  loading="lazy"
+                  decoding="async"
                 />
               <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
               </div>
@@ -663,15 +666,19 @@ function App() {
     <div className="min-h-screen bg-transparent transition-colors duration-200">
       {/* Scene3D and background elements are site-wide */}
       <div className="fixed inset-0 z-0 pointer-events-none">
-        <Scene3D />
+        <Suspense fallback={
+          <div className="fixed inset-0" style={{
+            background: isDarkMode
+              ? 'radial-gradient(ellipse at 50% 40%, #181a2a 60%, #23244a 100%)'
+              : 'radial-gradient(ellipse at 50% 40%, #f3f4f6 60%, #e0e7ef 100%)'
+          }} />
+        }>
+          <Scene3D />
+        </Suspense>
         <AnimatedBackground />
-        <div className="pattern-bg"></div>
       </div>
-      
+
       <Navigation isDarkMode={isDarkMode} toggleDarkMode={toggleDarkMode} />
-      
-      {/* Custom cursor */}
-      <div className="cursor hidden md:block"></div>
 
       <main className="relative z-1">
         {/* Hero Section - 13g inspired design */}

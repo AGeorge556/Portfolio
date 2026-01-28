@@ -1,29 +1,27 @@
-import { FileSymlink as Html5, Rss as Css3, Subscript as Javascript, RepeatIcon as ReactIcon, Github as Git, Figma, Database, Server, Code2, Terminal, Package, Layout } from 'lucide-react';
-
 export const skills = {
   core: [
-    { name: 'HTML5', icon: Html5, level: 'Advanced', achievements: ['Semantic HTML5 implementation', 'Accessibility compliance (WCAG 2.1)'] },
-    { name: 'CSS3', icon: Css3, level: 'Advanced', achievements: ['Responsive design implementation', 'CSS animations and transitions'] },
-    { name: 'JavaScript', icon: Javascript, level: 'Advanced', achievements: ['ES6+ features', 'Performance optimization'] },
-    { name: 'React', icon: ReactIcon, level: 'Advanced', achievements: ['State management', 'Custom hooks', 'Performance optimization'] },
+    { name: 'HTML5', level: 'Advanced', achievements: ['Semantic HTML5 implementation', 'Accessibility compliance (WCAG 2.1)'] },
+    { name: 'CSS3', level: 'Advanced', achievements: ['Responsive design implementation', 'CSS animations and transitions'] },
+    { name: 'JavaScript', level: 'Advanced', achievements: ['ES6+ features', 'Performance optimization'] },
+    { name: 'React', level: 'Advanced', achievements: ['State management', 'Custom hooks', 'Performance optimization'] },
   ],
   frameworks: [
-    { name: 'React', icon: ReactIcon, level: 'Advanced', achievements: ['Context API', 'React Router', 'Custom hooks'] },
-    { name: 'Next.js', icon: Code2, level: 'Intermediate', achievements: ['SSR implementation', 'API routes'] },
-    { name: 'Tailwind CSS', icon: Layout, level: 'Advanced', achievements: ['Custom component design', 'Responsive layouts'] },
-    { name: 'TypeScript', icon: Code2, level: 'Intermediate', achievements: ['Type safety', 'Interface design'] },
+    { name: 'React', level: 'Advanced', achievements: ['Context API', 'React Router', 'Custom hooks'] },
+    { name: 'Next.js', level: 'Intermediate', achievements: ['SSR implementation', 'API routes'] },
+    { name: 'Tailwind CSS', level: 'Advanced', achievements: ['Custom component design', 'Responsive layouts'] },
+    { name: 'TypeScript', level: 'Intermediate', achievements: ['Type safety', 'Interface design'] },
   ],
   tools: [
-    { name: 'Git', icon: Git, level: 'Advanced', achievements: ['Branch management', 'Code reviews'] },
-    { name: 'Figma', icon: Figma, level: 'Intermediate', achievements: ['UI/UX design', 'Prototyping'] },
-    { name: 'VS Code', icon: Terminal, level: 'Advanced', achievements: ['Extensions', 'Debugging'] },
-    { name: 'npm/yarn', icon: Package, level: 'Advanced', achievements: ['Package management', 'Script automation'] },
+    { name: 'Git', level: 'Advanced', achievements: ['Branch management', 'Code reviews'] },
+    { name: 'Figma', level: 'Intermediate', achievements: ['UI/UX design', 'Prototyping'] },
+    { name: 'VS Code', level: 'Advanced', achievements: ['Extensions', 'Debugging'] },
+    { name: 'npm/yarn', level: 'Advanced', achievements: ['Package management', 'Script automation'] },
   ],
   backend: [
-    { name: 'Node.js', icon: Server, level: 'Intermediate', achievements: ['REST API development', 'Authentication'] },
-    { name: 'RESTful APIs', icon: Code2, level: 'Intermediate', achievements: ['API design', 'Integration'] },
-    { name: 'MongoDB', icon: Database, level: 'Intermediate', achievements: ['Data modeling', 'Query optimization'] },
-    { name: 'PostgreSQL', icon: Database, level: 'Basic', achievements: ['Database design', 'SQL queries'] },
+    { name: 'Node.js', level: 'Intermediate', achievements: ['REST API development', 'Authentication'] },
+    { name: 'RESTful APIs', level: 'Intermediate', achievements: ['API design', 'Integration'] },
+    { name: 'MongoDB', level: 'Intermediate', achievements: ['Data modeling', 'Query optimization'] },
+    { name: 'PostgreSQL', level: 'Basic', achievements: ['Database design', 'SQL queries'] },
   ],
 };
 

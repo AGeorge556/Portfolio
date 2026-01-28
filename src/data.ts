@@ -1,39 +1,106 @@
 export const skills = {
   core: [
-    { name: 'HTML5', level: 'Advanced', achievements: ['Semantic HTML5 implementation', 'Accessibility compliance (WCAG 2.1)'] },
-    { name: 'CSS3', level: 'Advanced', achievements: ['Responsive design implementation', 'CSS animations and transitions'] },
-    { name: 'JavaScript', level: 'Advanced', achievements: ['ES6+ features', 'Performance optimization'] },
-    { name: 'React', level: 'Advanced', achievements: ['State management', 'Custom hooks', 'Performance optimization'] },
+    { name: 'React.js', level: 'Advanced', achievements: ['Custom hooks', 'Performance optimization', 'State management'] },
+    { name: 'TypeScript', level: 'Advanced', achievements: ['Type safety', 'Interface design', 'Generics'] },
+    { name: 'Next.js', level: 'Intermediate', achievements: ['SSR implementation', 'API routes', 'App Router'] },
+    { name: 'JavaScript', level: 'Advanced', achievements: ['ES6+', 'Async patterns', 'DOM manipulation'] },
+    { name: 'HTML5', level: 'Advanced', achievements: ['Semantic markup', 'Accessibility (WCAG 2.1)'] },
+    { name: 'CSS3', level: 'Advanced', achievements: ['Responsive design', 'Animations', 'Flexbox/Grid'] },
   ],
   frameworks: [
-    { name: 'React', level: 'Advanced', achievements: ['Context API', 'React Router', 'Custom hooks'] },
-    { name: 'Next.js', level: 'Intermediate', achievements: ['SSR implementation', 'API routes'] },
-    { name: 'Tailwind CSS', level: 'Advanced', achievements: ['Custom component design', 'Responsive layouts'] },
-    { name: 'TypeScript', level: 'Intermediate', achievements: ['Type safety', 'Interface design'] },
-  ],
-  tools: [
-    { name: 'Git', level: 'Advanced', achievements: ['Branch management', 'Code reviews'] },
-    { name: 'Figma', level: 'Intermediate', achievements: ['UI/UX design', 'Prototyping'] },
-    { name: 'VS Code', level: 'Advanced', achievements: ['Extensions', 'Debugging'] },
-    { name: 'npm/yarn', level: 'Advanced', achievements: ['Package management', 'Script automation'] },
+    { name: 'Tailwind CSS', level: 'Advanced', achievements: ['Custom design systems', 'Responsive layouts'] },
+    { name: 'Flutter', level: 'Intermediate', achievements: ['Cross-platform apps', 'Supabase integration'] },
+    { name: 'Bootstrap', level: 'Advanced', achievements: ['Custom themes', 'Responsive components'] },
+    { name: 'Framer Motion', level: 'Intermediate', achievements: ['Page transitions', 'Scroll animations'] },
   ],
   backend: [
-    { name: 'Node.js', level: 'Intermediate', achievements: ['REST API development', 'Authentication'] },
-    { name: 'RESTful APIs', level: 'Intermediate', achievements: ['API design', 'Integration'] },
-    { name: 'MongoDB', level: 'Intermediate', achievements: ['Data modeling', 'Query optimization'] },
-    { name: 'PostgreSQL', level: 'Basic', achievements: ['Database design', 'SQL queries'] },
+    { name: 'Supabase', level: 'Advanced', achievements: ['Auth', 'RLS policies', 'Real-time subscriptions'] },
+    { name: 'Node.js', level: 'Intermediate', achievements: ['REST APIs', 'Express.js', 'Middleware'] },
+    { name: 'PostgreSQL', level: 'Intermediate', achievements: ['Schema design', 'Row-level security'] },
+    { name: 'MongoDB', level: 'Intermediate', achievements: ['Data modeling', 'Aggregation pipelines'] },
+    { name: 'RESTful APIs', level: 'Advanced', achievements: ['API design', 'Third-party integration'] },
   ],
+  tools: [
+    { name: 'Git / GitHub', level: 'Advanced', achievements: ['Branch strategy', 'Code reviews', 'CI/CD'] },
+    { name: 'Vercel', level: 'Advanced', achievements: ['Deployment', 'Preview builds'] },
+    { name: 'Figma', level: 'Intermediate', achievements: ['UI/UX design', 'Prototyping'] },
+    { name: 'VS Code', level: 'Advanced', achievements: ['Extensions', 'Debugging'] },
+  ],
+};
+
+export const experience = [
+  {
+    title: 'Full-Stack Developer',
+    company: 'Streams Of Living Water',
+    location: 'Cairo, Egypt',
+    period: 'Aug 2025 - Present',
+    current: true,
+    highlights: [
+      'Architected and developed a cross-platform ERP system (Web, Mobile, Desktop) to digitize and unify core nonprofit operations',
+      'Owned end-to-end system design: clean architecture, database schema, role-based access control, and security (RLS)',
+      'Built core platform infrastructure including authentication, user management, permissions, and offline-first sync',
+      'Designed data models and workflows for multi-role environments (admins, coordinators, teachers, students, staff)',
+      'Integrated backend services (Supabase, PostgreSQL, storage, email workflows) with Flutter frontend',
+      'Defined MVP scope, sprint backlog, and long-term technical roadmap from foundation to production scale',
+    ],
+    technologies: ['React', 'Flutter', 'Supabase', 'PostgreSQL', 'TypeScript'],
+  },
+  {
+    title: 'Full-Stack Developer',
+    company: 'Clear View Clinics',
+    location: 'Cairo, Egypt',
+    period: 'Jan 2025 - May 2025',
+    current: false,
+    highlights: [
+      'Developed secure, interactive web applications using modern front-end frameworks with clean, intuitive interfaces',
+      'Built dynamic, reusable React components to improve development speed, scalability, and maintainability',
+      'Integrated third-party APIs to extend application functionality and enable real-time features',
+      'Collaborated closely with backend developers to ensure reliable API integration and data consistency',
+      'Delivered features under tight deadlines with strong prioritization and problem-solving',
+    ],
+    technologies: ['React', 'JavaScript', 'REST APIs', 'Responsive Design'],
+  },
+  {
+    title: 'Full-Stack Developer',
+    company: 'Trust Pharma LTD',
+    location: 'Cairo, Egypt',
+    period: 'Jun 2023 - Dec 2023',
+    current: false,
+    highlights: [
+      'Designed and implemented user-friendly, responsive web interfaces enhancing usability and engagement',
+      'Worked closely with UI/UX designers to translate designs into production-ready web applications',
+      'Optimized front-end performance, significantly reducing page load times',
+      'Led adoption and integration of new technologies to improve application capabilities',
+      'Participated in code reviews to enforce best practices and maintain code quality',
+    ],
+    technologies: ['React', 'JavaScript', 'Git', 'Performance Optimization'],
+  },
+];
+
+export const education = {
+  degree: "Bachelor's degree in Computer Science",
+  track: 'General Track',
+  university: 'Nile University',
+  location: 'Sheikh Zayed, Egypt',
+  graduated: 'Jul 2025',
+  gpa: '3.24',
+  gradProject: 'ImmerseAI - Educational video summarization and visualization web app using Deep Learning',
+  certification: {
+    name: 'IBM Professional Front-End Developer',
+    period: 'Mar 2025 - Apr 2025',
+    link: 'https://coursera.org/share/899f937de16ce48448f5f09d6d11bf1d',
+  },
 };
 
 export const projects = [
   {
     title: 'StayHealthy',
-    description: 'StayHealthy is a modern healthcare platform that allows users to book in-person medical appointments and schedule instant online consultations with healthcare professionals.',
+    description: 'A modern healthcare platform that allows users to book in-person medical appointments and schedule instant online consultations with healthcare professionals.',
     metrics: {
-      performance: '95% Lighthouse score',
-      accessibility: '100% WCAG 2.1 compliance',
-      userSatisfaction: '95% positive feedback',
-      bookingTime: '60% reduction in appointment booking time'
+      performance: '95% Lighthouse',
+      accessibility: '100% WCAG 2.1',
+      userSatisfaction: '95% positive',
+      bookingTime: '60% faster booking'
     },
     technicalHighlights: [
       'Implemented real-time WebSocket connections for instant doctor-patient communication',
@@ -47,11 +114,6 @@ export const projects = [
         solution: 'Implemented WebSocket connections with fallback to polling',
         impact: 'Reduced server load by 40% while maintaining real-time updates'
       },
-      {
-        problem: 'Complex state management across multiple components',
-        solution: 'Created custom hooks and context providers for shared state',
-        impact: 'Improved code maintainability and reduced prop drilling'
-      }
     ],
     image: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
     technologies: ['React', 'React Router', 'CSS3', 'Node.js', 'Express.js', 'MongoDB', 'JWT'],
@@ -62,10 +124,10 @@ export const projects = [
     title: 'Clear View Clinics',
     description: 'A professional website for an Ophthalmic Surgeon in Egypt, featuring a clean design that showcases medical services, patient information, and appointment scheduling.',
     metrics: {
-      performance: '98% Lighthouse score',
-      accessibility: '100% WCAG 2.1 compliance',
-      userEngagement: '40% increase in appointment bookings',
-      loadTime: '1.2s average page load time'
+      performance: '98% Lighthouse',
+      accessibility: '100% WCAG 2.1',
+      userEngagement: '+40% bookings',
+      loadTime: '1.2s load time'
     },
     technicalHighlights: [
       'Implemented responsive design with mobile-first approach',
@@ -87,12 +149,12 @@ export const projects = [
   },
   {
     title: 'Trust Pharma LTD',
-    description: 'A comprehensive website for Trust Pharma LTD, an Egyptian pharmaceutical company, showcasing their products, services, and company information with a professional interface.',
+    description: 'A comprehensive website for an Egyptian pharmaceutical company, showcasing their products, services, and company information with a professional, accessible interface.',
     metrics: {
-      performance: '96% Lighthouse score',
-      accessibility: '100% WCAG 2.1 compliance',
-      userEngagement: '35% increase in contact form submissions',
-      loadTime: '1.5s average page load time'
+      performance: '96% Lighthouse',
+      accessibility: '100% WCAG 2.1',
+      userEngagement: '+35% submissions',
+      loadTime: '1.5s load time'
     },
     technicalHighlights: [
       'Implemented modern UI with smooth animations',
@@ -114,12 +176,12 @@ export const projects = [
   },
   {
     title: 'European Travel Weather Forecast',
-    description: 'A React application providing 7-day weather forecasts for major European cities, helping travelers plan their trips with accurate weather information for their destinations.',
+    description: 'A React application providing 7-day weather forecasts for major European cities, helping travelers plan their trips with accurate weather data.',
     metrics: {
-      performance: '94% Lighthouse score',
-      accessibility: '100% WCAG 2.1 compliance',
-      userSatisfaction: '90% positive feedback',
-      loadTime: '1.8s average page load time'
+      performance: '94% Lighthouse',
+      accessibility: '100% WCAG 2.1',
+      userSatisfaction: '90% positive',
+      loadTime: '1.8s load time'
     },
     technicalHighlights: [
       'Integrated with Weather API for real-time data',
@@ -143,10 +205,10 @@ export const projects = [
     title: 'E-Commerce Plant Shop',
     description: 'A dynamic e-commerce platform specializing in plants, featuring an intuitive shopping experience with a modern interface and seamless checkout process.',
     metrics: {
-      performance: '93% Lighthouse score',
-      accessibility: '100% WCAG 2.1 compliance',
-      userSatisfaction: '92% positive feedback',
-      conversionRate: '25% increase in sales'
+      performance: '93% Lighthouse',
+      accessibility: '100% WCAG 2.1',
+      userSatisfaction: '92% positive',
+      conversionRate: '+25% sales'
     },
     technicalHighlights: [
       'Implemented shopping cart with local storage',

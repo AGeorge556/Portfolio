@@ -2,7 +2,8 @@
 import React, { useState, useEffect, useRef, Suspense } from 'react';
 import { Menu, X, Moon, Sun, Github, Linkedin, Mail, ExternalLink, ArrowRight, ArrowDown, MapPin, Phone } from 'lucide-react';
 import { motion, useScroll, useTransform, useInView } from 'framer-motion';
-import { skills, projects } from './data';
+import { skills, projects, experience, education } from './data';
+import { Briefcase, GraduationCap, Award, Calendar } from 'lucide-react';
 import { AnimatedBackground } from './components/AnimatedBackground'
 import { useForm, ValidationError } from '@formspree/react';
 
@@ -108,6 +109,7 @@ function Navigation({ isDarkMode, toggleDarkMode }: { isDarkMode: boolean, toggl
   const navItems = [
     { id: 'home', label: 'Home' },
     { id: 'about', label: 'About' },
+    { id: 'experience', label: 'Experience' },
     { id: 'skills', label: 'Skills' },
     { id: 'projects', label: 'Projects' },
     { id: 'contact', label: 'Contact' }
@@ -295,7 +297,7 @@ function HeroSection() {
             animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
             transition={{ duration: 1.2, delay: 1.1 }} // Increased from 0.8s and 1s
           >
-            I craft responsive web applications where technologies meet creativity. Building exceptional digital experiences with modern full stack frameworks.
+            Computer Science graduate specializing in React.js, Supabase, and API integration. I build interactive web applications that enhance user experience and deliver high-performance, scalable solutions.
           </motion.p>
           
           <motion.div 
@@ -428,32 +430,36 @@ function AboutSection() {
                 Full-Stack Developer
               </h3>
               <p className="text-gray-600 dark:text-gray-400 leading-relaxed mb-6">
-                I'm Andrew George, a dedicated developer with 1+ year of experience creating exceptional digital solutions that blend aesthetics with functionality.
+                I'm Andrew George, a Computer Science graduate from Nile University with proven expertise specializing in React.js, Supabase, and API integration. I've successfully developed interactive web applications that enhanced user experience and reduced load times significantly.
               </p>
               <p className="text-gray-600 dark:text-gray-400 leading-relaxed mb-6">
-                My journey in development has equipped me with expertise across the entire stack, specializing in React, Next.js, and modern backend technologies that deliver scalable, high-performance applications.
-                    </p>
-                  </div>
-            
+                Currently architecting a cross-platform ERP system at Streams Of Living Water, I bring end-to-end ownership across clean architecture, database design, role-based access control, and performance-focused UI. Strong collaborator with a keen eye for interface design.
+              </p>
+            </div>
+
             <div>
               <h4 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-                Development Philosophy
+                Core Strengths
               </h4>
               <ul className="space-y-2 text-gray-600 dark:text-gray-400">
                 <li className="flex items-center space-x-2">
                   <span className="text-green-500">✓</span>
-                  <span>Clean, maintainable code as a foundation</span>
+                  <span>Clean architecture and secure application design</span>
                 </li>
                 <li className="flex items-center space-x-2">
                   <span className="text-green-500">✓</span>
-                  <span>Performance optimization from day one</span>
+                  <span>Web performance optimization and responsive UI</span>
                 </li>
                 <li className="flex items-center space-x-2">
                   <span className="text-green-500">✓</span>
-                  <span>Accessibility as a priority, not an afterthought</span>
+                  <span>Authentication, authorization, and state management</span>
+                </li>
+                <li className="flex items-center space-x-2">
+                  <span className="text-green-500">✓</span>
+                  <span>Backend integration and RESTful API design</span>
                 </li>
               </ul>
-                    </div>
+            </div>
             
             {/* Download CV Button */}
             <motion.div
@@ -487,14 +493,14 @@ function AboutSection() {
                   <span className="text-xl">✉️</span>
                   <span className="font-semibold text-gray-900 dark:text-white">Email</span>
               </div>
-                <p className="text-gray-600 dark:text-gray-400">gn_farag02@outlook.com</p>
+                <p className="text-gray-600 dark:text-gray-400">gn.farag02@gmail.com</p>
             </div>
               <div>
                 <div className="flex items-center space-x-2 mb-2">
                   <span className="text-xl">📍</span>
                   <span className="font-semibold text-gray-900 dark:text-white">Location</span>
           </div>
-                <p className="text-gray-600 dark:text-gray-400">Cairo,Egypt</p>
+                <p className="text-gray-600 dark:text-gray-400">Mokattam, Cairo, Egypt</p>
               </div>
               <div>
                 <div className="flex items-center space-x-2 mb-2">
@@ -510,7 +516,7 @@ function AboutSection() {
                 Current Focus
               </h4>
               <p className="text-gray-600 dark:text-gray-400">
-                Expanding expertise in cloud architectures and advanced React patterns
+                Building a cross-platform ERP system with React, Flutter, Supabase, and PostgreSQL
               </p>
             </div>
           </motion.div>
@@ -535,7 +541,7 @@ function SkillsSection() {
             My <span className="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">Skills</span>
             </h2>
           <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-            I've worked with a variety of technologies in front-end development. Here are some of my key areas of expertise:
+            Technologies and tools I use to build full-stack web applications:
           </p>
         </motion.div>
         
@@ -544,16 +550,16 @@ function SkillsSection() {
           {Object.entries(skills).map(([category, skillList], categoryIndex) => {
             const categoryTitles = {
               'core': 'Front-End Development',
-              'frameworks': 'Styling & UI Frameworks', 
-              'tools': 'State Management',
-              'backend': 'Back-End Integration'
+              'frameworks': 'Frameworks & UI',
+              'backend': 'Backend & Databases',
+              'tools': 'Dev Tools & Workflow'
             };
-            
+
             const categoryDescs = {
-              'core': 'Building responsive and optimized web applications with modern frameworks.',
-              'frameworks': 'Crafting modern and maintainable UI components with efficient styling techniques.',
-              'tools': 'Handling application state efficiently for scalable applications.',
-              'backend': 'Connecting front-end applications to databases and back-end services.'
+              'core': 'Building responsive, optimized web applications with modern JavaScript and React.',
+              'frameworks': 'Cross-platform development with modern UI frameworks and design systems.',
+              'backend': 'Server-side integration with Supabase, Node.js, PostgreSQL, and REST APIs.',
+              'tools': 'Version control, deployment pipelines, and collaborative development workflows.'
             };
             
                 return (
@@ -613,8 +619,10 @@ function SkillsSection() {
               { name: 'ESLint', desc: 'Code quality' },
               { name: 'Prettier', desc: 'Code formatting' },
               { name: 'Git', desc: 'Version control' },
-              { name: 'GitHub', desc: 'Code collaboration' },
-              { name: 'Vercel', desc: 'Deployment' }
+              { name: 'GitHub', desc: 'Collaboration' },
+              { name: 'Vercel', desc: 'Deployment' },
+              { name: 'Supabase', desc: 'BaaS platform' },
+              { name: 'Vite', desc: 'Build tool' }
             ].map((tool, index) => (
               <motion.div
                 key={tool.name}
@@ -686,6 +694,137 @@ function App() {
 
         {/* About Section */}
         <AboutSection />
+
+        {/* Experience Section */}
+        <AnimatedSection id="experience" className="py-24 bg-gray-50/30 dark:bg-gray-800/30">
+          <div className="max-w-6xl mx-auto px-4">
+            <motion.div
+              className="text-center mb-16"
+              initial={{ opacity: 0, y: 40 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1.2 }}
+            >
+              <h2 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
+                Work <span className="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">Experience</span>
+              </h2>
+              <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+                Professional roles where I've delivered real impact
+              </p>
+            </motion.div>
+
+            <div className="relative">
+              {/* Timeline line */}
+              <div className="absolute left-0 md:left-1/2 transform md:-translate-x-px top-0 bottom-0 w-0.5 bg-indigo-200 dark:bg-indigo-800 hidden md:block" />
+
+              {experience.map((job, index) => (
+                <motion.div
+                  key={job.company}
+                  className={`relative mb-12 md:mb-16 md:w-1/2 ${index % 2 === 0 ? 'md:pr-12 md:ml-0' : 'md:pl-12 md:ml-auto'}`}
+                  initial={{ opacity: 0, x: index % 2 === 0 ? -40 : 40 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.8, delay: index * 0.2 }}
+                >
+                  {/* Timeline dot */}
+                  <div className={`hidden md:block absolute top-6 w-4 h-4 rounded-full border-4 border-indigo-600 dark:border-indigo-400 bg-white dark:bg-gray-900 ${index % 2 === 0 ? '-right-2' : '-left-2'}`} />
+
+                  <div className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm p-6 rounded-xl shadow-lg border border-gray-200/20 dark:border-gray-700/20 hover:shadow-xl transition-all duration-300">
+                    <div className="flex items-start justify-between mb-4">
+                      <div>
+                        <h3 className="text-xl font-bold text-gray-900 dark:text-white">
+                          {job.title}
+                        </h3>
+                        <div className="flex items-center space-x-2 mt-1">
+                          <Briefcase size={14} className="text-indigo-600 dark:text-indigo-400" />
+                          <span className="text-indigo-600 dark:text-indigo-400 font-medium">{job.company}</span>
+                          <span className="text-gray-400">|</span>
+                          <MapPin size={14} className="text-gray-400" />
+                          <span className="text-gray-500 dark:text-gray-400 text-sm">{job.location}</span>
+                        </div>
+                      </div>
+                      <div className="flex items-center space-x-1.5 flex-shrink-0 ml-4">
+                        <Calendar size={14} className="text-gray-400" />
+                        <span className={`text-sm font-medium ${job.current ? 'text-green-600 dark:text-green-400' : 'text-gray-500 dark:text-gray-400'}`}>
+                          {job.period}
+                        </span>
+                      </div>
+                    </div>
+
+                    <ul className="space-y-2 mb-4">
+                      {job.highlights.slice(0, 4).map((highlight, i) => (
+                        <li key={i} className="flex items-start space-x-2 text-sm text-gray-600 dark:text-gray-400">
+                          <span className="text-indigo-500 mt-1 flex-shrink-0">&#8226;</span>
+                          <span>{highlight}</span>
+                        </li>
+                      ))}
+                    </ul>
+
+                    <div className="flex flex-wrap gap-2">
+                      {job.technologies.map((tech) => (
+                        <span
+                          key={tech}
+                          className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300"
+                        >
+                          {tech}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+
+            {/* Education & Certification */}
+            <motion.div
+              className="mt-16 grid md:grid-cols-2 gap-8"
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.6 }}
+            >
+              {/* Education Card */}
+              <div className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm p-6 rounded-xl shadow-lg border border-gray-200/20 dark:border-gray-700/20">
+                <div className="flex items-center space-x-3 mb-4">
+                  <div className="w-10 h-10 bg-indigo-100 dark:bg-indigo-900/30 rounded-lg flex items-center justify-center">
+                    <GraduationCap className="text-indigo-600 dark:text-indigo-400" size={20} />
+                  </div>
+                  <h3 className="text-xl font-bold text-gray-900 dark:text-white">Education</h3>
+                </div>
+                <h4 className="font-semibold text-gray-900 dark:text-white">{education.degree}</h4>
+                <p className="text-indigo-600 dark:text-indigo-400 font-medium">{education.university}</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400">{education.location} | Graduated {education.graduated} | GPA: {education.gpa}</p>
+                <div className="mt-3 p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+                  <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">Graduation Project</p>
+                  <p className="text-sm text-gray-700 dark:text-gray-300">{education.gradProject}</p>
+                </div>
+              </div>
+
+              {/* Certification Card */}
+              <div className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm p-6 rounded-xl shadow-lg border border-gray-200/20 dark:border-gray-700/20">
+                <div className="flex items-center space-x-3 mb-4">
+                  <div className="w-10 h-10 bg-indigo-100 dark:bg-indigo-900/30 rounded-lg flex items-center justify-center">
+                    <Award className="text-indigo-600 dark:text-indigo-400" size={20} />
+                  </div>
+                  <h3 className="text-xl font-bold text-gray-900 dark:text-white">Certification</h3>
+                </div>
+                <h4 className="font-semibold text-gray-900 dark:text-white">{education.certification.name}</h4>
+                <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{education.certification.period}</p>
+                <ul className="mt-3 space-y-1 text-sm text-gray-600 dark:text-gray-400">
+                  <li>Developing Front-End Apps with React</li>
+                  <li>Designing User Interfaces and Experiences (UI/UX)</li>
+                  <li>Introduction to Software Engineering</li>
+                  <li>Cloud-Native Concepts, DevOps, Agile, and NoSQL</li>
+                </ul>
+                <a
+                  href={education.certification.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center mt-4 text-sm text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 font-medium"
+                >
+                  View Certificate <ExternalLink size={14} className="ml-1" />
+                </a>
+              </div>
+            </motion.div>
+          </div>
+        </AnimatedSection>
 
         {/* Skills Section */}
         <SkillsSection />
@@ -759,12 +898,12 @@ function App() {
               </div>
                     <div>
                       <h4 className="font-semibold text-gray-900 dark:text-white">Location</h4>
-                      <p className="text-gray-600 dark:text-gray-400">Cairo, Egypt</p>
+                      <p className="text-gray-600 dark:text-gray-400">Mokattam, Cairo, Egypt</p>
                     </div>
                   </motion.div>
                   
                   <motion.a
-                    href="mailto:gn_farag02@outlook.com"
+                    href="mailto:gn.farag02@gmail.com"
                     className="flex items-center space-x-4 p-4 rounded-lg bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200 group"
                     whileHover={{ x: 5 }}
                   >
@@ -773,7 +912,7 @@ function App() {
                     </div>
                     <div>
                       <h4 className="font-semibold text-gray-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">Email</h4>
-                      <p className="text-gray-600 dark:text-gray-400">gn_farag02@outlook.com</p>
+                      <p className="text-gray-600 dark:text-gray-400">gn.farag02@gmail.com</p>
                     </div>
                   </motion.a>
                   
@@ -851,7 +990,7 @@ function App() {
                     <div className="grid md:grid-cols-2 gap-6">
                       <div>
                         <label htmlFor="name" className="block text-sm font-medium text-gray-900 dark:text-white mb-2">
-                          name
+                          Name
                         </label>
                       <input
                         type="text"
@@ -863,7 +1002,7 @@ function App() {
                     </div>
                       <div>
                         <label htmlFor="email" className="block text-sm font-medium text-gray-900 dark:text-white mb-2">
-                          email
+                          Email
                         </label>
                       <input
                         type="email"
@@ -878,7 +1017,7 @@ function App() {
                     
                     <div>
                       <label htmlFor="subject" className="block text-sm font-medium text-gray-900 dark:text-white mb-2">
-                        subject
+                        Subject
                       </label>
                       <input
                         type="text"
@@ -891,7 +1030,7 @@ function App() {
                     
                     <div>
                       <label htmlFor="message" className="block text-sm font-medium text-gray-900 dark:text-white mb-2">
-                        message
+                        Message
                       </label>
                       <textarea
                         id="message"
@@ -945,8 +1084,7 @@ function App() {
                   </span>
             </div>
                 <p className="text-gray-400 mb-6 max-w-md leading-relaxed">
-                  Full-Stack Developer passionate about creating exceptional digital experiences. 
-                  Let's build something amazing together.
+                  Full-Stack Developer specializing in React.js, Supabase, and API integration. CS graduate from Nile University building scalable web applications.
                 </p>
                 <div className="flex space-x-4">
                   <motion.a
@@ -970,7 +1108,7 @@ function App() {
                 <Linkedin size={20} />
                   </motion.a>
                   <motion.a
-                    href="mailto:gn_farag02@outlook.com"
+                    href="mailto:gn.farag02@gmail.com"
                     className="w-10 h-10 bg-gray-800 dark:bg-gray-700 rounded-lg flex items-center justify-center text-gray-400 hover:bg-indigo-600 hover:text-white transition-all duration-300"
                     whileHover={{ scale: 1.1, y: -2 }}
                     whileTap={{ scale: 0.95 }}
@@ -1018,15 +1156,15 @@ function App() {
                 <div className="space-y-3">
                   <div className="flex items-center space-x-2 text-gray-400">
                     <MapPin size={16} />
-                    <span className="text-sm">Cairo, Egypt</span>
+                    <span className="text-sm">Mokattam, Cairo, Egypt</span>
                     </div>
                   <div className="flex items-center space-x-2 text-gray-400">
                     <Mail size={16} />
                     <a 
-                      href="mailto:gn_farag02@outlook.com" 
+                      href="mailto:gn.farag02@gmail.com" 
                       className="text-sm hover:text-indigo-400 transition-colors duration-200"
                     >
-                      gn_farag02@outlook.com
+                      gn.farag02@gmail.com
                     </a>
                   </div>
                   <div className="flex items-center space-x-2 text-gray-400">

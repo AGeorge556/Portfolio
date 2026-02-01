@@ -19,22 +19,83 @@ function useTheme() {
   return theme;
 }
 
-function GeometricShape({ scale = 2, color = '#4f46e5', shimmer = false, breathing = false, speed = 1, opacity = 0.3 }) {
+// Shared scroll state that persists across components
+const scrollState = { progress: 0, velocity: 0 };
+
+function useScrollTracker() {
+  useEffect(() => {
+    let lastScrollY = window.scrollY;
+    let ticking = false;
+
+    const updateScroll = () => {
+      const scrollY = window.scrollY;
+      const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = maxScroll > 0 ? scrollY / maxScroll : 0;
+      const velocity = (scrollY - lastScrollY) / 100; // Normalized velocity
+
+      scrollState.progress = progress;
+      scrollState.velocity = THREE.MathUtils.lerp(scrollState.velocity, velocity, 0.1);
+      lastScrollY = scrollY;
+      ticking = false;
+    };
+
+    const onScroll = () => {
+      if (!ticking) {
+        requestAnimationFrame(updateScroll);
+        ticking = true;
+      }
+    };
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    updateScroll(); // Initial call
+
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+}
+
+function GeometricShape({
+  scale = 2,
+  color = '#4f46e5',
+  shimmer = false,
+  breathing = false,
+  speed = 1,
+  opacity = 0.3,
+  scrollMultiplier = 1,
+  scrollOffsetY = 0
+}) {
   const meshRef = useRef<THREE.Mesh>(null)
+  const baseY = useRef(0)
+
   useFrame((state: { mouse: THREE.Vector2; clock: THREE.Clock }) => {
     if (meshRef.current) {
-      // Constant rotation
-      meshRef.current.rotation.z -= 0.01 * speed
-      // Mouse parallax
+      // Scroll-based vertical movement (parallax depth effect)
+      const scrollY = scrollState.progress * scrollMultiplier * 4;
+      meshRef.current.position.y = THREE.MathUtils.lerp(
+        meshRef.current.position.y,
+        baseY.current + scrollOffsetY - scrollY,
+        0.05
+      );
+
+      // Scroll affects rotation speed
+      const scrollBoost = 1 + Math.abs(scrollState.velocity) * 2;
+      meshRef.current.rotation.z -= 0.01 * speed * scrollBoost;
+
+      // Scroll-based tilt
+      const scrollTilt = scrollState.progress * Math.PI * 0.15;
+
+      // Mouse parallax combined with scroll
       const mouseX = (state.mouse.x * Math.PI) / 16
       const mouseY = (state.mouse.y * Math.PI) / 16
-      meshRef.current.rotation.x = THREE.MathUtils.lerp(meshRef.current.rotation.x, mouseY, 0.03)
+      meshRef.current.rotation.x = THREE.MathUtils.lerp(meshRef.current.rotation.x, mouseY + scrollTilt, 0.03)
       meshRef.current.rotation.y = THREE.MathUtils.lerp(meshRef.current.rotation.y, mouseX, 0.03)
-      // Breathing scale
+
+      // Breathing scale with scroll influence
       if (breathing) {
-        const s = scale + Math.sin(state.clock.getElapsedTime() * 1.2) * 0.12
+        const scrollScale = 1 + scrollState.progress * 0.15;
+        const s = (scale + Math.sin(state.clock.getElapsedTime() * 1.2) * 0.12) * scrollScale;
         meshRef.current.scale.set(s, s, s)
       }
+
       // Shimmering color
       if (shimmer) {
         const t = state.clock.getElapsedTime()
@@ -44,6 +105,7 @@ function GeometricShape({ scale = 2, color = '#4f46e5', shimmer = false, breathi
       }
     }
   })
+
   return (
     <Float speed={1} rotationIntensity={0.2} floatIntensity={0.5}>
       <mesh ref={meshRef} scale={[scale, scale, scale]} rotation={[0, 0, Math.PI / 4]}>
@@ -61,9 +123,19 @@ function GeometricShape({ scale = 2, color = '#4f46e5', shimmer = false, breathi
   )
 }
 
-function BokehParticles({ count = 120, color = '#6366f1', size = 0.18, twinkle = true, parallax = true, speed = 0.01, opacity = 0.18 }) {
+function BokehParticles({
+  count = 120,
+  color = '#6366f1',
+  size = 0.18,
+  twinkle = true,
+  parallax = true,
+  speed = 0.01,
+  opacity = 0.18,
+  scrollMultiplier = 1
+}) {
   const particlesRef = useRef<THREE.Points>(null)
   const { mouse } = useThree()
+
   // Sprite texture: soft white circle
   const sprite = useMemo(() => {
     const canvas = document.createElement('canvas')
@@ -76,6 +148,7 @@ function BokehParticles({ count = 120, color = '#6366f1', size = 0.18, twinkle =
     ctx.fillRect(0, 0, 64, 64)
     return new THREE.CanvasTexture(canvas)
   }, [])
+
   // Particle positions
   const positions = useMemo(() => {
     const arr = new Float32Array(count * 3)
@@ -86,23 +159,46 @@ function BokehParticles({ count = 120, color = '#6366f1', size = 0.18, twinkle =
     }
     return arr
   }, [count])
+
   // Animate
   useFrame((state) => {
     if (particlesRef.current) {
-      // Parallax
+      // Scroll-based vertical shift (different rate creates parallax)
+      const scrollY = scrollState.progress * scrollMultiplier * 3;
+      particlesRef.current.position.y = THREE.MathUtils.lerp(
+        particlesRef.current.position.y,
+        -scrollY,
+        0.08
+      );
+
+      // Scroll affects rotation
+      const scrollBoost = 1 + Math.abs(scrollState.velocity) * 3;
+      particlesRef.current.rotation.z += speed * scrollBoost;
+
+      // Parallax from mouse + scroll-based tilt
       if (parallax) {
-        particlesRef.current.rotation.y = mouse.x * 0.2
-        particlesRef.current.rotation.x = mouse.y * 0.2
+        const scrollTiltX = scrollState.progress * 0.3;
+        particlesRef.current.rotation.y = THREE.MathUtils.lerp(
+          particlesRef.current.rotation.y,
+          mouse.x * 0.2,
+          0.05
+        );
+        particlesRef.current.rotation.x = THREE.MathUtils.lerp(
+          particlesRef.current.rotation.x,
+          mouse.y * 0.2 + scrollTiltX,
+          0.05
+        );
       }
-      // Slow rotation
-      particlesRef.current.rotation.z += speed
-      // Twinkle
+
+      // Twinkle with scroll influence
       if (twinkle) {
         const mat = particlesRef.current.material as THREE.PointsMaterial
-        mat.opacity = opacity + Math.sin(state.clock.getElapsedTime() * 2 + 1) * 0.08
+        const scrollOpacity = opacity * (1 - scrollState.progress * 0.3); // Fade slightly as you scroll
+        mat.opacity = scrollOpacity + Math.sin(state.clock.getElapsedTime() * 2 + 1) * 0.08
       }
     }
   })
+
   return (
     <points ref={particlesRef}>
       <bufferGeometry>
@@ -125,9 +221,28 @@ function BokehParticles({ count = 120, color = '#6366f1', size = 0.18, twinkle =
   )
 }
 
+// Camera that reacts to scroll
+function ScrollCamera() {
+  const { camera } = useThree();
+  const baseZ = 8;
+
+  useFrame(() => {
+    // Subtle camera movement based on scroll
+    const targetZ = baseZ + scrollState.progress * 2; // Pull back as you scroll
+    const targetY = -scrollState.progress * 1.5; // Drift down slightly
+
+    camera.position.z = THREE.MathUtils.lerp(camera.position.z, targetZ, 0.03);
+    camera.position.y = THREE.MathUtils.lerp(camera.position.y, targetY, 0.03);
+  });
+
+  return null;
+}
+
 export function Scene3D() {
+  // Track scroll position
+  useScrollTracker();
+
   // Responsive: reduce intensity on mobile
-  // (use fewer particles, less bloom, smaller torus)
   const isMobile = typeof window !== 'undefined' ? window.innerWidth < 768 : false
   const theme = useTheme();
 
@@ -156,16 +271,44 @@ export function Scene3D() {
         gl={{ antialias: false, powerPreference: 'high-performance', alpha: true, stencil: false, depth: false }}
         style={{ background: 'transparent', width: '100%', height: '100%' }}
       >
+        <ScrollCamera />
         <ambientLight intensity={0.18} />
         <directionalLight position={[10, 10, 5]} intensity={0.4} />
-        {/* Main torus: breathing, shimmer, bloom */}
-        <GeometricShape scale={isMobile ? 1.5 : 2.2} color={mainTorusColor} shimmer breathing opacity={0.32} />
-        {/* Second torus: larger, slower, subtle */}
-        <GeometricShape scale={isMobile ? 2.2 : 3.2} color={secondTorusColor} speed={0.5} opacity={0.13} />
-        {/* Bokeh/twinkle particles */}
-        <BokehParticles count={isMobile ? 40 : 90} color={particles1Color} size={isMobile ? 0.09 : 0.18} />
-        {/* Second layer, different color/size */}
-        <BokehParticles count={isMobile ? 30 : 60} color={particles2Color} size={isMobile ? 0.07 : 0.13} speed={0.005} opacity={0.12} />
+        {/* Main torus: breathing, shimmer, scroll-reactive */}
+        <GeometricShape
+          scale={isMobile ? 1.5 : 2.2}
+          color={mainTorusColor}
+          shimmer
+          breathing
+          opacity={0.32}
+          scrollMultiplier={1.2}
+          scrollOffsetY={0}
+        />
+        {/* Second torus: larger, slower, different scroll rate */}
+        <GeometricShape
+          scale={isMobile ? 2.2 : 3.2}
+          color={secondTorusColor}
+          speed={0.5}
+          opacity={0.13}
+          scrollMultiplier={0.6}
+          scrollOffsetY={1}
+        />
+        {/* Bokeh/twinkle particles - faster scroll rate */}
+        <BokehParticles
+          count={isMobile ? 40 : 90}
+          color={particles1Color}
+          size={isMobile ? 0.09 : 0.18}
+          scrollMultiplier={1.5}
+        />
+        {/* Second layer - slower scroll rate for depth */}
+        <BokehParticles
+          count={isMobile ? 30 : 60}
+          color={particles2Color}
+          size={isMobile ? 0.07 : 0.13}
+          speed={0.005}
+          opacity={0.12}
+          scrollMultiplier={0.8}
+        />
         {!isMobile && (
           <EffectComposer multisampling={0}>
             <Bloom luminanceThreshold={0.2} luminanceSmoothing={0.9} intensity={0.8} mipmapBlur levels={3} />
@@ -174,4 +317,4 @@ export function Scene3D() {
       </Canvas>
     </div>
   )
-} 
+}

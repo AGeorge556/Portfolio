@@ -237,8 +237,9 @@ function AppContent({
       <section id="hero" className="hero-section">
         <HeroHud badges={techBadges} />
         <CursorLens
-          revealImage="/assets/profile.jpg"
-          objectFit="cover"
+          revealImage="/assets/profile.webp"
+          objectFit="contain"
+          backgroundPosition="center bottom"
           backgroundColor={isDarkMode ? "#0f0e1a" : "#f5f5ff"}
           blobOutlineColor={isDarkMode ? "#4f46e5" : "#a5b4fc"}
           parallaxStrength={8}
@@ -269,12 +270,17 @@ function AppContent({
             style={{ opacity: aboutContentOpacity }}
           >
             <div className="about-photo-wrap">
-              <img
-                src="/assets/profile.jpg"
-                alt="Andrew George"
-                className="about-photo"
-                loading="lazy"
-              />
+              <picture>
+                <source srcSet="/assets/profile.webp" type="image/webp" />
+                <img
+                  src="/assets/profile.jpg"
+                  alt="Andrew George"
+                  className="about-photo"
+                  loading="lazy"
+                  width="400"
+                  height="533"
+                />
+              </picture>
             </div>
 
             <div className="about-copy">

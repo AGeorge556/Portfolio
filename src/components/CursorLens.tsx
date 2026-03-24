@@ -45,6 +45,7 @@ export default function CursorLens({
   baseImage = "",
   revealImage = "",
   objectFit = "cover",
+  backgroundPosition = "center",
   backgroundColor = "#1a1a2e",
   blobOutlineColor = "#4a4e69",
   parallaxStrength = 4,
@@ -243,7 +244,7 @@ export default function CursorLens({
   const imgStyle: React.CSSProperties = {
     width: "100%",
     height: "100%",
-    backgroundPosition: "center",
+    backgroundPosition: backgroundPosition,
     backgroundRepeat: "no-repeat",
     willChange: "transform",
   };
@@ -447,7 +448,6 @@ export default function CursorLens({
               backgroundSize: objectFit,
               x: revealX,
               y: revealY,
-              scale: 1.1,
             }}
           />
         </motion.div>

@@ -653,29 +653,29 @@ html {
 }
 
 .skill-tag-3d {
-  background: rgba(15, 15, 15, 0.6);
+  background: rgba(6, 6, 14, 0.82);
   border: 1px solid;
-  padding: 4px 10px;
-  border-radius: 16px;
-  color: white;
+  padding: 5px 11px;
+  border-radius: 7px;
+  color: #fff;
   display: flex;
   align-items: center;
-  gap: 6px;
-  font-family: var(--body-font);
-  font-size: 0.85rem;
+  gap: 7px;
+  font-family: var(--heading-font);
+  font-size: 0.78rem;
   font-weight: 600;
-  backdrop-filter: blur(4px);
+  letter-spacing: 0.04em;
+  backdrop-filter: blur(10px);
   pointer-events: auto;
   cursor: pointer;
   white-space: nowrap;
-  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.25s;
-  opacity: 0.85;
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s, background 0.2s;
+  text-transform: uppercase;
 }
 
 .skill-tag-3d:hover {
-  transform: scale(1.25);
-  opacity: 1;
-  background: rgba(15, 15, 15, 0.9);
+  transform: scale(1.2);
+  background: rgba(12, 12, 24, 0.95);
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -1469,8 +1469,9 @@ html {
   }
 
   .skills-canvas-container {
-    flex: 1 1 50vh !important;
-    height: 50vh !important;
+    flex: 1 1 62vh !important;
+    height: 62vh !important;
+    min-height: 320px;
     width: 100%;
     margin-left: 0 !important;
   }
@@ -1498,6 +1499,13 @@ html {
   .form-row { grid-template-columns: 1fr; }
 
   .section-title { font-size: clamp(36px, 12vw, 54px); }
+
+  /* Reduce expensive backdrop-filters on mobile */
+  .tech-badge { backdrop-filter: blur(2px); }
+  .folder-front { backdrop-filter: blur(6px); }
+  .folder-back { backdrop-filter: blur(3px); }
+  .contact-form-wrap { backdrop-filter: blur(4px); }
+  .fullscreen-nav { background-size: 60px 60px; }
 }
 
 @media (max-width: 520px) {
@@ -1535,6 +1543,11 @@ html {
   .hero-section { height: 100svh; }
   .skills-canvas-container { height: 56vh; }
   .nav-links a { font-size: clamp(20px, min(8vw, 7.5vh), 48px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tech-badge { animation: none !important; }
+  .cert-gallery-row { animation-play-state: paused !important; }
 }
 
 /* ═══════════════════════════════════════════════════════════════

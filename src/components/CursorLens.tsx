@@ -41,7 +41,7 @@ type CursorLensProps = {
   viscosity?: number;
 };
 
-export default function CursorLens({
+function CursorLensInteractive({
   baseImage = "",
   revealImage = "",
   objectFit = "cover",
@@ -454,4 +454,89 @@ export default function CursorLens({
       )}
     </div>
   );
+}
+
+// Lightweight hero for touch devices — shows profile directly, no cursor springs
+function CursorLensMobile({
+  revealImage = "",
+  objectFit = "cover" as const,
+  backgroundPosition = "center",
+  backgroundColor = "#1a1a2e",
+  blobOutlineColor = "#4a4e69",
+  showBackground = true,
+  bgBlobCount = 6,
+  bgBlobSize = 80,
+  bgBlobComplexity = 60,
+  bgBlobSpeed = 1,
+  blobStrokeWidth = 1,
+}: CursorLensProps) {
+  const filterId = React.useId();
+
+  const blobs = React.useMemo(() => {
+    const sv = (seed: number, min: number, max: number) => {
+      const raw = Math.sin(seed * 9999.91) * 10000;
+      return (raw - Math.floor(raw)) * (max - min) + min;
+    };
+    return [...Array(bgBlobCount)].map((_, i) => ({
+      x: [sv(i * 7.1 + 1, -20, 110) + "%", sv(i * 7.1 + 2, -20, 110) + "%", sv(i * 7.1 + 3, -20, 110) + "%"],
+      y: [sv(i * 7.1 + 4, -20, 110) + "%", sv(i * 7.1 + 5, -20, 110) + "%", sv(i * 7.1 + 6, -20, 110) + "%"],
+      sizeFactor: sv(i * 7.1 + 7, 0.5, 1.5),
+      duration: sv(i * 7.1 + 8, 25, 50) / bgBlobSpeed,
+    }));
+  }, [bgBlobCount, bgBlobSpeed]);
+
+  return (
+    <div style={{ position: "relative", width: "100%", height: "100%", overflow: "hidden", backgroundColor }}>
+      {showBackground && (
+        <>
+          <svg width="0" height="0" style={{ position: "absolute" }}>
+            <defs>
+              <filter id={filterId}>
+                <feTurbulence type="fractalNoise" baseFrequency="0.008" numOctaves="3" result="noise" />
+                <feDisplacementMap in="SourceGraphic" in2="noise" scale={bgBlobComplexity} xChannelSelector="R" yChannelSelector="G" />
+              </filter>
+            </defs>
+          </svg>
+          <svg style={{ position: "absolute", width: "100%", height: "100%", zIndex: 0, overflow: "visible" }}>
+            <g filter={`url(#${filterId})`}>
+              {blobs.map((blob, i) => (
+                <motion.circle
+                  key={i}
+                  initial={{ cx: blob.x[0], cy: blob.y[0] }}
+                  animate={{ cx: blob.x, cy: blob.y }}
+                  transition={{ duration: blob.duration, repeat: Infinity, repeatType: "mirror", ease: "easeInOut" }}
+                  r={blob.sizeFactor * bgBlobSize}
+                  fill="none"
+                  stroke={blobOutlineColor}
+                  strokeWidth={blobStrokeWidth}
+                  strokeOpacity={0.5}
+                />
+              ))}
+            </g>
+          </svg>
+        </>
+      )}
+      {revealImage && (
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            backgroundImage: `url(${revealImage})`,
+            backgroundSize: objectFit,
+            backgroundPosition,
+            backgroundRepeat: "no-repeat",
+            zIndex: 20,
+          }}
+        />
+      )}
+    </div>
+  );
+}
+
+export default function CursorLens(props: CursorLensProps) {
+  const isTouchDevice = React.useMemo(
+    () => typeof window !== "undefined" && window.matchMedia("(hover: none)").matches,
+    [],
+  );
+  return isTouchDevice ? <CursorLensMobile {...props} /> : <CursorLensInteractive {...props} />;
 }

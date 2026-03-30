@@ -84,6 +84,17 @@ function AppContent({
   const [activeSection, setActiveSection] = useState("hero");
   const aboutRef = useRef<HTMLElement | null>(null);
 
+  const [isMobile, setIsMobile] = useState(() =>
+    typeof window !== "undefined" && window.matchMedia("(max-width: 768px)").matches
+  );
+
+  useEffect(() => {
+    const mql = window.matchMedia("(max-width: 768px)");
+    const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches);
+    mql.addEventListener("change", handler);
+    return () => mql.removeEventListener("change", handler);
+  }, []);
+
   const { scrollYProgress: heroToAboutProgress } = useScroll({
     target: aboutRef,
     offset: ["start end", "start start"],
@@ -124,51 +135,55 @@ function AppContent({
     setIsMenuOpen(false);
   };
 
-  // Section blob configs - dark mode
+  // Section blob configs — mobile uses fewer, smaller, simpler blobs for performance
+  const bc = isMobile
+    ? { count: 4, sizeMult: 0.65, complexMult: 0.45 }
+    : { count: 1, sizeMult: 1, complexMult: 1 };
+
   const blobConfigs = isDarkMode
     ? {
         about: {
           backgroundColor: "#0d0b1e",
           blobColor: "#818cf8",
-          blobCount: 9,
-          blobSize: 300,
-          blobComplexity: 180,
+          blobCount: isMobile ? 4 : 9,
+          blobSize: Math.round(300 * bc.sizeMult),
+          blobComplexity: Math.round(180 * bc.complexMult),
           blobSpeed: 0.6,
           strokeOpacity: 0.18,
         },
         skills: {
           backgroundColor: "#0b0e18",
           blobColor: "#6366f1",
-          blobCount: 11,
-          blobSize: 260,
-          blobComplexity: 140,
+          blobCount: isMobile ? 4 : 11,
+          blobSize: Math.round(260 * bc.sizeMult),
+          blobComplexity: Math.round(140 * bc.complexMult),
           blobSpeed: 0.8,
           strokeOpacity: 0.15,
         },
         projects: {
           backgroundColor: "#110d18",
           blobColor: "#a855f7",
-          blobCount: 10,
-          blobSize: 320,
-          blobComplexity: 200,
+          blobCount: isMobile ? 4 : 10,
+          blobSize: Math.round(320 * bc.sizeMult),
+          blobComplexity: Math.round(200 * bc.complexMult),
           blobSpeed: 0.5,
           strokeOpacity: 0.16,
         },
         experience: {
           backgroundColor: "#0b0d14",
           blobColor: "#4f46e5",
-          blobCount: 8,
-          blobSize: 340,
-          blobComplexity: 160,
+          blobCount: isMobile ? 3 : 8,
+          blobSize: Math.round(340 * bc.sizeMult),
+          blobComplexity: Math.round(160 * bc.complexMult),
           blobSpeed: 0.65,
           strokeOpacity: 0.2,
         },
         contact: {
           backgroundColor: "#0e0b1a",
           blobColor: "#7c3aed",
-          blobCount: 9,
-          blobSize: 290,
-          blobComplexity: 150,
+          blobCount: isMobile ? 4 : 9,
+          blobSize: Math.round(290 * bc.sizeMult),
+          blobComplexity: Math.round(150 * bc.complexMult),
           blobSpeed: 0.55,
           strokeOpacity: 0.18,
         },
@@ -177,45 +192,45 @@ function AppContent({
         about: {
           backgroundColor: "#f0eeff",
           blobColor: "#c7d2fe",
-          blobCount: 9,
-          blobSize: 300,
-          blobComplexity: 180,
+          blobCount: isMobile ? 4 : 9,
+          blobSize: Math.round(300 * bc.sizeMult),
+          blobComplexity: Math.round(180 * bc.complexMult),
           blobSpeed: 0.6,
           strokeOpacity: 0.3,
         },
         skills: {
           backgroundColor: "#eef0ff",
           blobColor: "#a5b4fc",
-          blobCount: 11,
-          blobSize: 260,
-          blobComplexity: 140,
+          blobCount: isMobile ? 4 : 11,
+          blobSize: Math.round(260 * bc.sizeMult),
+          blobComplexity: Math.round(140 * bc.complexMult),
           blobSpeed: 0.8,
           strokeOpacity: 0.25,
         },
         projects: {
           backgroundColor: "#f3eeff",
           blobColor: "#d8b4fe",
-          blobCount: 10,
-          blobSize: 320,
-          blobComplexity: 200,
+          blobCount: isMobile ? 4 : 10,
+          blobSize: Math.round(320 * bc.sizeMult),
+          blobComplexity: Math.round(200 * bc.complexMult),
           blobSpeed: 0.5,
           strokeOpacity: 0.28,
         },
         experience: {
           backgroundColor: "#eef0ff",
           blobColor: "#c7d2fe",
-          blobCount: 8,
-          blobSize: 340,
-          blobComplexity: 160,
+          blobCount: isMobile ? 3 : 8,
+          blobSize: Math.round(340 * bc.sizeMult),
+          blobComplexity: Math.round(160 * bc.complexMult),
           blobSpeed: 0.65,
           strokeOpacity: 0.3,
         },
         contact: {
           backgroundColor: "#f0eeff",
           blobColor: "#c4b5fd",
-          blobCount: 9,
-          blobSize: 290,
-          blobComplexity: 150,
+          blobCount: isMobile ? 4 : 9,
+          blobSize: Math.round(290 * bc.sizeMult),
+          blobComplexity: Math.round(150 * bc.complexMult),
           blobSpeed: 0.55,
           strokeOpacity: 0.28,
         },
@@ -244,9 +259,9 @@ function AppContent({
           blobOutlineColor={isDarkMode ? "#4f46e5" : "#a5b4fc"}
           parallaxStrength={8}
           showBackground={true}
-          bgBlobCount={11}
-          bgBlobSize={300}
-          bgBlobComplexity={200}
+          bgBlobCount={isMobile ? 5 : 11}
+          bgBlobSize={isMobile ? 200 : 300}
+          bgBlobComplexity={isMobile ? 90 : 200}
           bgBlobSpeed={0.8}
           blobStrokeWidth={1.5}
           blobSize={400}

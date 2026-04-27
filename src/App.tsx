@@ -15,6 +15,27 @@ import {
   Database,
   Server,
 } from "lucide-react";
+
+function useNearViewport(rootMargin = "400px") {
+  const ref = useRef<HTMLDivElement>(null);
+  const [isNear, setIsNear] = useState(false);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsNear(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin },
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [rootMargin]);
+  return { ref, isNear };
+}
 import { projects } from "./data";
 import CursorLens from "./components/CursorLens";
 import SectionBlock from "./components/SectionBlock";
@@ -70,6 +91,51 @@ function SectionReveal({
     >
       {children}
     </motion.div>
+  );
+}
+
+function SkillsCloudDeferred() {
+  const { ref, isNear } = useNearViewport("400px");
+  return (
+    <div ref={ref} className="skills-canvas-container">
+      {isNear ? (
+        <React.Suspense fallback={<div className="section-loading-fallback">Loading 3D Engine...</div>}>
+          <FloatingSkillsCloud />
+        </React.Suspense>
+      ) : (
+        <div className="section-loading-fallback" />
+      )}
+    </div>
+  );
+}
+
+function CertificationsCarouselDeferred() {
+  const { ref, isNear } = useNearViewport("300px");
+  return (
+    <div ref={ref}>
+      {isNear ? (
+        <React.Suspense fallback={<div className="section-loading-fallback padded">Loading Experience...</div>}>
+          <CertificationsCarousel />
+        </React.Suspense>
+      ) : (
+        <div className="section-loading-fallback padded" style={{ minHeight: "340px" }} />
+      )}
+    </div>
+  );
+}
+
+function ContactSectionDeferred() {
+  const { ref, isNear } = useNearViewport("300px");
+  return (
+    <div ref={ref}>
+      {isNear ? (
+        <React.Suspense fallback={<div className="section-loading-fallback padded">Loading Contact...</div>}>
+          <ContactSection />
+        </React.Suspense>
+      ) : (
+        <div className="section-loading-fallback padded" style={{ minHeight: "480px" }} />
+      )}
+    </div>
   );
 }
 
@@ -337,17 +403,7 @@ function AppContent({
               </p>
             </div>
 
-            <div className="skills-canvas-container">
-              <React.Suspense
-                fallback={
-                  <div className="section-loading-fallback">
-                    Loading 3D Engine...
-                  </div>
-                }
-              >
-                <FloatingSkillsCloud />
-              </React.Suspense>
-            </div>
+            <SkillsCloudDeferred />
           </div>
         </SectionReveal>
       </SectionBlock>
@@ -377,15 +433,7 @@ function AppContent({
         blob={blobConfigs.experience}
       >
         <SectionReveal>
-          <React.Suspense
-            fallback={
-              <div className="section-loading-fallback padded">
-                Loading Experience...
-              </div>
-            }
-          >
-            <CertificationsCarousel />
-          </React.Suspense>
+          <CertificationsCarouselDeferred />
         </SectionReveal>
       </SectionBlock>
 
@@ -396,15 +444,7 @@ function AppContent({
         blob={blobConfigs.contact}
       >
         <SectionReveal>
-          <React.Suspense
-            fallback={
-              <div className="section-loading-fallback padded">
-                Loading Contact...
-              </div>
-            }
-          >
-            <ContactSection />
-          </React.Suspense>
+          <ContactSectionDeferred />
         </SectionReveal>
       </SectionBlock>
 

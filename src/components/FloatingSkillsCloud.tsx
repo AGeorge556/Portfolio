@@ -156,11 +156,15 @@ export default function FloatingSkillsCloud() {
   const radius = isMobile ? 4.5 : 6;
 
   const positions = useMemo(() => {
+    const seeded = (s: number) => {
+      const v = Math.sin(s * 9301.0 + 49297.0) * 233280.0;
+      return v - Math.floor(v);
+    };
     const pos = [];
     for (let i = 0; i < allSkills.length; i++) {
       const phi = Math.acos(1 - (2 * (i + 0.5)) / allSkills.length);
       const theta = Math.PI * (1 + Math.sqrt(5)) * i;
-      const r = radius * (0.85 + Math.random() * 0.3);
+      const r = radius * (0.85 + seeded(i) * 0.3);
       const x = r * Math.sin(phi) * Math.cos(theta);
       const y = r * Math.sin(phi) * Math.sin(theta);
       const z = r * Math.cos(phi);
@@ -177,7 +181,9 @@ export default function FloatingSkillsCloud() {
 
       <Canvas
         camera={{ position: [0, 0, isMobile ? 12 : 15], fov: 60 }}
-        dpr={isMobile ? 1 : [1, 2]}
+        dpr={isMobile ? 1 : Math.min(window.devicePixelRatio, 2)}
+        flat
+        performance={{ min: 0.5 }}
       >
         <ambientLight intensity={0.4} />
         <pointLight position={[-10, 10, -10]} color="#818cf8" intensity={2} />

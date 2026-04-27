@@ -175,7 +175,7 @@ export const projects = [
     github: 'https://github.com/john-0-andrew/trust-pharma',
   },
   {
-    title: 'European Travel Weather Forecast',
+    title: 'Interactive Global Weather Forecast App',
     description: 'A React application providing 7-day weather forecasts for major European cities, helping travelers plan their trips with accurate weather data.',
     metrics: {
       performance: '94% Lighthouse',

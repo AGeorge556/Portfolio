@@ -16,7 +16,6 @@
     "@formspree/react": "^3.0.0",
     "@react-three/drei": "^10.0.8",
     "@react-three/fiber": "^9.1.2",
-    "@react-three/postprocessing": "^3.0.4",
     "framer-motion": "^12.18.1",
     "lucide-react": "^0.460.0",
     "react": "^19.0.0",

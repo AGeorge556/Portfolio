@@ -2,17 +2,34 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="vite.svg" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Andrew's Portfolio Website</title>
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800&family=Inter:wght@400;500;700&family=Playfair+Display:wght@700&family=Space+Grotesk:wght@500;600;700&display=swap">
-    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800&family=Inter:wght@400;500;700&family=Playfair+Display:wght@700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+    <meta name="description" content="Andrew George — Full-Stack Developer specializing in React, TypeScript, and Supabase. Portfolio showcasing projects, experience, and skills." />
+    <meta property="og:title" content="Andrew George — Full-Stack Developer" />
+    <meta property="og:description" content="React, TypeScript, Next.js, Flutter, and Supabase developer based in Cairo, Egypt." />
+    <meta property="og:type" content="website" />
+    <title>Andrew George — Full-Stack Developer</title>
+    <!-- Preconnect to font origins -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!-- DNS prefetch for project image CDN -->
+    <link rel="dns-prefetch" href="https://images.unsplash.com" />
+    <!-- Non-render-blocking font load -->
+    <link
+      rel="preload"
+      as="style"
+      href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800&family=Inter:wght@400;500;700&family=Playfair+Display:wght@700&family=Space+Grotesk:wght@500;600;700&display=swap"
+      onload="this.onload=null;this.rel='stylesheet'"
+    />
+    <noscript>
+      <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800&family=Inter:wght@400;500;700&family=Playfair+Display:wght@700&family=Space+Grotesk:wght@500;600;700&display=swap"
+      />
+    </noscript>
   </head>
   <body>
     <div id="root"></div>
-    <script type="module" src="src/main.tsx"></script>
+    <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

@@ -1,21 +1,19 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 
-// https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
-  optimizeDeps: {
-    exclude: ['lucide-react'],
-  },
-  base: '/',
   build: {
+    target: 'esnext',
+    chunkSizeWarningLimit: 1200,
     rollupOptions: {
       output: {
         manualChunks: {
-          three: ['three', '@react-three/fiber', '@react-three/drei', '@react-three/postprocessing'],
+          'three-core': ['three'],
+          'r3f': ['@react-three/fiber', '@react-three/drei'],
           'framer-motion': ['framer-motion'],
-        }
-      }
-    }
-  }
+        },
+      },
+    },
+  },
 });

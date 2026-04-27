@@ -17,7 +17,6 @@
   --body-font: "Inter", sans-serif;
   --display-font: "Barlow Condensed", sans-serif;
   --serif-font: "Playfair Display", serif;
-  scroll-behavior: smooth;
 }
 
 .dark {
@@ -26,6 +25,15 @@
 
 html {
   scroll-behavior: smooth;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   PAINT CONTAINMENT — skip rendering off-screen sections
+   ═══════════════════════════════════════════════════════════════ */
+
+.content-section {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 100vh;
 }
 
 /* Scrollbar */
@@ -1066,6 +1074,7 @@ html {
   display: flex;
   gap: 16px;
   will-change: transform;
+  transform: translateZ(0);
 }
 
 .cert-card-link {

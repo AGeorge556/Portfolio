@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef } from "react";
+import React, { useState, useEffect, useMemo, useCallback, useRef } from "react";
 import {
   motion,
   AnimatePresence,
@@ -15,6 +15,14 @@ import {
   Database,
   Server,
 } from "lucide-react";
+import { projects } from "./data";
+import CursorLens from "./components/CursorLens";
+import SectionBlock from "./components/SectionBlock";
+import LoadingScreen from "./components/LoadingScreen";
+import SiteHeader from "./components/SiteHeader";
+import HeroHud from "./components/HeroHud";
+import ProjectCard from "./components/ProjectCard";
+import { useScrollLock } from "./hooks/useScrollLock";
 
 function useNearViewport(rootMargin = "400px") {
   const ref = useRef<HTMLDivElement>(null);
@@ -36,13 +44,6 @@ function useNearViewport(rootMargin = "400px") {
   }, [rootMargin]);
   return { ref, isNear };
 }
-import { projects } from "./data";
-import CursorLens from "./components/CursorLens";
-import SectionBlock from "./components/SectionBlock";
-import LoadingScreen from "./components/LoadingScreen";
-import SiteHeader from "./components/SiteHeader";
-import HeroHud from "./components/HeroHud";
-import ProjectCard from "./components/ProjectCard";
 
 const FloatingSkillsCloud = React.lazy(
   () => import("./components/FloatingSkillsCloud"),
@@ -73,6 +74,59 @@ const techBadges = [
   { label: "Supabase", icon: Database, left: "90%", top: "48%", delay: "2.4s" },
   { label: "Node.js", icon: Server, left: "94%", top: "72%", delay: "2.8s" },
 ];
+
+const sectionBlobs = {
+  about: {
+    dark: { backgroundColor: "#0d0b1e", blobColor: "#818cf8" },
+    light: { backgroundColor: "#f0eeff", blobColor: "#c7d2fe" },
+    blobCount: 9,
+    mobileCount: 4,
+    blobSize: 300,
+    blobComplexity: 180,
+    blobSpeed: 0.6,
+    strokeOpacity: { dark: 0.18, light: 0.3 },
+  },
+  skills: {
+    dark: { backgroundColor: "#0b0e18", blobColor: "#6366f1" },
+    light: { backgroundColor: "#eef0ff", blobColor: "#a5b4fc" },
+    blobCount: 11,
+    mobileCount: 4,
+    blobSize: 260,
+    blobComplexity: 140,
+    blobSpeed: 0.8,
+    strokeOpacity: { dark: 0.15, light: 0.25 },
+  },
+  projects: {
+    dark: { backgroundColor: "#110d18", blobColor: "#a855f7" },
+    light: { backgroundColor: "#f3eeff", blobColor: "#d8b4fe" },
+    blobCount: 10,
+    mobileCount: 4,
+    blobSize: 320,
+    blobComplexity: 200,
+    blobSpeed: 0.5,
+    strokeOpacity: { dark: 0.16, light: 0.28 },
+  },
+  experience: {
+    dark: { backgroundColor: "#0b0d14", blobColor: "#4f46e5" },
+    light: { backgroundColor: "#eef0ff", blobColor: "#c7d2fe" },
+    blobCount: 8,
+    mobileCount: 3,
+    blobSize: 340,
+    blobComplexity: 160,
+    blobSpeed: 0.65,
+    strokeOpacity: { dark: 0.2, light: 0.3 },
+  },
+  contact: {
+    dark: { backgroundColor: "#0e0b1a", blobColor: "#7c3aed" },
+    light: { backgroundColor: "#f0eeff", blobColor: "#c4b5fd" },
+    blobCount: 9,
+    mobileCount: 4,
+    blobSize: 290,
+    blobComplexity: 150,
+    blobSpeed: 0.55,
+    strokeOpacity: { dark: 0.18, light: 0.28 },
+  },
+} as const;
 
 function SectionReveal({
   children,
@@ -148,6 +202,8 @@ function AppContent({
 }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState("hero");
+  const [heroParked, setHeroParked] = useState(false);
+  const heroSentinelRef = useRef<HTMLDivElement | null>(null);
   const aboutRef = useRef<HTMLElement | null>(null);
 
   const [isMobile, setIsMobile] = useState(() =>
@@ -172,12 +228,7 @@ function AppContent({
     [0.2, 0.65, 1],
   );
 
-  useEffect(() => {
-    document.body.style.overflow = isMenuOpen ? "hidden" : "";
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, [isMenuOpen]);
+  useScrollLock(isMenuOpen);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -192,7 +243,20 @@ function AppContent({
       const el = document.getElementById(id);
       if (el) observer.observe(el);
     });
-    return () => observer.disconnect();
+
+    // Park the hero (and its filter chains) once it is fully scrolled past.
+    // The hero is position:sticky, so its own rect never leaves the viewport —
+    // observe a 1px sentinel sitting at the end of the hero's flow box instead.
+    const heroObserver = new IntersectionObserver(
+      ([entry]) => setHeroParked(!entry.isIntersecting),
+      { threshold: 0 },
+    );
+    if (heroSentinelRef.current) heroObserver.observe(heroSentinelRef.current);
+
+    return () => {
+      observer.disconnect();
+      heroObserver.disconnect();
+    };
   }, []);
 
   const scrollToSection = (id: string) => {
@@ -202,105 +266,32 @@ function AppContent({
   };
 
   // Section blob configs — mobile uses fewer, smaller, simpler blobs for performance
-  const bc = isMobile
-    ? { count: 4, sizeMult: 0.65, complexMult: 0.45 }
-    : { count: 1, sizeMult: 1, complexMult: 1 };
-
-  const blobConfigs = isDarkMode
-    ? {
-        about: {
-          backgroundColor: "#0d0b1e",
-          blobColor: "#818cf8",
-          blobCount: isMobile ? 4 : 9,
-          blobSize: Math.round(300 * bc.sizeMult),
-          blobComplexity: Math.round(180 * bc.complexMult),
-          blobSpeed: 0.6,
-          strokeOpacity: 0.18,
+  const blobConfigs = useMemo(() => {
+    const sizeMult = isMobile ? 0.65 : 1;
+    const complexMult = isMobile ? 0.45 : 1;
+    return Object.fromEntries(
+      Object.entries(sectionBlobs).map(([key, cfg]) => [
+        key,
+        {
+          backgroundColor: isDarkMode ? cfg.dark.backgroundColor : cfg.light.backgroundColor,
+          blobColor: isDarkMode ? cfg.dark.blobColor : cfg.light.blobColor,
+          blobCount: isMobile ? cfg.mobileCount : cfg.blobCount,
+          blobSize: Math.round(cfg.blobSize * sizeMult),
+          blobComplexity: Math.round(cfg.blobComplexity * complexMult),
+          blobSpeed: cfg.blobSpeed,
+          strokeOpacity: isDarkMode ? cfg.strokeOpacity.dark : cfg.strokeOpacity.light,
         },
-        skills: {
-          backgroundColor: "#0b0e18",
-          blobColor: "#6366f1",
-          blobCount: isMobile ? 4 : 11,
-          blobSize: Math.round(260 * bc.sizeMult),
-          blobComplexity: Math.round(140 * bc.complexMult),
-          blobSpeed: 0.8,
-          strokeOpacity: 0.15,
-        },
-        projects: {
-          backgroundColor: "#110d18",
-          blobColor: "#a855f7",
-          blobCount: isMobile ? 4 : 10,
-          blobSize: Math.round(320 * bc.sizeMult),
-          blobComplexity: Math.round(200 * bc.complexMult),
-          blobSpeed: 0.5,
-          strokeOpacity: 0.16,
-        },
-        experience: {
-          backgroundColor: "#0b0d14",
-          blobColor: "#4f46e5",
-          blobCount: isMobile ? 3 : 8,
-          blobSize: Math.round(340 * bc.sizeMult),
-          blobComplexity: Math.round(160 * bc.complexMult),
-          blobSpeed: 0.65,
-          strokeOpacity: 0.2,
-        },
-        contact: {
-          backgroundColor: "#0e0b1a",
-          blobColor: "#7c3aed",
-          blobCount: isMobile ? 4 : 9,
-          blobSize: Math.round(290 * bc.sizeMult),
-          blobComplexity: Math.round(150 * bc.complexMult),
-          blobSpeed: 0.55,
-          strokeOpacity: 0.18,
-        },
-      }
-    : {
-        about: {
-          backgroundColor: "#f0eeff",
-          blobColor: "#c7d2fe",
-          blobCount: isMobile ? 4 : 9,
-          blobSize: Math.round(300 * bc.sizeMult),
-          blobComplexity: Math.round(180 * bc.complexMult),
-          blobSpeed: 0.6,
-          strokeOpacity: 0.3,
-        },
-        skills: {
-          backgroundColor: "#eef0ff",
-          blobColor: "#a5b4fc",
-          blobCount: isMobile ? 4 : 11,
-          blobSize: Math.round(260 * bc.sizeMult),
-          blobComplexity: Math.round(140 * bc.complexMult),
-          blobSpeed: 0.8,
-          strokeOpacity: 0.25,
-        },
-        projects: {
-          backgroundColor: "#f3eeff",
-          blobColor: "#d8b4fe",
-          blobCount: isMobile ? 4 : 10,
-          blobSize: Math.round(320 * bc.sizeMult),
-          blobComplexity: Math.round(200 * bc.complexMult),
-          blobSpeed: 0.5,
-          strokeOpacity: 0.28,
-        },
-        experience: {
-          backgroundColor: "#eef0ff",
-          blobColor: "#c7d2fe",
-          blobCount: isMobile ? 3 : 8,
-          blobSize: Math.round(340 * bc.sizeMult),
-          blobComplexity: Math.round(160 * bc.complexMult),
-          blobSpeed: 0.65,
-          strokeOpacity: 0.3,
-        },
-        contact: {
-          backgroundColor: "#f0eeff",
-          blobColor: "#c4b5fd",
-          blobCount: isMobile ? 4 : 9,
-          blobSize: Math.round(290 * bc.sizeMult),
-          blobComplexity: Math.round(150 * bc.complexMult),
-          blobSpeed: 0.55,
-          strokeOpacity: 0.28,
-        },
-      };
+      ]),
+    ) as Record<keyof typeof sectionBlobs, {
+      backgroundColor: string;
+      blobColor: string;
+      blobCount: number;
+      blobSize: number;
+      blobComplexity: number;
+      blobSpeed: number;
+      strokeOpacity: number;
+    }>;
+  }, [isMobile, isDarkMode]);
 
   return (
     <div className="page-root">
@@ -315,12 +306,15 @@ function AppContent({
       />
 
       {/* Hero */}
-      <section id="hero" className="hero-section">
+      <section
+        id="hero"
+        className={heroParked ? "hero-section hero-parked" : "hero-section"}
+      >
         <HeroHud badges={techBadges} />
         <CursorLens
           revealImage="/assets/profile.webp"
-          objectFit="contain"
-          backgroundPosition="center bottom"
+          objectFit="cover"
+          backgroundPosition="center 18%"
           backgroundColor={isDarkMode ? "#0f0e1a" : "#f5f5ff"}
           blobOutlineColor={isDarkMode ? "#4f46e5" : "#a5b4fc"}
           parallaxStrength={8}
@@ -330,13 +324,14 @@ function AppContent({
           bgBlobComplexity={isMobile ? 90 : 200}
           bgBlobSpeed={0.8}
           blobStrokeWidth={1.5}
-          blobSize={400}
-          shapeComplexity={1.5}
-          roughness={50}
+          blobSize={230}
+          shapeComplexity={0.8}
+          roughness={40}
           speed={600}
           viscosity={4}
         />
       </section>
+      <div ref={heroSentinelRef} style={{ height: "1px", marginBottom: "-1px" }} />
 
       {/* About */}
       <SectionBlock
@@ -419,7 +414,7 @@ function AppContent({
             <h2 className="section-title section-title-center">Projects</h2>
             <div className="projects-grid">
               {projects.map((project, i) => (
-                <ProjectCard key={project.title} project={project as any} index={i} />
+                <ProjectCard key={project.title} project={project} index={i} />
               ))}
             </div>
           </SectionReveal>

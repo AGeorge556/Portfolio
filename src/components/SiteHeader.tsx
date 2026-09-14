@@ -1,4 +1,3 @@
-import * as React from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import type { Variants } from "framer-motion";
 import { Moon, Sun, Github, Linkedin } from "lucide-react";

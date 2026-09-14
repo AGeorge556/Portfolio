@@ -1,5 +1,4 @@
 import * as React from "react";
-import { motion } from "framer-motion";
 
 type BlobBackgroundProps = {
   backgroundColor: string;
@@ -12,6 +11,15 @@ type BlobBackgroundProps = {
   strokeOpacity?: number;
 };
 
+const seededValue = (seed: number, min: number, max: number) => {
+  const raw = Math.sin(seed * 9999.91) * 10000;
+  return (raw - Math.floor(raw)) * (max - min) + min;
+};
+
+/**
+ * Static filtered circles rasterised once, then drifted with a CSS transform so
+ * the turbulence/displacement output stays a cached compositor layer.
+ */
 export default function BlobBackground({
   backgroundColor,
   blobColor,
@@ -24,32 +32,14 @@ export default function BlobBackground({
 }: BlobBackgroundProps) {
   const filterId = React.useId();
 
-  const seededValue = React.useCallback(
-    (seed: number, min: number, max: number) => {
-      const raw = Math.sin(seed * 9999.91) * 10000;
-      const normalized = raw - Math.floor(raw);
-      return normalized * (max - min) + min;
-    },
-    [],
-  );
-
   const blobs = React.useMemo(
     () =>
       [...Array(blobCount)].map((_, i) => ({
-        x: [
-          seededValue(i * 7.1 + 1, -20, 110) + "%",
-          seededValue(i * 7.1 + 2, -20, 110) + "%",
-          seededValue(i * 7.1 + 3, -20, 110) + "%",
-        ],
-        y: [
-          seededValue(i * 7.1 + 4, -20, 110) + "%",
-          seededValue(i * 7.1 + 5, -20, 110) + "%",
-          seededValue(i * 7.1 + 6, -20, 110) + "%",
-        ],
-        sizeFactor: seededValue(i * 7.1 + 7, 0.5, 1.5),
-        duration: seededValue(i * 7.1 + 8, 25, 50) / blobSpeed,
+        cx: seededValue(i * 7.1 + 1, -20, 110) + "%",
+        cy: seededValue(i * 7.1 + 4, -20, 110) + "%",
+        r: seededValue(i * 7.1 + 7, 0.5, 1.5) * blobSize,
       })),
-    [blobCount, blobSpeed, seededValue],
+    [blobCount, blobSize],
   );
 
   return (
@@ -82,35 +72,38 @@ export default function BlobBackground({
         </defs>
       </svg>
 
-      <svg
+      <div
+        className="blob-drift"
         style={{
           position: "absolute",
-          width: "100%",
-          height: "100%",
-          overflow: "visible",
+          inset: "-10%",
+          animationDuration: `${60 / blobSpeed}s`,
         }}
       >
-        <g filter={`url(#${filterId})`}>
-          {blobs.map((blob, i) => (
-            <motion.circle
-              key={i}
-              initial={{ cx: blob.x[0], cy: blob.y[0] }}
-              animate={{ cx: blob.x, cy: blob.y }}
-              transition={{
-                duration: blob.duration,
-                repeat: Infinity,
-                repeatType: "mirror",
-                ease: "easeInOut",
-              }}
-              r={blob.sizeFactor * blobSize}
-              fill="none"
-              stroke={blobColor}
-              strokeWidth={strokeWidth}
-              strokeOpacity={strokeOpacity}
-            />
-          ))}
-        </g>
-      </svg>
+        <svg
+          style={{
+            position: "absolute",
+            width: "100%",
+            height: "100%",
+            overflow: "visible",
+          }}
+        >
+          <g filter={`url(#${filterId})`}>
+            {blobs.map((blob, i) => (
+              <circle
+                key={i}
+                cx={blob.cx}
+                cy={blob.cy}
+                r={blob.r}
+                fill="none"
+                stroke={blobColor}
+                strokeWidth={strokeWidth}
+                strokeOpacity={strokeOpacity}
+              />
+            ))}
+          </g>
+        </svg>
+      </div>
     </div>
   );
 }

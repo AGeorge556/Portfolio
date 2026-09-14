@@ -112,12 +112,39 @@ const SkillNodeCard = ({
 
 function SpinningCloud({
   positions,
+  radius,
   isMobile,
 }: {
   positions: THREE.Vector3[];
+  radius: number;
   isMobile: boolean;
 }) {
   const groupRef = useRef<THREE.Group>(null);
+
+  // Each node linked to its 3 nearest neighbours, pairs de-duplicated.
+  const linkGeometry = useMemo(() => {
+    const seen = new Set<string>();
+    const verts: number[] = [];
+    positions.forEach((p, i) => {
+      positions
+        .map((q, j) => ({ j, d: p.distanceToSquared(q) }))
+        .filter((n) => n.j !== i)
+        .sort((a, b) => a.d - b.d)
+        .slice(0, 3)
+        .forEach(({ j }) => {
+          const key = i < j ? `${i}-${j}` : `${j}-${i}`;
+          if (seen.has(key)) return;
+          seen.add(key);
+          const q = positions[j];
+          verts.push(p.x, p.y, p.z, q.x, q.y, q.z);
+        });
+    });
+    const geom = new THREE.BufferGeometry();
+    geom.setAttribute("position", new THREE.Float32BufferAttribute(verts, 3));
+    return geom;
+  }, [positions]);
+
+  useEffect(() => () => linkGeometry.dispose(), [linkGeometry]);
 
   useFrame((_, delta) => {
     if (groupRef.current) {
@@ -127,6 +154,37 @@ function SpinningCloud({
 
   return (
     <group ref={groupRef}>
+      <mesh>
+        <sphereGeometry args={[radius * 0.985, isMobile ? 18 : 32, isMobile ? 12 : 20]} />
+        <meshBasicMaterial
+          color="#818cf8"
+          wireframe
+          transparent
+          opacity={0.10}
+          depthWrite={false}
+        />
+      </mesh>
+
+      <mesh>
+        <sphereGeometry args={[radius * 0.97, 24, 16]} />
+        <meshBasicMaterial
+          color="#312e81"
+          transparent
+          opacity={0.12}
+          depthWrite={false}
+          side={THREE.BackSide}
+        />
+      </mesh>
+
+      <lineSegments geometry={linkGeometry}>
+        <lineBasicMaterial
+          color="#a5b4fc"
+          transparent
+          opacity={0.28}
+          depthWrite={false}
+        />
+      </lineSegments>
+
       {allSkills.map((skill, i) => (
         <SkillNodeCard
           key={skill.name}
@@ -156,18 +214,13 @@ export default function FloatingSkillsCloud() {
   const radius = isMobile ? 4.5 : 6;
 
   const positions = useMemo(() => {
-    const seeded = (s: number) => {
-      const v = Math.sin(s * 9301.0 + 49297.0) * 233280.0;
-      return v - Math.floor(v);
-    };
     const pos = [];
     for (let i = 0; i < allSkills.length; i++) {
       const phi = Math.acos(1 - (2 * (i + 0.5)) / allSkills.length);
       const theta = Math.PI * (1 + Math.sqrt(5)) * i;
-      const r = radius * (0.85 + seeded(i) * 0.3);
-      const x = r * Math.sin(phi) * Math.cos(theta);
-      const y = r * Math.sin(phi) * Math.sin(theta);
-      const z = r * Math.cos(phi);
+      const x = radius * Math.sin(phi) * Math.cos(theta);
+      const y = radius * Math.sin(phi) * Math.sin(theta);
+      const z = radius * Math.cos(phi);
       pos.push(new THREE.Vector3(x, y, z));
     }
     return pos;
@@ -189,7 +242,7 @@ export default function FloatingSkillsCloud() {
         <pointLight position={[-10, 10, -10]} color="#818cf8" intensity={2} />
         <pointLight position={[10, -10, 10]} color="#a855f7" intensity={1.5} />
 
-        <SpinningCloud positions={positions} isMobile={isMobile} />
+        <SpinningCloud positions={positions} radius={radius} isMobile={isMobile} />
 
         <OrbitControls
           enablePan={false}

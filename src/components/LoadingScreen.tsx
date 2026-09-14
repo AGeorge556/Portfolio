@@ -1,5 +1,6 @@
 import * as React from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useScrollLock } from "../hooks/useScrollLock";
 import "../loader.css";
 
 type Phase = "loading" | "ready" | "flash" | "exit";
@@ -8,13 +9,7 @@ export default function LoadingScreen({ onDone }: { onDone: () => void }) {
   const [phase, setPhase] = React.useState<Phase>("loading");
   const [progress, setProgress] = React.useState(0);
 
-  React.useEffect(() => {
-    const prev = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.body.style.overflow = prev;
-    };
-  }, []);
+  useScrollLock(true);
 
   React.useEffect(() => {
     let dead = false;

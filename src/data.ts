@@ -83,6 +83,23 @@ export type Project = {
 
 export const projects: Project[] = [
   {
+    title: 'LuminaMed Stock',
+    description: 'Mobile-first internal PWA for tracking medical equipment stock: units in the storeroom, checked out to salespeople, or in repair. Built for LuminaMed staff, installable, and usable offline on bad hospital Wi-Fi.',
+    technicalHighlights: [
+      'Stock is derived, never stored: per-unit status rows plus an append-only ledger feed one Postgres view',
+      'Every status change goes through a Postgres RPC; a trigger validates the transition and writes the audit row, with no client insert policy so the log cannot be forged',
+      'Invite-only auth with role-based access via Supabase and RLS',
+      'TanStack Query persisted to localStorage and a PWA app shell so cached stock survives offline',
+      'Excel export of stock and movements'
+    ],
+    metrics: {},
+    challenges: [],
+    image: '/assets/projects/luminamed-stock.svg',
+    technologies: ['React', 'TypeScript', 'Vite', 'Tailwind CSS', 'Supabase', 'PostgreSQL', 'TanStack Query', 'PWA'],
+    demo: '',
+    github: '',
+  },
+  {
     title: 'BCH Youth Bible Reading',
     description: 'Mobile-first web app for tracking youth Bible reading, with member profiles and avatars, poster uploads, and a role-based admin panel.',
     technicalHighlights: [

@@ -61,13 +61,81 @@ export const education = {
   image: '/assets/experience/nile-uni.svg',
   gradProjectSubtitle: 'Deep Learning Web App',
   gradProjectImage: '/assets/experience/immerse-ai.svg',
-  certification: {
-    name: 'IBM Professional Front-End Developer',
-    period: 'Mar 2025 - Apr 2025',
-    link: 'https://coursera.org/share/899f937de16ce48448f5f09d6d11bf1d',
-    image: '/assets/experience/ibm-cert.svg',
-  },
 };
+
+export type CourseCertificate = {
+  title: string;
+  date: string;
+  verify: string;
+  pdf: string;
+  image: string;
+  honors: boolean;
+};
+
+export type CertificationGroup = {
+  id: string;
+  program: string;
+  issuer: string;
+  date: string;
+  credential?: string;
+  pdf?: string;
+  image?: string;
+  courses: CourseCertificate[];
+};
+
+export const certifications: CertificationGroup[] = [
+  {
+    id: 'ibm-front-end',
+    program: 'IBM Front-End Developer Professional Certificate',
+    issuer: 'IBM via Coursera',
+    date: 'Apr 7, 2025',
+    credential: 'https://coursera.org/verify/professional-cert/DP6FKDNZET4B',
+    pdf: '/assets/certificates/ibm-front-end-developer.pdf',
+    image: '/assets/certificates/ibm-front-end-developer.webp',
+    courses: [
+      { title: 'Getting Started with Front-End and Web Development', date: 'Mar 25, 2025', verify: 'https://coursera.org/verify/CKN1TXTUZJMU', pdf: '/assets/certificates/getting-started-with-front-end-and-web.pdf', image: '/assets/certificates/getting-started-with-front-end-and-web.webp', honors: true },
+      { title: 'Introduction to Software Engineering', date: 'Mar 25, 2025', verify: 'https://coursera.org/verify/QSGFDQXL8E76', pdf: '/assets/certificates/introduction-to-software-engineering.pdf', image: '/assets/certificates/introduction-to-software-engineering.webp', honors: true },
+      { title: 'Designing User Interfaces and Experiences (UI/UX)', date: 'Mar 26, 2025', verify: 'https://coursera.org/verify/WQXV9IFFHSN5', pdf: '/assets/certificates/designing-user-interfaces-and-experiences-uiux.pdf', image: '/assets/certificates/designing-user-interfaces-and-experiences-uiux.webp', honors: true },
+      { title: 'Developing Websites and Front-Ends with Bootstrap', date: 'Mar 26, 2025', verify: 'https://coursera.org/verify/24THOYZUE489', pdf: '/assets/certificates/developing-websites-and-front-ends-with.pdf', image: '/assets/certificates/developing-websites-and-front-ends-with.webp', honors: false },
+      { title: 'Getting Started with Git and GitHub', date: 'Mar 26, 2025', verify: 'https://coursera.org/verify/FWHZG7Q00CJQ', pdf: '/assets/certificates/getting-started-with-git-and-github.pdf', image: '/assets/certificates/getting-started-with-git-and-github.webp', honors: false },
+      { title: 'Introduction to HTML, CSS, & JavaScript', date: 'Mar 26, 2025', verify: 'https://coursera.org/verify/J9IMP1YPBZ34', pdf: '/assets/certificates/introduction-to-html-css-javascript.pdf', image: '/assets/certificates/introduction-to-html-css-javascript.webp', honors: false },
+      { title: 'Developing Front-End Apps with React', date: 'Apr 2, 2025', verify: 'https://coursera.org/verify/P79O0H28CPZ4', pdf: '/assets/certificates/developing-front-end-apps-with-react.pdf', image: '/assets/certificates/developing-front-end-apps-with-react.webp', honors: false },
+      { title: 'Intermediate Web and Front-End Development', date: 'Apr 4, 2025', verify: 'https://coursera.org/verify/8W89PEF12D02', pdf: '/assets/certificates/intermediate-web-and-front-end-development.pdf', image: '/assets/certificates/intermediate-web-and-front-end-development.webp', honors: false },
+      { title: 'Get Started with Cloud Native, DevOps, Agile, and NoSQL', date: 'Apr 5, 2025', verify: 'https://coursera.org/verify/VFGOE272S93I', pdf: '/assets/certificates/get-started-with-cloud-native-devops-agile-and-nosql.pdf', image: '/assets/certificates/get-started-with-cloud-native-devops-agile-and-nosql.webp', honors: false },
+      { title: 'Front-End Development Capstone Project', date: 'Apr 7, 2025', verify: 'https://coursera.org/verify/5OQRV2Y0WNHE', pdf: '/assets/certificates/front-end-capstone-project.pdf', image: '/assets/certificates/front-end-capstone-project.webp', honors: false },
+    ],
+  },
+  {
+    id: 'microsoft-back-end',
+    program: 'Microsoft Back-End Developer Professional Certificate',
+    issuer: 'Microsoft via Coursera',
+    date: 'Apr 28, 2026',
+    credential: 'https://coursera.org/verify/professional-cert/E3XUQY3ZI8C7',
+    pdf: '/assets/certificates/microsoft-back-end-developer.pdf',
+    image: '/assets/certificates/microsoft-back-end-developer.webp',
+    courses: [
+      { title: 'Foundations of Coding Back-End', date: 'Apr 20, 2026', verify: 'https://coursera.org/verify/PJYBCXRSREW9', pdf: '/assets/certificates/foundations-of-coding-back-end.pdf', image: '/assets/certificates/foundations-of-coding-back-end.webp', honors: false },
+      { title: 'Introduction to Programming With C#', date: 'Apr 21, 2026', verify: 'https://coursera.org/verify/0YZP92CU2JKJ', pdf: '/assets/certificates/intro-to-programming-with-c.pdf', image: '/assets/certificates/intro-to-programming-with-c.webp', honors: false },
+      { title: 'Back-End Development with .NET', date: 'Apr 22, 2026', verify: 'https://coursera.org/verify/6S0H7DVDW2JH', pdf: '/assets/certificates/back-end-development-with-net.pdf', image: '/assets/certificates/back-end-development-with-net.webp', honors: false },
+      { title: 'Database Integration and Management', date: 'Apr 22, 2026', verify: 'https://coursera.org/verify/LG7VVV65DR79', pdf: '/assets/certificates/database-integration-and-management.pdf', image: '/assets/certificates/database-integration-and-management.webp', honors: false },
+      { title: 'Security and Authentication', date: 'Apr 22, 2026', verify: 'https://coursera.org/verify/MAJQC5KO2C8V', pdf: '/assets/certificates/security-and-authentication.pdf', image: '/assets/certificates/security-and-authentication.webp', honors: false },
+      { title: 'Data Structures and Algorithms', date: 'Apr 23, 2026', verify: 'https://coursera.org/verify/4ZT3K4UN29VL', pdf: '/assets/certificates/data-stuctures-and-algorithms.pdf', image: '/assets/certificates/data-stuctures-and-algorithms.webp', honors: false },
+      { title: 'Deployment and DevOps', date: 'Apr 28, 2026', verify: 'https://coursera.org/verify/GPDZKLXGUUN1', pdf: '/assets/certificates/deployment-and-devops.pdf', image: '/assets/certificates/deployment-and-devops.webp', honors: false },
+      { title: 'Performance Optimization and Scalability', date: 'Apr 28, 2026', verify: 'https://coursera.org/verify/TR711T1PZCFD', pdf: '/assets/certificates/preformance-optimization-and-scalability.pdf', image: '/assets/certificates/preformance-optimization-and-scalability.webp', honors: false },
+    ],
+  },
+  {
+    id: 'ibm-genai',
+    program: 'IBM Generative AI',
+    issuer: 'IBM via Coursera',
+    date: 'Apr 22, 2026',
+    courses: [
+      { title: 'Generative AI: Introduction and Applications', date: 'Jan 26, 2026', verify: 'https://coursera.org/verify/JU0P5OZN3UP4', pdf: '/assets/certificates/genai-intro-applications.pdf', image: '/assets/certificates/genai-intro-applications.webp', honors: false },
+      { title: 'Generative AI: Prompt Engineering Basics', date: 'Jan 26, 2026', verify: 'https://coursera.org/verify/3V3DTK8HEAB2', pdf: '/assets/certificates/genai-prompt-engineering.pdf', image: '/assets/certificates/genai-prompt-engineering.webp', honors: false },
+      { title: 'Generative AI: Elevate your Software Development Career', date: 'Apr 22, 2026', verify: 'https://coursera.org/verify/VJHHI7H87XAC', pdf: '/assets/certificates/genai-elevate-your-software-development-career.pdf', image: '/assets/certificates/genai-elevate-your-software-development-career.webp', honors: false },
+    ],
+  },
+];
 
 export type Project = {
   title: string;

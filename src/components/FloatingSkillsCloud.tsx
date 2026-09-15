@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useMemo } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
-import { OrbitControls, Html, MeshDistortMaterial } from "@react-three/drei";
+import { OrbitControls, Html } from "@react-three/drei";
 import * as THREE from "three";
 import type { IconType } from "react-icons";
 import {
@@ -67,22 +67,35 @@ const SkillNodeCard = ({
   const labelRef = useRef<HTMLDivElement>(null);
   const Icon = skill.Icon;
   const color = skill.color;
+  const stemLength = isMobile ? 0.7 : 0.9;
+
+  // Anchor pad lies tangent to the globe; stem and label go out along the normal.
+  const { normal, padQuaternion, stemQuaternion } = useMemo(() => {
+    const n = position.clone().normalize();
+    return {
+      normal: n,
+      padQuaternion: new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 0, 1), n),
+      stemQuaternion: new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 1, 0), n),
+    };
+  }, [position]);
 
   return (
     <group position={position}>
       <mesh>
-        <sphereGeometry args={[0.12, isMobile ? 8 : 16, isMobile ? 8 : 16]} />
-        <MeshDistortMaterial
-          color={color}
-          emissive={color}
-          emissiveIntensity={1.4}
-          distort={isMobile ? 0.12 : 0.3}
-          speed={isMobile ? 1.5 : 4}
-          roughness={0}
-        />
+        <sphereGeometry args={[0.07, 12, 12]} />
+        <meshBasicMaterial color={color} />
+      </mesh>
+      <mesh quaternion={padQuaternion}>
+        <ringGeometry args={[0.14, 0.18, 32]} />
+        <meshBasicMaterial color={color} transparent opacity={0.7} side={THREE.DoubleSide} depthWrite={false} />
+      </mesh>
+      <mesh position={normal.clone().multiplyScalar(stemLength / 2)} quaternion={stemQuaternion}>
+        <cylinderGeometry args={[0.012, 0.012, stemLength, 6]} />
+        <meshBasicMaterial color={color} transparent opacity={0.6} />
       </mesh>
 
       <Html
+        position={normal.clone().multiplyScalar(stemLength + 0.15)}
         distanceFactor={isMobile ? 11 : 14}
         center
         transform

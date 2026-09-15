@@ -1,7 +1,7 @@
 import { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { ExternalLink } from "lucide-react";
-import { education, experience } from "../data";
+import { certifications, education, experience } from "../data";
 
 type CarouselCard = {
   id: string;
@@ -24,16 +24,20 @@ const gradients = [
 
 const gradProjectTitle = education.gradProject.split(" - ")[0];
 
+const proCerts: CarouselCard[] = certifications
+  .filter((g) => g.credential)
+  .map((g, i) => ({
+    id: g.id,
+    title: g.program.replace(" Professional Certificate", ""),
+    subtitle: g.issuer,
+    date: g.date,
+    gradient: gradients[i],
+    link: g.credential,
+    image: g.image!,
+  }));
+
 const row1Base: CarouselCard[] = [
-  {
-    id: "ibm-cert",
-    title: education.certification.name,
-    subtitle: "Coursera / IBM",
-    date: education.certification.period,
-    gradient: gradients[0],
-    link: education.certification.link,
-    image: education.certification.image,
-  },
+  ...proCerts,
   {
     id: "nile-uni",
     title: education.degree,
@@ -90,6 +94,36 @@ export default function CertificationsCarousel() {
           <CertCard key={`r2-${card.id}-${i}`} card={card} />
         ))}
       </motion.div>
+
+      <div className="certs-groups">
+        {certifications.map((group) => (
+          <section key={group.id} className="certs-group">
+            <h3 className="certs-group-title">
+              {group.program}
+              <span>
+                {group.courses.length} courses &middot; {group.issuer}
+              </span>
+            </h3>
+            <div className="certs-grid">
+              {group.courses.map((course) => (
+                <div key={course.pdf} className="cert-course-card">
+                  <a href={course.pdf} target="_blank" rel="noopener noreferrer" className="cert-course-link">
+                    <img src={course.image} alt="" loading="lazy" width="800" height="618" />
+                    <span className="cert-course-title">{course.title}</span>
+                  </a>
+                  <div className="cert-course-meta">
+                    <span>{course.date}</span>
+                    {course.honors && <em className="cert-honors">Honors</em>}
+                    <a href={course.verify} target="_blank" rel="noopener noreferrer">
+                      Verify
+                    </a>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+        ))}
+      </div>
     </div>
   );
 }

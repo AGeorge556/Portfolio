@@ -2,16 +2,8 @@ import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Github, ExternalLink, X } from "lucide-react";
-
-type Project = {
-  title: string;
-  description: string;
-  technologies: string[];
-  demo: string;
-  github: string;
-  technicalHighlights: string[];
-  metrics: Record<string, string>;
-};
+import type { Project } from "../data";
+import { useScrollLock } from "../hooks/useScrollLock";
 
 export default function ProjectCard({ project, index }: { project: Project; index: number }) {
   const [isHovered, setIsHovered] = useState(false);
@@ -23,16 +15,7 @@ export default function ProjectCard({ project, index }: { project: Project; inde
     setMounted(true);
   }, []);
 
-  useEffect(() => {
-    if (isExpanded) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
-    }
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, [isExpanded]);
+  useScrollLock(isExpanded);
 
   return (
     <>
@@ -70,6 +53,7 @@ export default function ProjectCard({ project, index }: { project: Project; inde
             className="project-paper"
           >
             <div className={`paper-content ${isHovered ? "active" : ""}`}>
+              <img className="paper-thumb" src={project.image} alt="" loading="lazy" width="800" height="500" />
               <h3 className="paper-title">{project.title}</h3>
               <p className="paper-description">{project.description}</p>
               <div className="tech-chips">
@@ -128,6 +112,7 @@ export default function ProjectCard({ project, index }: { project: Project; inde
                     <X size={18} />
                   </button>
 
+                  <img className="modal-thumb" src={project.image} alt={`${project.title} screenshot`} />
                   <h2 className="modal-title">{project.title}</h2>
                   <p className="modal-description">{project.description}</p>
 

@@ -1,33 +1,3 @@
-export const skills = {
-  core: [
-    { name: 'React.js', level: 'Advanced', achievements: ['Custom hooks', 'Performance optimization', 'State management'] },
-    { name: 'TypeScript', level: 'Advanced', achievements: ['Type safety', 'Interface design', 'Generics'] },
-    { name: 'Next.js', level: 'Intermediate', achievements: ['SSR implementation', 'API routes', 'App Router'] },
-    { name: 'JavaScript', level: 'Advanced', achievements: ['ES6+', 'Async patterns', 'DOM manipulation'] },
-    { name: 'HTML5', level: 'Advanced', achievements: ['Semantic markup', 'Accessibility (WCAG 2.1)'] },
-    { name: 'CSS3', level: 'Advanced', achievements: ['Responsive design', 'Animations', 'Flexbox/Grid'] },
-  ],
-  frameworks: [
-    { name: 'Tailwind CSS', level: 'Advanced', achievements: ['Custom design systems', 'Responsive layouts'] },
-    { name: 'Flutter', level: 'Intermediate', achievements: ['Cross-platform apps', 'Supabase integration'] },
-    { name: 'Bootstrap', level: 'Advanced', achievements: ['Custom themes', 'Responsive components'] },
-    { name: 'Framer Motion', level: 'Intermediate', achievements: ['Page transitions', 'Scroll animations'] },
-  ],
-  backend: [
-    { name: 'Supabase', level: 'Advanced', achievements: ['Auth', 'RLS policies', 'Real-time subscriptions'] },
-    { name: 'Node.js', level: 'Intermediate', achievements: ['REST APIs', 'Express.js', 'Middleware'] },
-    { name: 'PostgreSQL', level: 'Intermediate', achievements: ['Schema design', 'Row-level security'] },
-    { name: 'MongoDB', level: 'Intermediate', achievements: ['Data modeling', 'Aggregation pipelines'] },
-    { name: 'RESTful APIs', level: 'Advanced', achievements: ['API design', 'Third-party integration'] },
-  ],
-  tools: [
-    { name: 'Git / GitHub', level: 'Advanced', achievements: ['Branch strategy', 'Code reviews', 'CI/CD'] },
-    { name: 'Vercel', level: 'Advanced', achievements: ['Deployment', 'Preview builds'] },
-    { name: 'Figma', level: 'Intermediate', achievements: ['UI/UX design', 'Prototyping'] },
-    { name: 'VS Code', level: 'Advanced', achievements: ['Extensions', 'Debugging'] },
-  ],
-};
-
 export const experience = [
   {
     title: 'Full-Stack Developer',
@@ -44,6 +14,7 @@ export const experience = [
       'Defined MVP scope, sprint backlog, and long-term technical roadmap from foundation to production scale',
     ],
     technologies: ['React', 'Flutter', 'Supabase', 'PostgreSQL', 'TypeScript'],
+    image: '/assets/experience/streams.svg',
   },
   {
     title: 'Full-Stack Developer',
@@ -59,6 +30,7 @@ export const experience = [
       'Delivered features under tight deadlines with strong prioritization and problem-solving',
     ],
     technologies: ['React', 'JavaScript', 'REST APIs', 'Responsive Design'],
+    image: '/assets/experience/clearview.svg',
   },
   {
     title: 'Full-Stack Developer',
@@ -74,6 +46,7 @@ export const experience = [
       'Participated in code reviews to enforce best practices and maintain code quality',
     ],
     technologies: ['React', 'JavaScript', 'Git', 'Performance Optimization'],
+    image: '/assets/experience/trustpharma.svg',
   },
 ];
 
@@ -85,14 +58,107 @@ export const education = {
   graduated: 'Jul 2025',
   gpa: '3.24',
   gradProject: 'ImmerseAI - Educational video summarization and visualization web app using Deep Learning',
+  image: '/assets/experience/nile-uni.svg',
+  gradProjectSubtitle: 'Deep Learning Web App',
+  gradProjectImage: '/assets/experience/immerse-ai.svg',
   certification: {
     name: 'IBM Professional Front-End Developer',
     period: 'Mar 2025 - Apr 2025',
     link: 'https://coursera.org/share/899f937de16ce48448f5f09d6d11bf1d',
+    image: '/assets/experience/ibm-cert.svg',
   },
 };
 
-export const projects = [
+export type Project = {
+  title: string;
+  description: string;
+  technologies: string[];
+  demo: string;
+  github: string;
+  technicalHighlights: string[];
+  metrics: Record<string, string>;
+  image: string;
+  challenges: { problem: string; solution: string; impact: string }[];
+};
+
+export const projects: Project[] = [
+  {
+    title: 'CampTeams',
+    description: 'Summer-camp team selection platform: email-confirmed sign-up, four colour teams with per-grade caps, up to three team switches per member, live roster updates, and an admin panel for schedules, sports preferences, and data export.',
+    technicalHighlights: [
+      'Real-time roster updates via Supabase subscriptions',
+      'Grade-based team caps and switch limits enforced server-side',
+      'Admin panel with team lock/unlock, 4-day schedule editor, and CSV export',
+      'Keyboard-navigable UI with ARIA labels and error boundaries'
+    ],
+    metrics: {},
+    challenges: [],
+    image: '/assets/projects/camp-teams.svg',
+    technologies: ['React', 'TypeScript', 'Vite', 'Tailwind CSS', 'Supabase', 'PostgreSQL'],
+    demo: 'https://camp-teams.vercel.app',
+    github: 'https://github.com/AGeorge556/CampTeams',
+  },
+  {
+    title: 'BCH Youth Bible Reading',
+    description: 'Mobile-first web app for tracking youth Bible reading, with member profiles and avatars, poster uploads, and a role-based admin panel.',
+    technicalHighlights: [
+      'Next.js App Router with Supabase auth and Postgres',
+      'Role-based access: youth members vs. admins',
+      'Supabase Storage buckets for avatars and posters',
+      'SQL migrations checked into the repo'
+    ],
+    metrics: {},
+    challenges: [],
+    image: '/assets/projects/bch-youth-bible-reading.svg',
+    technologies: ['Next.js', 'TypeScript', 'Supabase', 'PostgreSQL'],
+    demo: 'https://bch-youth-bible-reading.vercel.app',
+    github: 'https://github.com/AGeorge556/bch-youth-bible-reading',
+  },
+  {
+    title: 'Say I Do Gallery',
+    description: "Wedding website and shared photo gallery built for a couple's big day, deployed on Vercel.",
+    technicalHighlights: [
+      'Responsive gallery layout for phone-first guests',
+      'Deployed on Vercel with preview builds'
+    ],
+    metrics: {},
+    challenges: [],
+    image: '/assets/projects/say-i-do-gallery.svg',
+    technologies: ['React', 'TypeScript', 'Vercel'],
+    demo: 'https://say-i-do-gallery.vercel.app',
+    github: 'https://github.com/AGeorge556/say-i-do-gallery',
+  },
+  {
+    title: 'Treasure Hunt',
+    description: 'Synchronized digital companion for a four-stage physical treasure hunt at a teens camp: team codes, Morse-code and word-order puzzles, and progress persisted per device.',
+    technicalHighlights: [
+      'Four puzzle stages driven by a single editable config file',
+      'Team code stored locally so each device stays bound to its team',
+      'Progress persisted in localStorage with a documented reset path'
+    ],
+    metrics: {},
+    challenges: [],
+    image: '/assets/projects/treasure-hunt.svg',
+    technologies: ['React', 'Vite', 'JavaScript', 'Vercel'],
+    demo: 'https://treasurehunt-one-lemon.vercel.app',
+    github: 'https://github.com/AGeorge556/treasure-hunt',
+  },
+  {
+    title: 'Mini Inventory System',
+    description: 'Full-stack inventory management across multiple warehouses with atomic, transactional stock operations and a REST API.',
+    technicalHighlights: [
+      'Express + Prisma REST API over PostgreSQL',
+      'Stock moves wrapped in database transactions',
+      'Dockerised Postgres for one-command local setup',
+      'React + Vite frontend'
+    ],
+    metrics: {},
+    challenges: [],
+    image: '/assets/projects/mini-inventory-system.svg',
+    technologies: ['Node.js', 'TypeScript', 'Express', 'Prisma', 'PostgreSQL', 'React', 'Docker'],
+    demo: '',
+    github: 'https://github.com/AGeorge556/INVIA_Task',
+  },
   {
     title: 'StayHealthy',
     description: 'A modern healthcare platform that allows users to book in-person medical appointments and schedule instant online consultations with healthcare professionals.',
@@ -115,7 +181,7 @@ export const projects = [
         impact: 'Reduced server load by 40% while maintaining real-time updates'
       },
     ],
-    image: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
+    image: '/assets/projects/stayhealthy.svg',
     technologies: ['React', 'React Router', 'CSS3', 'Node.js', 'Express.js', 'MongoDB', 'JWT'],
     demo: 'https://ageorge556.github.io/StayHealthy/',
     github: 'https://github.com/AGeorge556/StayHealthy',
@@ -142,7 +208,7 @@ export const projects = [
         impact: 'Reduced scheduling errors by 75%'
       }
     ],
-    image: 'https://images.unsplash.com/photo-1551076805-e1869033e561?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
+    image: '/assets/projects/clear-view-clinics.svg',
     technologies: ['React', 'JavaScript', 'Responsive Design'],
     demo: 'https://ageorge556.github.io/ClearViewClinics/',
     github: 'https://github.com/AGeorge556/ClearViewClinics',
@@ -169,7 +235,7 @@ export const projects = [
         impact: 'Reduced initial load time by 60%'
       }
     ],
-    image: 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
+    image: '/assets/projects/trust-pharma.svg',
     technologies: ['React', 'JavaScript', 'Modern UI'],
     demo: 'https://john-0-andrew.github.io/trust-pharma/',
     github: 'https://github.com/john-0-andrew/trust-pharma',
@@ -196,7 +262,7 @@ export const projects = [
         impact: 'Reduced API calls by 70% while maintaining data freshness'
       }
     ],
-    image: 'https://images.unsplash.com/photo-1519677100203-a0e668c92439?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
+    image: '/assets/projects/weather-forecast.svg',
     technologies: ['React', 'Weather API', 'JavaScript'],
     demo: 'https://ageorge556.github.io/European-travel-agency/',
     github: 'https://github.com/AGeorge556/European-travel-agency',
@@ -223,7 +289,7 @@ export const projects = [
         impact: 'Improved cart retention by 85%'
       }
     ],
-    image: 'https://images.unsplash.com/photo-1485955900006-10f4d324d411?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
+    image: '/assets/projects/plant-shop.svg',
     technologies: ['React', 'JavaScript', 'CSS', 'HTML'],
     demo: 'https://ageorge556.github.io/e-plantShopping/',
     github: 'https://github.com/AGeorge556/e-plantShopping',

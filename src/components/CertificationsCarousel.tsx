@@ -1,6 +1,7 @@
 import { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { ExternalLink } from "lucide-react";
+import { education, experience } from "../data";
 
 type CarouselCard = {
   id: string;
@@ -9,53 +10,56 @@ type CarouselCard = {
   date: string;
   gradient: string;
   link?: string;
+  image: string;
 };
 
-const cards: CarouselCard[] = [
+const gradients = [
+  "linear-gradient(135deg, #4f46e5, #6366f1)",
+  "linear-gradient(135deg, #7c3aed, #a78bfa)",
+  "linear-gradient(135deg, #2563eb, #60a5fa)",
+  "linear-gradient(135deg, #059669, #34d399)",
+  "linear-gradient(135deg, #0891b2, #67e8f9)",
+  "linear-gradient(135deg, #d946ef, #f0abfc)",
+];
+
+const gradProjectTitle = education.gradProject.split(" - ")[0];
+
+const row1Base: CarouselCard[] = [
   {
     id: "ibm-cert",
-    title: "IBM Professional Front-End Developer",
+    title: education.certification.name,
     subtitle: "Coursera / IBM",
-    date: "Mar 2025 - Apr 2025",
-    gradient: "linear-gradient(135deg, #4f46e5, #6366f1)",
-    link: "https://coursera.org/share/899f937de16ce48448f5f09d6d11bf1d",
+    date: education.certification.period,
+    gradient: gradients[0],
+    link: education.certification.link,
+    image: education.certification.image,
   },
   {
     id: "nile-uni",
-    title: "B.Sc. Computer Science",
-    subtitle: "Nile University",
-    date: "Graduated Jul 2025",
-    gradient: "linear-gradient(135deg, #7c3aed, #a78bfa)",
+    title: education.degree,
+    subtitle: education.university,
+    date: `Graduated ${education.graduated}`,
+    gradient: gradients[1],
+    image: education.image,
   },
   {
     id: "immerse-ai",
-    title: "ImmerseAI - Graduation Project",
-    subtitle: "Deep Learning Web App",
+    title: gradProjectTitle,
+    subtitle: education.gradProjectSubtitle,
     date: "2025",
-    gradient: "linear-gradient(135deg, #2563eb, #60a5fa)",
-  },
-  {
-    id: "streams",
-    title: "Full-Stack Developer",
-    subtitle: "Streams Of Living Water",
-    date: "Aug 2025 - Present",
-    gradient: "linear-gradient(135deg, #059669, #34d399)",
-  },
-  {
-    id: "clearview",
-    title: "Full-Stack Developer",
-    subtitle: "Clear View Clinics",
-    date: "Jan 2025 - May 2025",
-    gradient: "linear-gradient(135deg, #0891b2, #67e8f9)",
-  },
-  {
-    id: "trustpharma",
-    title: "Full-Stack Developer",
-    subtitle: "Trust Pharma LTD",
-    date: "Jun 2023 - Dec 2023",
-    gradient: "linear-gradient(135deg, #d946ef, #f0abfc)",
+    gradient: gradients[2],
+    image: education.gradProjectImage,
   },
 ];
+
+const row2Base: CarouselCard[] = experience.map((exp, i) => ({
+  id: `exp-${i}`,
+  title: exp.title,
+  subtitle: exp.company,
+  date: exp.period,
+  gradient: gradients[3 + i],
+  image: exp.image,
+}));
 
 export default function CertificationsCarousel() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -67,13 +71,6 @@ export default function CertificationsCarousel() {
 
   const row1X = useTransform(scrollYProgress, [0, 1], ["15%", "-35%"]);
   const row2X = useTransform(scrollYProgress, [0, 1], ["-25%", "15%"]);
-
-  const row1Base = cards.filter((c) =>
-    ["ibm-cert", "nile-uni", "immerse-ai"].includes(c.id),
-  );
-  const row2Base = cards.filter((c) =>
-    ["streams", "clearview", "trustpharma"].includes(c.id),
-  );
 
   const row1 = [...row1Base, ...row1Base, ...row1Base, ...row1Base];
   const row2 = [...row2Base, ...row2Base, ...row2Base, ...row2Base];
@@ -100,6 +97,7 @@ export default function CertificationsCarousel() {
 function CertCard({ card }: { card: CarouselCard }) {
   const content = (
     <div className="cert-card" style={{ background: card.gradient }}>
+      <img className="cert-card-thumb" src={card.image} alt="" loading="lazy" width="800" height="500" />
       <div className="cert-card-content">
         <h3 className="cert-card-title">{card.title}</h3>
         <p className="cert-card-subtitle">{card.subtitle}</p>

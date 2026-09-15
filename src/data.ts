@@ -83,22 +83,6 @@ export type Project = {
 
 export const projects: Project[] = [
   {
-    title: 'CampTeams',
-    description: 'Summer-camp team selection platform: email-confirmed sign-up, four colour teams with per-grade caps, up to three team switches per member, live roster updates, and an admin panel for schedules, sports preferences, and data export.',
-    technicalHighlights: [
-      'Real-time roster updates via Supabase subscriptions',
-      'Grade-based team caps and switch limits enforced server-side',
-      'Admin panel with team lock/unlock, 4-day schedule editor, and CSV export',
-      'Keyboard-navigable UI with ARIA labels and error boundaries'
-    ],
-    metrics: {},
-    challenges: [],
-    image: '/assets/projects/camp-teams.svg',
-    technologies: ['React', 'TypeScript', 'Vite', 'Tailwind CSS', 'Supabase', 'PostgreSQL'],
-    demo: 'https://camp-teams.vercel.app',
-    github: 'https://github.com/AGeorge556/CampTeams',
-  },
-  {
     title: 'BCH Youth Bible Reading',
     description: 'Mobile-first web app for tracking youth Bible reading, with member profiles and avatars, poster uploads, and a role-based admin panel.',
     technicalHighlights: [
@@ -127,21 +111,6 @@ export const projects: Project[] = [
     technologies: ['React', 'TypeScript', 'Vercel'],
     demo: 'https://say-i-do-gallery.vercel.app',
     github: 'https://github.com/AGeorge556/say-i-do-gallery',
-  },
-  {
-    title: 'Treasure Hunt',
-    description: 'Synchronized digital companion for a four-stage physical treasure hunt at a teens camp: team codes, Morse-code and word-order puzzles, and progress persisted per device.',
-    technicalHighlights: [
-      'Four puzzle stages driven by a single editable config file',
-      'Team code stored locally so each device stays bound to its team',
-      'Progress persisted in localStorage with a documented reset path'
-    ],
-    metrics: {},
-    challenges: [],
-    image: '/assets/projects/treasure-hunt.svg',
-    technologies: ['React', 'Vite', 'JavaScript', 'Vercel'],
-    demo: 'https://treasurehunt-one-lemon.vercel.app',
-    github: 'https://github.com/AGeorge556/treasure-hunt',
   },
   {
     title: 'Mini Inventory System',

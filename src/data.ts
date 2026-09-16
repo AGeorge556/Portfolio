@@ -234,22 +234,6 @@ export const projects: Project[] = [
     github: 'https://github.com/AGeorge556/SafeSight',
   },
   {
-    title: 'BCH Youth Bible Reading',
-    description: 'Mobile-first web app for tracking youth Bible reading, with member profiles and avatars, poster uploads, and a role-based admin panel.',
-    technicalHighlights: [
-      'Next.js App Router with Supabase auth and Postgres',
-      'Role-based access: youth members vs. admins',
-      'Supabase Storage buckets for avatars and posters',
-      'SQL migrations checked into the repo'
-    ],
-    metrics: {},
-    challenges: [],
-    image: '/assets/projects/bch-youth-bible-reading.svg',
-    technologies: ['Next.js', 'TypeScript', 'Supabase', 'PostgreSQL'],
-    demo: 'https://bch-youth-bible-reading.vercel.app',
-    github: 'https://github.com/AGeorge556/bch-youth-bible-reading',
-  },
-  {
     title: 'StayHealthy',
     description: 'A modern healthcare platform that allows users to book in-person medical appointments and schedule instant online consultations with healthcare professionals.',
     metrics: {

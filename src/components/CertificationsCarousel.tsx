@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useMemo, useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { ExternalLink } from "lucide-react";
 import { certifications, education, experience } from "../data";
@@ -67,6 +67,12 @@ const row2Base: CarouselCard[] = experience.map((exp, i) => ({
 
 export default function CertificationsCarousel() {
   const containerRef = useRef<HTMLDivElement>(null);
+  // No pointer to drive the scroll-linked drift on touch devices: give them a
+  // native swipe strip instead, with the list shown once rather than looped.
+  const isTouch = useMemo(
+    () => typeof window !== "undefined" && window.matchMedia("(hover: none)").matches,
+    [],
+  );
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -78,21 +84,21 @@ export default function CertificationsCarousel() {
   const row1X = useTransform(scrollYProgress, [0, 1], ["0%", "-30%"]);
   const row2X = useTransform(scrollYProgress, [0, 1], ["-45%", "-15%"]);
 
-  const row1 = [...row1Base, ...row1Base, ...row1Base, ...row1Base];
-  const row2 = [...row2Base, ...row2Base, ...row2Base, ...row2Base];
+  const loop = (cards: CarouselCard[]) => (isTouch ? cards : [...cards, ...cards, ...cards, ...cards]);
+  const rowClass = isTouch ? "cert-gallery-row cert-gallery-row--swipe" : "cert-gallery-row";
 
   return (
     <div ref={containerRef} className="cert-gallery-root">
       <h2 className="section-title section-title-center">Experience & Certifications</h2>
 
-      <motion.div style={{ x: row1X }} className="cert-gallery-row">
-        {row1.map((card, i) => (
+      <motion.div style={{ x: isTouch ? 0 : row1X }} className={rowClass}>
+        {loop(row1Base).map((card, i) => (
           <CertCard key={`r1-${card.id}-${i}`} card={card} />
         ))}
       </motion.div>
 
-      <motion.div style={{ x: row2X }} className="cert-gallery-row">
-        {row2.map((card, i) => (
+      <motion.div style={{ x: isTouch ? 0 : row2X }} className={rowClass}>
+        {loop(row2Base).map((card, i) => (
           <CertCard key={`r2-${card.id}-${i}`} card={card} />
         ))}
       </motion.div>

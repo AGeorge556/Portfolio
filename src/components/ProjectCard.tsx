@@ -54,7 +54,10 @@ export default function ProjectCard({ project, index }: { project: Project; inde
           >
             <div className={`paper-content ${isHovered ? "active" : ""}`}>
               <img className="paper-thumb" src={project.image} alt="" loading="lazy" width="800" height="500" />
-              <h3 className="paper-title">{project.title}</h3>
+              <h3 className="paper-title">
+                {project.title}
+                {project.nda && <span className="nda-chip">NDA</span>}
+              </h3>
               <p className="paper-description">{project.description}</p>
               <div className="tech-chips">
                 {project.technologies.slice(0, 5).map((tech) => (
@@ -145,6 +148,11 @@ export default function ProjectCard({ project, index }: { project: Project; inde
                     </div>
                   )}
 
+                  {project.nda && (
+                    <p className="modal-nda-note">
+                      Built under NDA. Client name, source code, and live system are not shared; the description above is intentionally general.
+                    </p>
+                  )}
                   <div className="modal-actions">
                     {project.github && (
                       <a href={project.github} target="_blank" rel="noopener noreferrer" className="action-link action-github">

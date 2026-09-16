@@ -147,6 +147,7 @@ export type Project = {
   metrics: Record<string, string>;
   image: string;
   challenges: { problem: string; solution: string; impact: string }[];
+  nda?: boolean;
 };
 
 export const projects: Project[] = [
@@ -168,6 +169,71 @@ export const projects: Project[] = [
     github: '',
   },
   {
+    title: 'WDC Operations Platform',
+    description: 'Multi-phase internal operations platform for a client agency: client intake, requests, admin and settings, user-generated content, CRM, and finance, replacing a set of spreadsheets and Airtable bases. Delivered in reviewed vertical slices with a mutation-tested backend. Details are under NDA.',
+    technicalHighlights: [
+      'Next.js App Router on PostgreSQL with Drizzle ORM',
+      'Every server mutation covered by a mutation-testing harness; end-to-end suite in Playwright',
+      'Phased roadmap with plan gates and owner rulings recorded per phase',
+      'Zero-downtime deploys via PM2 with a separate scheduler process'
+    ],
+    metrics: {},
+    challenges: [],
+    image: '/assets/projects/wdc-system.svg',
+    technologies: ['Next.js', 'TypeScript', 'PostgreSQL', 'Drizzle ORM', 'Playwright', 'PM2'],
+    demo: '',
+    github: '',
+    nda: true,
+  },
+  {
+    title: 'Impact Chatbot',
+    description: 'Telegram bot that tells refugees and migrants in Alexandria where to go for a service and what to expect, then checks back two days later whether the answer held up. Built for IMPACT Alexandria around a UNICEF proposal.',
+    technicalHighlights: [
+      'Whole conversation is a pure reducer with no I/O, clock, or network, so the flow is fully tested without a bot token (86 tests)',
+      'Arabic and English copy, buttons-only intake, long polling with no inbound endpoint to secure',
+      'Privacy by design: no phone numbers, chat ids stored in one place, anonymous JSONL event log',
+      '48-hour follow-up that records helped, turned away, or did not go, plus an opt-in callback'
+    ],
+    metrics: {},
+    challenges: [],
+    image: '/assets/projects/impact-chatbot.svg',
+    technologies: ['Node.js', 'Telegram Bot API', 'JavaScript'],
+    demo: '',
+    github: '',
+  },
+  {
+    title: 'Live AE Translator',
+    description: 'Real-time translator that listens to live Egyptian Arabic speech and streams English text back as the speaker talks.',
+    technicalHighlights: [
+      'Browser MediaRecorder captures WebM/Opus audio and streams it over a WebSocket',
+      'FastAPI WebSocket server pipes chunks through OpenAI Whisper for transcription',
+      'GPT-4o-mini translation streamed token by token to the UI',
+      'Live connection, recording, and processing state indicators'
+    ],
+    metrics: {},
+    challenges: [],
+    image: '/assets/projects/live-ae-translator.svg',
+    technologies: ['React', 'TypeScript', 'FastAPI', 'Python', 'WebSockets', 'OpenAI Whisper', 'GPT-4o-mini'],
+    demo: '',
+    github: '',
+  },
+  {
+    title: 'SafeSight',
+    description: 'Workplace hazard analysis: upload a site photo or a written description and get a structured hazard report grounded in the company safety policy.',
+    technicalHighlights: [
+      'GPT vision describes visible hazards factually before any reasoning happens',
+      'Retrieval over the ingested safety-policy PDF grounds every report in the actual policy text',
+      'Typed HazardReport response model from a FastAPI endpoint',
+      'React front end for upload and report review'
+    ],
+    metrics: {},
+    challenges: [],
+    image: '/assets/projects/safesight.svg',
+    technologies: ['Python', 'FastAPI', 'OpenAI', 'RAG', 'React', 'TypeScript'],
+    demo: '',
+    github: 'https://github.com/AGeorge556/SafeSight',
+  },
+  {
     title: 'BCH Youth Bible Reading',
     description: 'Mobile-first web app for tracking youth Bible reading, with member profiles and avatars, poster uploads, and a role-based admin panel.',
     technicalHighlights: [
@@ -182,36 +248,6 @@ export const projects: Project[] = [
     technologies: ['Next.js', 'TypeScript', 'Supabase', 'PostgreSQL'],
     demo: 'https://bch-youth-bible-reading.vercel.app',
     github: 'https://github.com/AGeorge556/bch-youth-bible-reading',
-  },
-  {
-    title: 'Say I Do Gallery',
-    description: "Wedding website and shared photo gallery built for a couple's big day, deployed on Vercel.",
-    technicalHighlights: [
-      'Responsive gallery layout for phone-first guests',
-      'Deployed on Vercel with preview builds'
-    ],
-    metrics: {},
-    challenges: [],
-    image: '/assets/projects/say-i-do-gallery.svg',
-    technologies: ['React', 'TypeScript', 'Vercel'],
-    demo: 'https://say-i-do-gallery.vercel.app',
-    github: 'https://github.com/AGeorge556/say-i-do-gallery',
-  },
-  {
-    title: 'Mini Inventory System',
-    description: 'Full-stack inventory management across multiple warehouses with atomic, transactional stock operations and a REST API.',
-    technicalHighlights: [
-      'Express + Prisma REST API over PostgreSQL',
-      'Stock moves wrapped in database transactions',
-      'Dockerised Postgres for one-command local setup',
-      'React + Vite frontend'
-    ],
-    metrics: {},
-    challenges: [],
-    image: '/assets/projects/mini-inventory-system.svg',
-    technologies: ['Node.js', 'TypeScript', 'Express', 'Prisma', 'PostgreSQL', 'React', 'Docker'],
-    demo: '',
-    github: 'https://github.com/AGeorge556/INVIA_Task',
   },
   {
     title: 'StayHealthy',
@@ -294,58 +330,4 @@ export const projects: Project[] = [
     demo: 'https://john-0-andrew.github.io/trust-pharma/',
     github: 'https://github.com/john-0-andrew/trust-pharma',
   },
-  {
-    title: 'Interactive Global Weather Forecast App',
-    description: 'A React application providing 7-day weather forecasts for major European cities, helping travelers plan their trips with accurate weather data.',
-    metrics: {
-      performance: '94% Lighthouse',
-      accessibility: '100% WCAG 2.1',
-      userSatisfaction: '90% positive',
-      loadTime: '1.8s load time'
-    },
-    technicalHighlights: [
-      'Integrated with Weather API for real-time data',
-      'Created interactive map with city selection',
-      'Implemented responsive design for all devices',
-      'Built custom weather visualization components'
-    ],
-    challenges: [
-      {
-        problem: 'API rate limiting and data caching',
-        solution: 'Implemented client-side caching and request throttling',
-        impact: 'Reduced API calls by 70% while maintaining data freshness'
-      }
-    ],
-    image: '/assets/projects/weather-forecast.svg',
-    technologies: ['React', 'Weather API', 'JavaScript'],
-    demo: 'https://ageorge556.github.io/European-travel-agency/',
-    github: 'https://github.com/AGeorge556/European-travel-agency',
-  },
-  {
-    title: 'E-Commerce Plant Shop',
-    description: 'A dynamic e-commerce platform specializing in plants, featuring an intuitive shopping experience with a modern interface and seamless checkout process.',
-    metrics: {
-      performance: '93% Lighthouse',
-      accessibility: '100% WCAG 2.1',
-      userSatisfaction: '92% positive',
-      conversionRate: '+25% sales'
-    },
-    technicalHighlights: [
-      'Implemented shopping cart with local storage',
-      'Created product filtering and search functionality',
-      'Developed responsive design for all devices',
-      'Built custom image gallery with zoom feature'
-    ],
-    challenges: [
-      {
-        problem: 'Shopping cart persistence',
-        solution: 'Implemented local storage with fallback to session storage',
-        impact: 'Improved cart retention by 85%'
-      }
-    ],
-    image: '/assets/projects/plant-shop.svg',
-    technologies: ['React', 'JavaScript', 'CSS', 'HTML'],
-    demo: 'https://ageorge556.github.io/e-plantShopping/',
-    github: 'https://github.com/AGeorge556/e-plantShopping',
-  }
 ];

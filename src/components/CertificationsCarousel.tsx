@@ -73,8 +73,10 @@ export default function CertificationsCarousel() {
     offset: ["start end", "end start"],
   });
 
-  const row1X = useTransform(scrollYProgress, [0, 1], ["15%", "-35%"]);
-  const row2X = useTransform(scrollYProgress, [0, 1], ["-25%", "15%"]);
+  // Offsets are a share of the row's own width, so they must stay <= 0: a positive
+  // start pushed the whole row past a phone's right edge and the rows looked empty.
+  const row1X = useTransform(scrollYProgress, [0, 1], ["0%", "-30%"]);
+  const row2X = useTransform(scrollYProgress, [0, 1], ["-45%", "-15%"]);
 
   const row1 = [...row1Base, ...row1Base, ...row1Base, ...row1Base];
   const row2 = [...row2Base, ...row2Base, ...row2Base, ...row2Base];

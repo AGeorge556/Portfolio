@@ -312,9 +312,10 @@ function AppContent({
       >
         <HeroHud badges={techBadges} />
         <CursorLens
-          revealImage="/assets/profile.webp"
-          objectFit="cover"
-          backgroundPosition="center 18%"
+          baseImage="/assets/hero-top.webp"
+          revealImage="/assets/hero-reveal.webp"
+          backgroundSize="auto 78%"
+          backgroundPosition="center bottom"
           backgroundColor={isDarkMode ? "#0f0e1a" : "#f5f5ff"}
           blobOutlineColor={isDarkMode ? "#4f46e5" : "#a5b4fc"}
           parallaxStrength={8}

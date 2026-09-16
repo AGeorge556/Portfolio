@@ -21,10 +21,13 @@ if (typeof window !== "undefined") {
   );
 }
 
+// Portrait cutouts end in a hard horizontal cut at the shoulders; dissolve it into the hero's bottom edge.
+const BOTTOM_FADE = "linear-gradient(to bottom, black 82%, transparent 100%)";
+
 type CursorLensProps = {
   baseImage?: string;
   revealImage?: string;
-  objectFit?: "cover" | "contain";
+  backgroundSize?: string;
   backgroundPosition?: string;
   backgroundColor?: string;
   blobOutlineColor?: string;
@@ -42,10 +45,10 @@ type CursorLensProps = {
   viscosity?: number;
 };
 
-function CursorLensInteractive({
+export default function CursorLens({
   baseImage = "",
   revealImage = "",
-  objectFit = "cover",
+  backgroundSize = "cover",
   backgroundPosition = "center",
   backgroundColor = "#1a1a2e",
   blobOutlineColor = "#4a4e69",
@@ -76,25 +79,16 @@ function CursorLensInteractive({
   const smoothX = useSpring(mouseXRatio, smoothOptions);
   const smoothY = useSpring(mouseYRatio, smoothOptions);
 
-  const baseX = useTransform(
+  // Both layers share one transform so the reveal stays pixel-aligned with the base.
+  const parallaxX = useTransform(
     smoothX,
     [-1, 1],
     [parallaxStrength, -parallaxStrength],
   );
-  const baseY = useTransform(
+  const parallaxY = useTransform(
     smoothY,
     [-1, 1],
     [parallaxStrength, -parallaxStrength],
-  );
-  const revealX = useTransform(
-    smoothX,
-    [-1, 1],
-    [parallaxStrength * 2.5, -parallaxStrength * 2.5],
-  );
-  const revealY = useTransform(
-    smoothY,
-    [-1, 1],
-    [parallaxStrength * 2.5, -parallaxStrength * 2.5],
   );
 
   React.useEffect(() => {
@@ -120,15 +114,28 @@ function CursorLensInteractive({
         mouseY.set(y);
         mouseXRatio.set((x / rect.width) * 2 - 1);
         mouseYRatio.set((y / rect.height) * 2 - 1);
+        if (touch) {
+          isHoveringRef.current = true;
+          setIsHovering(true);
+        }
       } else {
         mouseXRatio.set(0);
         mouseYRatio.set(0);
       }
     };
 
+    const handleTouchEnd = () => {
+      isHoveringRef.current = false;
+      setIsHovering(false);
+      mouseXRatio.set(0);
+      mouseYRatio.set(0);
+    };
+
     window.addEventListener("mousemove", handleGlobalMove);
-    window.addEventListener("touchstart", handleGlobalMove);
-    window.addEventListener("touchmove", handleGlobalMove);
+    window.addEventListener("touchstart", handleGlobalMove, { passive: true });
+    window.addEventListener("touchmove", handleGlobalMove, { passive: true });
+    window.addEventListener("touchend", handleTouchEnd);
+    window.addEventListener("touchcancel", handleTouchEnd);
 
     const handlePrime = () => {
       if (_cachedClientX < 0 || !containerRef.current) return;
@@ -155,6 +162,8 @@ function CursorLensInteractive({
       window.removeEventListener("mousemove", handleGlobalMove);
       window.removeEventListener("touchstart", handleGlobalMove);
       window.removeEventListener("touchmove", handleGlobalMove);
+      window.removeEventListener("touchend", handleTouchEnd);
+      window.removeEventListener("touchcancel", handleTouchEnd);
       window.removeEventListener("cursor-prime", handlePrime);
     };
   }, [mouseX, mouseY, mouseXRatio, mouseYRatio]);
@@ -227,6 +236,8 @@ function CursorLensInteractive({
     backgroundPosition: backgroundPosition,
     backgroundRepeat: "no-repeat",
     willChange: "transform",
+    maskImage: BOTTOM_FADE,
+    WebkitMaskImage: BOTTOM_FADE,
   };
 
   return (
@@ -325,10 +336,9 @@ function CursorLensInteractive({
             style={{
               ...imgStyle,
               backgroundImage: `url(${baseImage})`,
-              backgroundSize: objectFit,
-              x: baseX,
-              y: baseY,
-              scale: 1.1,
+              backgroundSize,
+              x: parallaxX,
+              y: parallaxY,
             }}
           />
         </div>
@@ -347,66 +357,13 @@ function CursorLensInteractive({
             style={{
               ...imgStyle,
               backgroundImage: `url(${revealImage})`,
-              backgroundSize: objectFit,
-              x: revealX,
-              y: revealY,
+              backgroundSize,
+              x: parallaxX,
+              y: parallaxY,
             }}
           />
         </motion.div>
       )}
     </div>
   );
-}
-
-// Lightweight hero for touch devices — shows profile directly, no cursor springs
-function CursorLensMobile({
-  revealImage = "",
-  objectFit = "cover" as const,
-  backgroundPosition = "center",
-  backgroundColor = "#1a1a2e",
-  blobOutlineColor = "#4a4e69",
-  showBackground = true,
-  bgBlobCount = 6,
-  bgBlobSize = 80,
-  bgBlobComplexity = 60,
-  bgBlobSpeed = 1,
-  blobStrokeWidth = 1,
-}: CursorLensProps) {
-  return (
-    <div style={{ position: "relative", width: "100%", height: "100%", overflow: "hidden", backgroundColor }}>
-      {showBackground && (
-        <BlobBackground
-          backgroundColor={backgroundColor}
-          blobColor={blobOutlineColor}
-          blobCount={bgBlobCount}
-          blobSize={bgBlobSize}
-          blobComplexity={bgBlobComplexity}
-          blobSpeed={bgBlobSpeed}
-          strokeWidth={blobStrokeWidth}
-          strokeOpacity={0.5}
-        />
-      )}
-      {revealImage && (
-        <div
-          style={{
-            position: "absolute",
-            inset: 0,
-            backgroundImage: `url(${revealImage})`,
-            backgroundSize: objectFit,
-            backgroundPosition,
-            backgroundRepeat: "no-repeat",
-            zIndex: 20,
-          }}
-        />
-      )}
-    </div>
-  );
-}
-
-export default function CursorLens(props: CursorLensProps) {
-  const isTouchDevice = React.useMemo(
-    () => typeof window !== "undefined" && window.matchMedia("(hover: none)").matches,
-    [],
-  );
-  return isTouchDevice ? <CursorLensMobile {...props} /> : <CursorLensInteractive {...props} />;
 }

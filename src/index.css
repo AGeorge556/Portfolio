@@ -89,7 +89,8 @@ h1, h2, h3, h4, h5, h6 {
   top: 32px;
   left: 36px;
   display: flex;
-  flex-direction: column;
+  align-items: baseline;
+  gap: 0.35em;
   line-height: 0.88;
   pointer-events: auto;
   user-select: none;
@@ -1632,11 +1633,12 @@ h1, h2, h3, h4, h5, h6 {
   .nav-social-icons { gap: 12px; margin: 1.5vh 0 1vh; }
   .nav-social-link { width: 44px; height: 44px; }
 
+  /* Halo above the head: wide and short, so the arc clears the face instead of crossing it */
   .badge-orbit {
-    top: 42%;
+    top: 30%;
     left: 50%;
-    width: min(100vw, 540px);
-    height: min(56vh, 400px);
+    width: min(92vw, 540px);
+    height: min(40vh, 320px);
   }
 
   .hero-bio {
@@ -1711,13 +1713,13 @@ h1, h2, h3, h4, h5, h6 {
   .header-actions { right: 12px; }
 
   .badge-orbit {
-    width: min(95vw, 430px);
-    height: min(48vh, 300px);
-    top: 44%;
+    width: 92vw;
+    height: min(34vh, 280px);
+    top: 28%;
   }
 
-  .tech-badge { font-size: 11px; padding: 4px 6px; }
-  .badge-orbit .tech-badge:nth-child(n + 7) { display: none; }
+  .tech-badge { font-size: 11px; padding: 4px 8px; gap: 0; }
+  .tech-badge-icon { display: none; } /* labels alone fit the narrow arc without overlapping */
 
   .hero-bio {
     left: 12px;

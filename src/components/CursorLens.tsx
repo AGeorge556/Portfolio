@@ -22,13 +22,15 @@ if (typeof window !== "undefined") {
 }
 
 // Portrait cutouts end in a hard horizontal cut at the shoulders; dissolve it into the hero's bottom edge.
+const TOUCH_LINGER_MS = 1200;
+const MASK_REPAINT_TAIL_MS = 800;
 const BOTTOM_FADE = "linear-gradient(to bottom, black 82%, transparent 100%)";
 
 type CursorLensProps = {
   baseImage?: string;
   revealImage?: string;
-  backgroundSize?: string;
-  backgroundPosition?: string;
+  /** Height of the portrait as a fraction of the hero; it sits bottom-centred and never crops. */
+  imageHeight?: number;
   backgroundColor?: string;
   blobOutlineColor?: string;
   parallaxStrength?: number;
@@ -48,8 +50,7 @@ type CursorLensProps = {
 export default function CursorLens({
   baseImage = "",
   revealImage = "",
-  backgroundSize = "cover",
-  backgroundPosition = "center",
+  imageHeight = 1,
   backgroundColor = "#1a1a2e",
   blobOutlineColor = "#4a4e69",
   parallaxStrength = 4,
@@ -124,11 +125,16 @@ export default function CursorLens({
       }
     };
 
+    // A tap lifts within ~100ms; keep the lens open long enough to be seen.
+    let touchLinger = 0;
     const handleTouchEnd = () => {
-      isHoveringRef.current = false;
-      setIsHovering(false);
-      mouseXRatio.set(0);
-      mouseYRatio.set(0);
+      window.clearTimeout(touchLinger);
+      touchLinger = window.setTimeout(() => {
+        isHoveringRef.current = false;
+        setIsHovering(false);
+        mouseXRatio.set(0);
+        mouseYRatio.set(0);
+      }, TOUCH_LINGER_MS);
     };
 
     window.addEventListener("mousemove", handleGlobalMove);
@@ -159,6 +165,7 @@ export default function CursorLens({
     window.addEventListener("cursor-prime", handlePrime);
 
     return () => {
+      window.clearTimeout(touchLinger);
       window.removeEventListener("mousemove", handleGlobalMove);
       window.removeEventListener("touchstart", handleGlobalMove);
       window.removeEventListener("touchmove", handleGlobalMove);
@@ -200,7 +207,19 @@ export default function CursorLens({
   const sat2X = useMotionValue(0);
   const sat2Y = useMotionValue(0);
 
+  const cursorFilterId = React.useId();
+  const maskId = React.useId();
+  const maskedRef = React.useRef<SVGGElement>(null);
+  const lastHoverTime = React.useRef(-Infinity);
+
   useAnimationFrame((t) => {
+    if (isHoveringRef.current) lastHoverTime.current = t;
+    // WebKit does not repaint a masked element when only the <mask> contents change,
+    // so the reveal stayed invisible on iPhone. Re-setting the attribute forces the
+    // repaint; keep doing it through the close animation so it does not freeze open.
+    if (t - lastHoverTime.current < MASK_REPAINT_TAIL_MS) {
+      maskedRef.current?.setAttribute("mask", `url(#${maskId})`);
+    }
     if (!isHoveringRef.current) return;
     const hx = head.x.get();
     const hy = head.y.get();
@@ -210,9 +229,6 @@ export default function CursorLens({
     sat2Y.set(hy + Math.sin(t * 0.004) * complexityRadius * 0.8);
   });
 
-  const cursorFilterId = React.useId();
-  const maskId = React.useId();
-
   const containerStyle: React.CSSProperties = {
     position: "relative",
     width: "100%",
@@ -221,6 +237,8 @@ export default function CursorLens({
     backgroundColor,
   };
 
+  // Both layers are SVG <image>s: WebKit ignores a CSS mask that points at an SVG <mask>
+  // on an HTML element, so the reveal must be masked inside SVG to work on iPhone.
   const layerStyle: React.CSSProperties = {
     position: "absolute",
     top: 0,
@@ -228,16 +246,16 @@ export default function CursorLens({
     width: "100%",
     height: "100%",
     pointerEvents: "none",
-  };
-
-  const imgStyle: React.CSSProperties = {
-    width: "100%",
-    height: "100%",
-    backgroundPosition: backgroundPosition,
-    backgroundRepeat: "no-repeat",
-    willChange: "transform",
     maskImage: BOTTOM_FADE,
     WebkitMaskImage: BOTTOM_FADE,
+  };
+
+  const imageBox = {
+    x: "0",
+    y: `${(1 - imageHeight) * 100}%`,
+    width: "100%",
+    height: `${imageHeight * 100}%`,
+    preserveAspectRatio: "xMidYMax meet",
   };
 
   return (
@@ -260,7 +278,15 @@ export default function CursorLens({
         />
       )}
 
-      <svg width="0" height="0" style={{ position: "absolute" }}>
+      {baseImage && (
+        <svg style={{ ...layerStyle, zIndex: 10 }}>
+          <motion.g style={{ x: parallaxX, y: parallaxY }}>
+            <image href={baseImage} {...imageBox} />
+          </motion.g>
+        </svg>
+      )}
+
+      <svg style={{ ...layerStyle, zIndex: 20 }}>
         <defs>
           <filter id={cursorFilterId}>
             <feTurbulence
@@ -286,19 +312,6 @@ export default function CursorLens({
             />
             <feComposite in="SourceGraphic" in2="goo" operator="atop" />
           </filter>
-        </defs>
-      </svg>
-
-      <svg
-        style={{
-          position: "absolute",
-          width: "100%",
-          height: "100%",
-          pointerEvents: "none",
-          opacity: 0,
-        }}
-      >
-        <defs>
           <mask id={maskId}>
             <g filter={`url(#${cursorFilterId})`}>
               <motion.g
@@ -328,42 +341,14 @@ export default function CursorLens({
             </g>
           </mask>
         </defs>
+        {revealImage && (
+          <g ref={maskedRef} mask={`url(#${maskId})`}>
+            <motion.g style={{ x: parallaxX, y: parallaxY }}>
+              <image href={revealImage} {...imageBox} />
+            </motion.g>
+          </g>
+        )}
       </svg>
-
-      {baseImage && (
-        <div style={{ ...layerStyle, zIndex: 10 }}>
-          <motion.div
-            style={{
-              ...imgStyle,
-              backgroundImage: `url(${baseImage})`,
-              backgroundSize,
-              x: parallaxX,
-              y: parallaxY,
-            }}
-          />
-        </div>
-      )}
-
-      {revealImage && (
-        <motion.div
-          style={{
-            ...layerStyle,
-            mask: `url(#${maskId})`,
-            WebkitMask: `url(#${maskId})`,
-            zIndex: 20,
-          }}
-        >
-          <motion.div
-            style={{
-              ...imgStyle,
-              backgroundImage: `url(${revealImage})`,
-              backgroundSize,
-              x: parallaxX,
-              y: parallaxY,
-            }}
-          />
-        </motion.div>
-      )}
     </div>
   );
 }

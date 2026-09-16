@@ -314,8 +314,7 @@ function AppContent({
         <CursorLens
           baseImage="/assets/hero-top.webp"
           revealImage="/assets/hero-reveal.webp"
-          backgroundSize="auto 78%"
-          backgroundPosition="center bottom"
+          imageHeight={0.78}
           backgroundColor={isDarkMode ? "#0f0e1a" : "#f5f5ff"}
           blobOutlineColor={isDarkMode ? "#4f46e5" : "#a5b4fc"}
           parallaxStrength={8}

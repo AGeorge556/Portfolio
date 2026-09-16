@@ -1156,6 +1156,17 @@ h1, h2, h3, h4, h5, h6 {
   transform: translateZ(0);
 }
 
+/* Touch devices: a native swipe strip that snaps card by card */
+.cert-gallery-row--swipe {
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: 16px;
+  padding: 4px 16px;
+  scrollbar-width: none;
+}
+.cert-gallery-row--swipe::-webkit-scrollbar { display: none; }
+.cert-gallery-row--swipe > * { scroll-snap-align: start; }
+
 .cert-card-link {
   text-decoration: none;
   flex-shrink: 0;

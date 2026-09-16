@@ -312,7 +312,8 @@ function AppContent({
       >
         <HeroHud badges={techBadges} />
         <CursorLens
-          revealImage="/assets/profile.webp"
+          baseImage="/assets/hero-top.webp"
+          revealImage="/assets/hero-reveal.webp"
           objectFit="cover"
           backgroundPosition="center 18%"
           backgroundColor={isDarkMode ? "#0f0e1a" : "#f5f5ff"}

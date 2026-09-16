@@ -360,6 +360,7 @@ function CursorLensInteractive({
 
 // Lightweight hero for touch devices — shows profile directly, no cursor springs
 function CursorLensMobile({
+  baseImage = "",
   revealImage = "",
   objectFit = "cover" as const,
   backgroundPosition = "center",
@@ -372,6 +373,7 @@ function CursorLensMobile({
   bgBlobSpeed = 1,
   blobStrokeWidth = 1,
 }: CursorLensProps) {
+  const image = baseImage || revealImage;
   return (
     <div style={{ position: "relative", width: "100%", height: "100%", overflow: "hidden", backgroundColor }}>
       {showBackground && (
@@ -386,12 +388,12 @@ function CursorLensMobile({
           strokeOpacity={0.5}
         />
       )}
-      {revealImage && (
+      {image && (
         <div
           style={{
             position: "absolute",
             inset: 0,
-            backgroundImage: `url(${revealImage})`,
+            backgroundImage: `url(${image})`,
             backgroundSize: objectFit,
             backgroundPosition,
             backgroundRepeat: "no-repeat",

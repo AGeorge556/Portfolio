@@ -98,6 +98,7 @@ h1, h2, h3, h4, h5, h6 {
   display: flex;
   align-items: baseline;
   gap: 0.35em;
+  font-size: inherit; /* it is an h1; keep the em-based gap at body size */
   line-height: 0.88;
   pointer-events: auto;
   user-select: none;

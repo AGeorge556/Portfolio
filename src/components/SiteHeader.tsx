@@ -57,10 +57,10 @@ export default function SiteHeader({
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1, duration: 0.8, ease: "easeOut" }}
       >
-        <div className={`brand-wrap ${isMenuOpen ? "menu-open" : ""}`}>
-          <span className="brand-first">Andrew</span>
+        <h1 className={`brand-wrap ${isMenuOpen ? "menu-open" : ""}`}>
+          <span className="brand-first">Andrew</span>{" "}
           <span className="brand-last">George</span>
-        </div>
+        </h1>
 
         <div className="header-actions">
           <button

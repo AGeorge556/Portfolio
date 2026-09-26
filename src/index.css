@@ -434,30 +434,6 @@ h1, h2, h3, h4, h5, h6 {
   visibility: hidden;
 }
 
-/* Blob backgrounds rasterise their filter once and drift as a cached layer */
-@keyframes blobDrift {
-  from {
-    transform: translate3d(-2%, -1.5%, 0) scale(1);
-  }
-  to {
-    transform: translate3d(2%, 1.5%, 0) scale(1.05);
-  }
-}
-
-.blob-drift {
-  will-change: transform;
-  animation-name: blobDrift;
-  animation-timing-function: ease-in-out;
-  animation-direction: alternate;
-  animation-iteration-count: infinite;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .blob-drift {
-    animation: none;
-  }
-}
-
 .hud-layer {
   position: absolute;
   inset: 0;

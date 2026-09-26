@@ -17,8 +17,10 @@ const seededValue = (seed: number, min: number, max: number) => {
 };
 
 /**
- * Static filtered circles rasterised once, then drifted with a CSS transform so
- * the turbulence/displacement output stays a cached compositor layer.
+ * Warped outline circles that wander between three seeded points and slowly turn.
+ * Each outline is its own small SVG whose displacement filter is rasterised once;
+ * the movement is a Web Animations transform, so it runs on the compositor instead
+ * of re-running the filter every frame (that cost ~10x more and dropped frames).
  */
 export default function BlobBackground({
   backgroundColor,
@@ -30,20 +32,68 @@ export default function BlobBackground({
   strokeWidth = 1.5,
   strokeOpacity = 0.45,
 }: BlobBackgroundProps) {
-  const filterId = React.useId();
+  const idPrefix = React.useId();
+  const rootRef = React.useRef<HTMLDivElement>(null);
+  const blobRefs = React.useRef<(SVGSVGElement | null)[]>([]);
 
-  const blobs = React.useMemo(
-    () =>
-      [...Array(blobCount)].map((_, i) => ({
-        cx: seededValue(i * 7.1 + 1, -20, 110) + "%",
-        cy: seededValue(i * 7.1 + 4, -20, 110) + "%",
-        r: seededValue(i * 7.1 + 7, 0.5, 1.5) * blobSize,
-      })),
-    [blobCount, blobSize],
-  );
+  const blobs = React.useMemo(() => {
+    // Displacement can push the outline up to half the scale outward; keep it inside the box.
+    const margin = blobComplexity / 2 + strokeWidth;
+    return [...Array(blobCount)].map((_, i) => {
+      const r = seededValue(i * 7.1 + 7, 0.5, 1.5) * blobSize;
+      return {
+        x: [1, 2, 3].map((k) => seededValue(i * 7.1 + k, -20, 110) / 100),
+        y: [4, 5, 6].map((k) => seededValue(i * 7.1 + k, -20, 110) / 100),
+        r,
+        box: 2 * (r + margin),
+        duration: (seededValue(i * 7.1 + 8, 25, 50) / blobSpeed) * 1000,
+        turn: seededValue(i * 7.1 + 9, -50, 50),
+      };
+    });
+  }, [blobCount, blobSize, blobComplexity, blobSpeed, strokeWidth]);
+
+  React.useEffect(() => {
+    const root = rootRef.current;
+    if (!root || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    let animations: Animation[] = [];
+    let onScreen = true;
+
+    // Offsets are in px from the first waypoint (where the blob is laid out), so they
+    // are rebuilt whenever the container resizes.
+    const animate = () => {
+      animations.forEach((animation) => animation.cancel());
+      const { width, height } = root.getBoundingClientRect();
+      animations = blobs.map((blob, i) =>
+        blobRefs.current[i]!.animate(
+          blob.x.map((x, k) => ({
+            transform: `translate(${(x - blob.x[0]) * width}px, ${(blob.y[k] - blob.y[0]) * height}px) rotate(${blob.turn * k}deg)`,
+            easing: "ease-in-out",
+          })),
+          { duration: blob.duration, iterations: Infinity, direction: "alternate" },
+        ),
+      );
+      if (!onScreen) animations.forEach((animation) => animation.pause());
+    };
+
+    const resizeObserver = new ResizeObserver(animate);
+    resizeObserver.observe(root);
+    const visibilityObserver = new IntersectionObserver(([entry]) => {
+      onScreen = entry.isIntersecting;
+      animations.forEach((animation) => (onScreen ? animation.play() : animation.pause()));
+    });
+    visibilityObserver.observe(root);
+
+    return () => {
+      resizeObserver.disconnect();
+      visibilityObserver.disconnect();
+      animations.forEach((animation) => animation.cancel());
+    };
+  }, [blobs]);
 
   return (
     <div
+      ref={rootRef}
       style={{
         position: "absolute",
         inset: 0,
@@ -52,58 +102,47 @@ export default function BlobBackground({
         zIndex: 0,
       }}
     >
-      <svg width="0" height="0" style={{ position: "absolute" }}>
-        <defs>
-          <filter id={filterId}>
-            <feTurbulence
-              type="fractalNoise"
-              baseFrequency="0.008"
-              numOctaves="3"
-              result="noise"
-            />
-            <feDisplacementMap
-              in="SourceGraphic"
-              in2="noise"
-              scale={blobComplexity}
-              xChannelSelector="R"
-              yChannelSelector="G"
-            />
-          </filter>
-        </defs>
-      </svg>
-
-      <div
-        className="blob-drift"
-        style={{
-          position: "absolute",
-          inset: "-10%",
-          animationDuration: `${60 / blobSpeed}s`,
-        }}
-      >
-        <svg
-          style={{
-            position: "absolute",
-            width: "100%",
-            height: "100%",
-            overflow: "visible",
-          }}
-        >
-          <g filter={`url(#${filterId})`}>
-            {blobs.map((blob, i) => (
-              <circle
-                key={i}
-                cx={blob.cx}
-                cy={blob.cy}
-                r={blob.r}
-                fill="none"
-                stroke={blobColor}
-                strokeWidth={strokeWidth}
-                strokeOpacity={strokeOpacity}
+      {blobs.map((blob, i) => {
+        const filterId = `${idPrefix}-${i}`;
+        return (
+          <svg
+            key={i}
+            ref={(el) => {
+              blobRefs.current[i] = el;
+            }}
+            width={blob.box}
+            height={blob.box}
+            style={{
+              position: "absolute",
+              left: `${blob.x[0] * 100}%`,
+              top: `${blob.y[0] * 100}%`,
+              margin: -blob.box / 2,
+            }}
+          >
+            <filter id={filterId} filterUnits="userSpaceOnUse" x="0" y="0" width={blob.box} height={blob.box}>
+              {/* A seed per blob, since each samples the noise in its own local coordinates */}
+              <feTurbulence type="fractalNoise" baseFrequency="0.008" numOctaves="3" seed={i} result="noise" />
+              <feDisplacementMap
+                in="SourceGraphic"
+                in2="noise"
+                scale={blobComplexity}
+                xChannelSelector="R"
+                yChannelSelector="G"
               />
-            ))}
-          </g>
-        </svg>
-      </div>
+            </filter>
+            <circle
+              cx={blob.box / 2}
+              cy={blob.box / 2}
+              r={blob.r}
+              filter={`url(#${filterId})`}
+              fill="none"
+              stroke={blobColor}
+              strokeWidth={strokeWidth}
+              strokeOpacity={strokeOpacity}
+            />
+          </svg>
+        );
+      })}
     </div>
   );
 }

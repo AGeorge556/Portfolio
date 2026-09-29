@@ -163,7 +163,7 @@ export const projects: Project[] = [
     ],
     metrics: {},
     challenges: [],
-    image: '/assets/projects/luminamed-stock.svg',
+    image: '/assets/projects/luminamed-stock.webp',
     technologies: ['React', 'TypeScript', 'Vite', 'Tailwind CSS', 'Supabase', 'PostgreSQL', 'TanStack Query', 'PWA'],
     demo: '',
     github: '',
@@ -196,7 +196,7 @@ export const projects: Project[] = [
     ],
     metrics: {},
     challenges: [],
-    image: '/assets/projects/impact-chatbot.svg',
+    image: '/assets/projects/impact-chatbot.webp',
     technologies: ['Node.js', 'Telegram Bot API', 'JavaScript'],
     demo: '',
     github: '',
@@ -228,7 +228,7 @@ export const projects: Project[] = [
     ],
     metrics: {},
     challenges: [],
-    image: '/assets/projects/safesight.svg',
+    image: '/assets/projects/safesight.webp',
     technologies: ['Python', 'FastAPI', 'OpenAI', 'RAG', 'React', 'TypeScript'],
     demo: '',
     github: 'https://github.com/AGeorge556/SafeSight',
@@ -255,7 +255,7 @@ export const projects: Project[] = [
         impact: 'Reduced server load by 40% while maintaining real-time updates'
       },
     ],
-    image: '/assets/projects/stayhealthy.svg',
+    image: '/assets/projects/stayhealthy.webp',
     technologies: ['React', 'React Router', 'CSS3', 'Node.js', 'Express.js', 'MongoDB', 'JWT'],
     demo: 'https://ageorge556.github.io/StayHealthy/',
     github: 'https://github.com/AGeorge556/StayHealthy',
@@ -282,7 +282,7 @@ export const projects: Project[] = [
         impact: 'Reduced scheduling errors by 75%'
       }
     ],
-    image: '/assets/projects/clear-view-clinics.svg',
+    image: '/assets/projects/clear-view-clinics.webp',
     technologies: ['React', 'JavaScript', 'Responsive Design'],
     demo: 'https://ageorge556.github.io/ClearViewClinics/',
     github: 'https://github.com/AGeorge556/ClearViewClinics',
@@ -309,7 +309,7 @@ export const projects: Project[] = [
         impact: 'Reduced initial load time by 60%'
       }
     ],
-    image: '/assets/projects/trust-pharma.svg',
+    image: '/assets/projects/trust-pharma.webp',
     technologies: ['React', 'JavaScript', 'Modern UI'],
     demo: 'https://john-0-andrew.github.io/trust-pharma/',
     github: 'https://github.com/john-0-andrew/trust-pharma',

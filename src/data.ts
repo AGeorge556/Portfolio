@@ -202,18 +202,20 @@ export const projects: Project[] = [
     github: '',
   },
   {
-    title: 'Live AE Translator',
-    description: 'Real-time translator that listens to live Egyptian Arabic speech and streams English text back as the speaker talks.',
+    title: 'Till Financial Freedom',
+    description: 'Personal wealth tracker for savings, spending, investments, loans and goals in Egyptian pounds. A single-user PWA that installs on the iPhone home screen and signs in with Face ID.',
     technicalHighlights: [
-      'Browser MediaRecorder captures WebM/Opus audio and streams it over a WebSocket',
-      'FastAPI WebSocket server pipes chunks through OpenAI Whisper for transcription',
-      'GPT-4o-mini translation streamed token by token to the UI',
-      'Live connection, recording, and processing state indicators'
+      'Every financial formula lives in a pure TypeScript calculation engine with no React, Next.js or database imports, unit tested with Vitest',
+      'Money is stored as integer piasters and rendered through one Amount component, so privacy mode hides every figure at once',
+      'Server actions are the only writes, each inside a database transaction and filtered by the signed-in user',
+      'Face ID and passkey sign-in through Supabase Auth, with auto-lock after inactivity',
+      'Daily web-push reminders from a Vercel Cron job that never include an amount or a name',
+      'JSON backup, CSV export and restore'
     ],
     metrics: {},
     challenges: [],
-    image: '/assets/projects/live-ae-translator.svg',
-    technologies: ['React', 'TypeScript', 'FastAPI', 'Python', 'WebSockets', 'OpenAI Whisper', 'GPT-4o-mini'],
+    image: '/assets/projects/till-financial-freedom.webp',
+    technologies: ['Next.js', 'TypeScript', 'PostgreSQL', 'Drizzle ORM', 'Supabase', 'Tailwind CSS', 'Vitest', 'PWA'],
     demo: '',
     github: '',
   },

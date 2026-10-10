@@ -1,7 +1,10 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Github, Linkedin, Mail, MapPin, Phone, Send } from "lucide-react";
+import { Github, Linkedin, Mail, MapPin, MessageCircle, Phone, Send } from "lucide-react";
 import { useForm, ValidationError } from "@formspree/react";
+
+// One number for the call link and WhatsApp click-to-chat (wa.me wants digits only, no "+").
+const PHONE = "+201020012398";
 
 export default function ContactSection() {
   const [state, handleSubmit] = useForm("meogyobe");
@@ -9,6 +12,18 @@ export default function ContactSection() {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  };
+
+  // Opens WhatsApp with the form contents pre-typed; the visitor sends it from their own account.
+  const sendOnWhatsApp = (e: React.MouseEvent<HTMLButtonElement>) => {
+    if (!e.currentTarget.form?.reportValidity()) return;
+    const { name, email, subject, message } = formData;
+    const text = `Hi Andrew, I'm ${name} (${email}).
+
+*${subject}*
+
+${message}`;
+    window.open(`https://wa.me/${PHONE.slice(1)}?text=${encodeURIComponent(text)}`, "_blank", "noopener,noreferrer");
   };
 
   return (
@@ -40,7 +55,7 @@ export default function ContactSection() {
             </div>
             <div className="contact-detail-item">
               <Phone size={18} />
-              <a href="tel:+201020012398">+20 102 001 2398</a>
+              <a href={`tel:${PHONE}`}>+20 102 001 2398</a>
             </div>
           </div>
 
@@ -119,10 +134,16 @@ export default function ContactSection() {
                 <ValidationError prefix="Message" field="message" errors={state.errors} />
               </div>
 
-              <button type="submit" disabled={state.submitting} className="contact-submit-btn">
-                {state.submitting ? "Sending..." : "Send Message"}
-                <Send size={16} />
-              </button>
+              <div className="contact-actions">
+                <button type="button" onClick={sendOnWhatsApp} className="contact-submit-btn contact-submit-btn--whatsapp">
+                  Send on WhatsApp
+                  <MessageCircle size={16} />
+                </button>
+                <button type="submit" disabled={state.submitting} className="contact-submit-btn contact-submit-btn--secondary">
+                  {state.submitting ? "Sending..." : "Send by Email"}
+                  <Send size={16} />
+                </button>
+              </div>
             </form>
           )}
         </motion.div>

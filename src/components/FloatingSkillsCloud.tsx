@@ -35,7 +35,7 @@ type SkillDef = {
 const allSkills: SkillDef[] = [
   { name: "React.js",      color: "#61dafb", Icon: SiReact },
   { name: "TypeScript",    color: "#3178c6", Icon: SiTypescript },
-  { name: "Next.js",       color: "#a78bfa", Icon: SiNextdotjs },
+  { name: "Next.js",       color: "#F7F7FF", Icon: SiNextdotjs },
   { name: "JavaScript",    color: "#f7df1e", Icon: SiJavascript },
   { name: "HTML5",         color: "#e34f26", Icon: SiHtml5 },
   { name: "CSS3",          color: "#1572b6", Icon: SiCss },
@@ -49,7 +49,7 @@ const allSkills: SkillDef[] = [
   { name: "MongoDB",       color: "#47a248", Icon: SiMongodb },
   { name: "REST APIs",     color: "#ff6c37", Icon: Network },
   { name: "Git",           color: "#f05032", Icon: SiGit },
-  { name: "Vercel",        color: "#818cf8", Icon: SiVercel },
+  { name: "Vercel",        color: "#F7F7FF", Icon: SiVercel },
   { name: "Figma",         color: "#f24e1e", Icon: SiFigma },
   { name: "VS Code",       color: "#007acc", Icon: Code2 },
   { name: "Docker",        color: "#00C5CC", Icon: SiDocker },
@@ -58,16 +58,14 @@ const allSkills: SkillDef[] = [
 const SkillNodeCard = ({
   skill,
   position,
-  isMobile,
 }: {
   skill: SkillDef;
   position: THREE.Vector3;
-  isMobile: boolean;
 }) => {
   const labelRef = useRef<HTMLDivElement>(null);
   const Icon = skill.Icon;
   const color = skill.color;
-  const stemLength = isMobile ? 0.7 : 0.9;
+  const stemLength = 0.9;
 
   // Anchor pad lies tangent to the globe; stem and label go out along the normal.
   const { normal, padQuaternion, stemQuaternion } = useMemo(() => {
@@ -96,10 +94,7 @@ const SkillNodeCard = ({
 
       <Html
         position={normal.clone().multiplyScalar(stemLength + 0.15)}
-        distanceFactor={isMobile ? 11 : 14}
         center
-        transform
-        sprite
         zIndexRange={[100, 0]}
       >
         <div
@@ -126,13 +121,12 @@ const SkillNodeCard = ({
 function SpinningCloud({
   positions,
   radius,
-  isMobile,
 }: {
   positions: THREE.Vector3[];
   radius: number;
-  isMobile: boolean;
 }) {
   const groupRef = useRef<THREE.Group>(null);
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   // Each node linked to its 3 nearest neighbours, pairs de-duplicated.
   const linkGeometry = useMemo(() => {
@@ -160,17 +154,17 @@ function SpinningCloud({
   useEffect(() => () => linkGeometry.dispose(), [linkGeometry]);
 
   useFrame((_, delta) => {
-    if (groupRef.current) {
-      groupRef.current.rotation.y += delta * (isMobile ? 0.10 : 0.18);
+    if (groupRef.current && !reduceMotion) {
+      groupRef.current.rotation.y += delta * 0.18;
     }
   });
 
   return (
     <group ref={groupRef}>
       <mesh>
-        <sphereGeometry args={[radius * 0.985, isMobile ? 18 : 32, isMobile ? 12 : 20]} />
+        <sphereGeometry args={[radius * 0.985, 32, 20]} />
         <meshBasicMaterial
-          color="#818cf8"
+          color="#AFA8BA"
           wireframe
           transparent
           opacity={0.10}
@@ -181,7 +175,7 @@ function SpinningCloud({
       <mesh>
         <sphereGeometry args={[radius * 0.97, 24, 16]} />
         <meshBasicMaterial
-          color="#312e81"
+          color="#27187E"
           transparent
           opacity={0.12}
           depthWrite={false}
@@ -191,7 +185,7 @@ function SpinningCloud({
 
       <lineSegments geometry={linkGeometry}>
         <lineBasicMaterial
-          color="#a5b4fc"
+          color="#AFA8BA"
           transparent
           opacity={0.28}
           depthWrite={false}
@@ -203,7 +197,6 @@ function SpinningCloud({
           key={skill.name}
           skill={skill}
           position={positions[i]}
-          isMobile={isMobile}
         />
       ))}
     </group>
@@ -224,7 +217,7 @@ export default function FloatingSkillsCloud() {
     return () => mql.removeEventListener("change", handler);
   }, []);
 
-  const radius = isMobile ? 4.5 : 6;
+  const radius = 5;
 
   const positions = useMemo(() => {
     const pos = [];
@@ -239,29 +232,39 @@ export default function FloatingSkillsCloud() {
     return pos;
   }, [radius]);
 
+  // ponytail: phones get a plain list (20 labels overlap on a small globe and the canvas traps
+  // scrolling). The three.js chunk still downloads there; split this component if that matters.
+  if (isMobile) {
+    return (
+      <ul className="tech-chips">
+        {allSkills.map(({ name, Icon }) => (
+          <li key={name} className="tech-chip-compact">
+            <Icon /> {name}
+          </li>
+        ))}
+      </ul>
+    );
+  }
+
   return (
     <div className={styles.cloudRoot}>
       <div className={styles.instruction}>
-        {isMobile ? "Drag to rotate \u2022 Pinch to zoom" : "Drag around \u2022 Scroll to zoom"}
+        Drag to rotate
       </div>
 
       <Canvas
-        camera={{ position: [0, 0, isMobile ? 12 : 15], fov: 60 }}
-        dpr={isMobile ? 1 : Math.min(window.devicePixelRatio, 2)}
+        camera={{ position: [0, 0, 15], fov: 60 }}
+        dpr={Math.min(window.devicePixelRatio, 2)}
         flat
         performance={{ min: 0.5 }}
       >
         <ambientLight intensity={0.4} />
-        <pointLight position={[-10, 10, -10]} color="#818cf8" intensity={2} />
-        <pointLight position={[10, -10, 10]} color="#a855f7" intensity={1.5} />
+        <pointLight position={[-10, 10, -10]} color="#E8615C" intensity={2} />
+        <pointLight position={[10, -10, 10]} color="#AE231F" intensity={1.5} />
 
-        <SpinningCloud positions={positions} radius={radius} isMobile={isMobile} />
+        <SpinningCloud positions={positions} radius={radius} />
 
-        <OrbitControls
-          enablePan={false}
-          minDistance={isMobile ? 6 : 8}
-          maxDistance={isMobile ? 25 : 35}
-        />
+        <OrbitControls enablePan={false} enableZoom={false} />
       </Canvas>
     </div>
   );

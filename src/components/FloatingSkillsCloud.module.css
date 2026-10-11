@@ -20,8 +20,10 @@
   text-align: center;
 }
 
+:global(html:not(.dark)) .instruction { color: rgba(39, 24, 126, 0.6); }
+
 .skillTag {
-  background: rgba(6, 6, 14, 0.82);
+  background: rgba(14, 10, 46, 0.82);
   border: 1px solid var(--skill-color-alpha, rgba(0, 255, 0, 0.38));
   padding: 6px 14px;
   border-radius: 999px;
@@ -54,7 +56,7 @@
     0 0 14px var(--skill-color-shadow, rgba(0, 255, 0, 0.7)),
     0 0 36px var(--skill-color-dim, rgba(0, 255, 0, 0.35)),
     inset 0 0 14px var(--skill-color-inner, rgba(0, 255, 0, 0.12));
-  background: rgba(12, 12, 24, 0.95);
+  background: rgba(14, 10, 46, 0.95);
   z-index: 50;
 }
 

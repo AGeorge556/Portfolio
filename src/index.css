@@ -1392,6 +1392,26 @@ html:has(dialog[open]) { overflow: hidden; }
   transform: none;
 }
 
+.contact-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+@media (max-width: 520px) {
+  .contact-actions .contact-submit-btn { flex: 1 1 100%; }
+}
+
+/* WhatsApp green, darkened so white text passes contrast */
+.contact-submit-btn--whatsapp { background: #0f7a6c; }
+.contact-submit-btn--whatsapp:hover { background: #0b6257; }
+
+.contact-submit-btn--secondary {
+  background: transparent;
+  color: var(--accent-text);
+  box-shadow: inset 0 0 0 1px currentColor;
+}
+.contact-submit-btn--secondary:hover { background: rgba(122, 116, 133, 0.12); }
+
 .contact-success {
   display: flex;
   flex-direction: column;

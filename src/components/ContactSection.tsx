@@ -32,7 +32,7 @@ export default function ContactSection() {
           <div className="contact-details">
             <div className="contact-detail-item">
               <MapPin size={18} />
-              <span>Mokattam, Cairo, Egypt</span>
+              <span>Cairo, Egypt</span>
             </div>
             <div className="contact-detail-item">
               <Mail size={18} />
@@ -45,10 +45,10 @@ export default function ContactSection() {
           </div>
 
           <div className="contact-socials">
-            <a href="https://github.com/AGeorge556" target="_blank" rel="noopener noreferrer" className="contact-social-link">
+            <a href="https://github.com/AGeorge556" target="_blank" rel="noopener noreferrer" className="contact-social-link" aria-label="GitHub">
               <Github size={20} />
             </a>
-            <a href="https://www.linkedin.com/in/andrew-george-610535309" target="_blank" rel="noopener noreferrer" className="contact-social-link">
+            <a href="https://www.linkedin.com/in/andrew-george-610535309" target="_blank" rel="noopener noreferrer" className="contact-social-link" aria-label="LinkedIn">
               <Linkedin size={20} />
             </a>
           </div>
@@ -74,20 +74,24 @@ export default function ContactSection() {
             <form onSubmit={handleSubmit} className="contact-form">
               <div className="form-row">
                 <div className="form-group">
+                  <label htmlFor="contact-name">Name</label>
                   <input
+                    id="contact-name"
                     type="text"
                     name="name"
-                    placeholder="Your Name"
+                    autoComplete="name"
                     value={formData.name}
                     onChange={handleChange}
                     required
                   />
                 </div>
                 <div className="form-group">
+                  <label htmlFor="contact-email">Email</label>
                   <input
+                    id="contact-email"
                     type="email"
                     name="email"
-                    placeholder="Your Email"
+                    autoComplete="email"
                     value={formData.email}
                     onChange={handleChange}
                     required
@@ -97,10 +101,11 @@ export default function ContactSection() {
               </div>
 
               <div className="form-group">
+                <label htmlFor="contact-subject">Subject</label>
                 <input
+                  id="contact-subject"
                   type="text"
                   name="subject"
-                  placeholder="Subject"
                   value={formData.subject}
                   onChange={handleChange}
                   required
@@ -108,9 +113,10 @@ export default function ContactSection() {
               </div>
 
               <div className="form-group">
+                <label htmlFor="contact-message">Message</label>
                 <textarea
+                  id="contact-message"
                   name="message"
-                  placeholder="Your Message"
                   rows={5}
                   value={formData.message}
                   onChange={handleChange}

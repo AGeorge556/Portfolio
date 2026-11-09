@@ -24,7 +24,17 @@
   --cr-depth: 300px;             /* how deep the room is */
   --cr-height: clamp(560px, 88vh, 860px);
   --cr-radius: 16px;
+  --cr-ink: var(--text-dark);              /* wall picker and caption text */
+  --cr-ink-soft: rgba(30, 27, 75, 0.75);
+  --cr-line: rgba(129, 140, 248, 0.35);
+  --cr-card: rgba(255, 255, 255, 0.6);
+  --cr-accent: var(--accent-strong);       /* filled buttons, hint, active dot */
+  --cr-link: var(--accent-strong);
   /* ─────────────────────────────────────────────────────────────── */
+
+  width: min(1100px, 100% - 32px);
+  margin: 56px auto 0;
+  color: var(--cr-ink);
 
   --cr-noise: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.3 0 0 0 -0.13'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
@@ -40,6 +50,10 @@
   --cr-mat: #F3F1EA;
   --cr-light: rgba(255, 222, 176, 0.24);
   --cr-shadow: 3, 2, 12;
+  --cr-ink: var(--text-cream);
+  --cr-ink-soft: rgba(226, 224, 212, 0.75);
+  --cr-card: rgba(255, 255, 255, 0.05);
+  --cr-link: var(--accent);
 }
 
 /* ── Wall picker ─────────────────────────────────────────────── */
@@ -56,17 +70,17 @@
   gap: 8px;
   min-height: 44px;
   padding: 0 18px;
-  color: var(--ink);
-  background: var(--card);
+  color: var(--cr-ink);
+  background: var(--cr-card);
   font-weight: 600;
-  border: 1px solid var(--line);
+  border: 1px solid var(--cr-line);
   border-radius: 999px;
   transition: border-color 0.2s, background 0.2s, color 0.2s;
 }
 
-.cr-wall-tab:hover { border-color: var(--accent); }
+.cr-wall-tab:hover { border-color: var(--cr-accent); }
 .cr-wall-tab:active { background: rgba(122, 116, 133, 0.22); }
-.cr-wall-tab[aria-pressed="true"] { color: #FFF; background: var(--accent); border-color: var(--accent); }
+.cr-wall-tab[aria-pressed="true"] { color: #FFF; background: var(--cr-accent); border-color: var(--cr-accent); }
 
 .cr-wall-count {
   padding: 1px 8px;
@@ -84,7 +98,7 @@
   gap: 4px 10px;
   min-height: 44px;
   margin-bottom: 12px;
-  color: var(--ink-soft);
+  color: var(--cr-ink-soft);
   font-size: 0.9rem;
 }
 
@@ -93,7 +107,7 @@
   align-items: center;
   gap: 4px;
   min-height: 44px;
-  color: var(--accent-text);
+  color: var(--cr-link);
   font-weight: 600;
 }
 
@@ -101,7 +115,7 @@
 
 .cr-help {
   margin-top: 12px;
-  color: var(--ink-soft);
+  color: var(--cr-ink-soft);
   font-size: 0.85rem;
   text-align: center;
 }
@@ -362,7 +376,7 @@
   color: #FFF;
   font-size: 12px;
   font-weight: 600;
-  background: var(--accent);
+  background: var(--cr-accent);
   border-radius: 999px;
   opacity: 0;
   transform: translateY(4px);
@@ -371,7 +385,7 @@
 }
 
 .cr-piece:focus-visible { outline: none; }
-.cr-piece:focus-visible .cr-frame { outline: 3px solid var(--accent-text); outline-offset: 4px; }
+.cr-piece:focus-visible .cr-frame { outline: 3px solid var(--cr-link); outline-offset: 4px; }
 .cr-piece:focus-visible .cr-hint { opacity: 1; transform: none; }
 
 /* Hover lift: mouse and trackpad only, never on touch */
@@ -452,7 +466,7 @@
     transition: width 0.2s, background 0.2s;
   }
 
-  .cr-dot[data-on] { width: 18px; background: var(--accent); }
+  .cr-dot[data-on] { width: 18px; background: var(--cr-accent); }
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -514,7 +528,7 @@
 
 .cr-lb-btn:hover { background: rgba(255, 255, 255, 0.22); border-color: rgba(255, 255, 255, 0.5); }
 .cr-lb-btn:active { background: rgba(255, 255, 255, 0.3); }
-.cr-lb-btn:focus-visible { outline: 3px solid #E8615C; outline-offset: 3px; }
+.cr-lb-btn:focus-visible { outline: 3px solid #A5B4FC; outline-offset: 3px; }
 
 .cr-lb-close {
   top: calc(env(safe-area-inset-top) + 14px);
@@ -562,13 +576,13 @@
   align-items: center;
   gap: 6px;
   min-height: 44px;
-  color: #FF8A85;
+  color: #A5B4FC;
   font-size: 0.9rem;
   font-weight: 600;
 }
 
 .cr-lb-verify:hover { text-decoration: underline; }
-.cr-lb-verify:focus-visible { outline: 3px solid #E8615C; outline-offset: 2px; border-radius: 4px; }
+.cr-lb-verify:focus-visible { outline: 3px solid #A5B4FC; outline-offset: 2px; border-radius: 4px; }
 
 @media (max-width: 767px) {
   .cr-lb-stage {

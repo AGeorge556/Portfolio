@@ -1,6 +1,6 @@
 import { certifications, type CertificationGroup } from "../../data";
 
-/** One framed certificate on a wall. Built from `certifications` in data.ts. */
+/** One framed certificate on the wall. Built from `certifications` in data.ts. */
 export type RoomCertificate = {
   id: string;
   title: string;
@@ -13,17 +13,8 @@ export type RoomCertificate = {
   thumbSmall: string;
   credentialUrl?: string;
   honors: boolean;
-  /** The program certificate is hung larger, in the centre of its wall. */
+  /** Program certificates are hung larger than course certificates. */
   featured: boolean;
-};
-
-export type RoomWall = {
-  id: string;
-  label: string;
-  program: string;
-  issuer: string;
-  credentialUrl?: string;
-  certificates: RoomCertificate[];
 };
 
 export const certificateAlt = (cert: RoomCertificate) => `${cert.title} certificate from ${cert.issuer}`;
@@ -33,8 +24,23 @@ export const CERT_ASPECT = 800 / 618;
 
 const variant = (image: string, size: 400 | 1600) => image.replace(/\.webp$/, `-${size}.webp`);
 
-function toWall(group: CertificationGroup): RoomWall {
-  const courses: RoomCertificate[] = group.courses.map((course) => ({
+function programCertificate(group: CertificationGroup, image: string): RoomCertificate {
+  return {
+    id: group.id,
+    title: group.program,
+    issuer: group.issuer,
+    date: group.date,
+    image: variant(image, 1600),
+    thumb: image,
+    thumbSmall: variant(image, 400),
+    credentialUrl: group.credential,
+    honors: false,
+    featured: true,
+  };
+}
+
+function courseCertificates(group: CertificationGroup): RoomCertificate[] {
+  return group.courses.map((course) => ({
     id: course.pdf,
     title: course.title,
     issuer: group.issuer,
@@ -46,34 +52,10 @@ function toWall(group: CertificationGroup): RoomWall {
     honors: course.honors,
     featured: false,
   }));
-
-  if (!group.image) return wallOf(group, courses);
-
-  const program: RoomCertificate = {
-    id: group.id,
-    title: group.program,
-    issuer: group.issuer,
-    date: group.date,
-    image: variant(group.image, 1600),
-    thumb: group.image,
-    thumbSmall: variant(group.image, 400),
-    credentialUrl: group.credential,
-    honors: false,
-    featured: true,
-  };
-  // The program certificate leads the list (first in the phone gallery and the lightbox).
-  return wallOf(group, [program, ...courses]);
 }
 
-function wallOf(group: CertificationGroup, certificates: RoomCertificate[]): RoomWall {
-  return {
-    id: group.id,
-    label: group.wall,
-    program: group.program,
-    issuer: group.issuer,
-    credentialUrl: group.credential,
-    certificates,
-  };
-}
-
-export const walls: RoomWall[] = certifications.map(toWall);
+/** Every certificate: each program's certificate (when it has one), then its courses. */
+export const certificates: RoomCertificate[] = certifications.flatMap((group) => [
+  ...(group.image ? [programCertificate(group, group.image)] : []),
+  ...courseCertificates(group),
+]);

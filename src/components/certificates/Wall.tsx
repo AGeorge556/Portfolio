@@ -1,7 +1,7 @@
 import { useEffect, useImperativeHandle, useMemo, useRef, useState, type Ref } from "react";
 import { useMediaQuery } from "../../hooks/useMediaQuery";
 import Frame, { type FrameSize } from "./Frame";
-import type { RoomCertificate, RoomWall } from "./roomData";
+import type { RoomCertificate } from "./roomData";
 
 export type WallHandle = {
   /** Phone gallery only: scroll so certificate `index` sits centred on the wall. */
@@ -10,44 +10,28 @@ export type WallHandle = {
 
 type Hung = { cert: RoomCertificate; index: number; size: FrameSize };
 
-const MAX_PER_ROW = 4;
+const MAX_PER_ROW = 8;
 const GALLERY_QUERY = "(max-width: 767px)";
 
 /**
- * Salon hang for the desktop wall: balanced rows (outer rows take any extras),
- * the featured certificate in the centre of the middle row, and frames shrinking
- * toward each row's ends so the arrangement reads symmetric around one centre line.
+ * Salon hang for the desktop wall, in the order given: balanced rows of up to
+ * MAX_PER_ROW, program certificates large, course certificates alternating
+ * between two sizes in a checkerboard so neighbouring rows don't line up.
  */
 function hangRows(certs: RoomCertificate[]): Hung[][] {
-  const indexed = certs.map((cert, index) => ({ cert, index }));
-  const featured = indexed.find((c) => c.cert.featured);
-  const rest = indexed.filter((c) => c !== featured);
-
   const rowCount = Math.max(1, Math.ceil(certs.length / MAX_PER_ROW));
-  const middle = Math.floor((rowCount - 1) / 2);
-  const counts = Array<number>(rowCount).fill(Math.floor(certs.length / rowCount));
-  const outermostFirst = [...counts.keys()].sort((a, b) => Math.abs(b - middle) - Math.abs(a - middle));
-  for (let k = 0; k < certs.length % rowCount; k++) counts[outermostFirst[k]]++;
-
-  let cursor = 0;
-  return counts.map((count, r) => {
-    const holdsFeatured = r === middle && featured !== undefined;
-    const row = rest.slice(cursor, cursor + count - (holdsFeatured ? 1 : 0));
-    cursor += row.length;
-    if (holdsFeatured) row.splice(Math.floor(row.length / 2), 0, featured);
-
-    const centre = (row.length - 1) / 2;
-    // With no program certificate, the middle frame of the middle row is hung largest.
-    const heroAt = !featured && r === middle && row.length % 2 === 1 ? centre : -1;
-    return row.map((c, i) => ({
-      ...c,
-      size: c === featured || i === heroAt ? "lg" : Math.abs(i - centre) < 1 ? "md" : "sm",
-    }));
-  });
+  const perRow = Math.ceil(certs.length / rowCount);
+  return Array.from({ length: rowCount }, (_, r) =>
+    certs.slice(r * perRow, (r + 1) * perRow).map((cert, i) => {
+      const index = r * perRow + i;
+      const size: FrameSize = cert.featured ? "lg" : (i + r) % 2 === 0 ? "md" : "sm";
+      return { cert, index, size };
+    }),
+  );
 }
 
 type WallProps = {
-  wall: RoomWall;
+  certificates: RoomCertificate[];
   activeIndex: number | null;
   onOpen: (index: number) => void;
   registerFrame: (index: number, el: HTMLButtonElement | null) => void;
@@ -59,8 +43,8 @@ type WallProps = {
  * swipeable scroll-snap row (rows become `display: contents` in CSS), where frames
  * away from the centre turn, shrink and dim as if hung further along the wall.
  */
-export default function Wall({ wall, activeIndex, onOpen, registerFrame, ref }: WallProps) {
-  const rows = useMemo(() => hangRows(wall.certificates), [wall.certificates]);
+export default function Wall({ certificates, activeIndex, onOpen, registerFrame, ref }: WallProps) {
+  const rows = useMemo(() => hangRows(certificates), [certificates]);
   const galleryRef = useRef<HTMLDivElement>(null);
   const isGallery = useMediaQuery(GALLERY_QUERY);
   const [current, setCurrent] = useState(0);
@@ -143,9 +127,9 @@ export default function Wall({ wall, activeIndex, onOpen, registerFrame, ref }: 
           </div>
         ))}
       </div>
-      {isGallery && wall.certificates.length > 1 && (
+      {isGallery && certificates.length > 1 && (
         <div className="cr-dots" aria-hidden="true">
-          {wall.certificates.map((cert, i) => (
+          {certificates.map((cert, i) => (
             <span key={cert.id} className="cr-dot" data-on={i === current || undefined} />
           ))}
         </div>

@@ -1,20 +1,28 @@
 import "./certificatesRoom.css";
 import { useCallback, useRef, useState } from "react";
-import { ExternalLink } from "lucide-react";
 import Lightbox from "./Lightbox";
 import Room from "./Room";
 import Wall, { type WallHandle } from "./Wall";
-import { walls } from "./roomData";
+import { certificates, type RoomCertificate } from "./roomData";
 import { useLightbox } from "./useLightbox";
 
+/** Fisher–Yates shuffle into a new array. */
+function shuffled(items: readonly RoomCertificate[]): RoomCertificate[] {
+  const out = [...items];
+  for (let i = out.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [out[i], out[j]] = [out[j], out[i]];
+  }
+  return out;
+}
+
 /**
- * Certificates Room: one wall per program, picked with the buttons above the room.
- * Certificates come from `certifications` in src/data.ts.
+ * Certificates Room: every certificate on one wall, hung in a fresh random order
+ * on each visit. Certificates come from `certifications` in src/data.ts.
  */
 export default function CertificatesRoom() {
-  const [wallId, setWallId] = useState(walls[0].id);
-  const wall = walls.find((w) => w.id === wallId) ?? walls[0];
-  const { index, open, close, go, registerFrame, getFrame } = useLightbox(wall.certificates.length);
+  const [hung] = useState(() => shuffled(certificates));
+  const { index, open, close, go, registerFrame, getFrame } = useLightbox(hung.length);
   const wallRef = useRef<WallHandle>(null);
 
   const getSourceImage = useCallback(
@@ -35,39 +43,8 @@ export default function CertificatesRoom() {
 
   return (
     <div className="cr">
-      <div className="cr-walls" role="group" aria-label="Certificate walls">
-        {walls.map((w) => (
-          <button
-            key={w.id}
-            type="button"
-            className="cr-wall-tab"
-            aria-pressed={w.id === wallId}
-            onClick={() => setWallId(w.id)}
-          >
-            {w.label}
-            <span className="cr-wall-count">{w.certificates.length}</span>
-          </button>
-        ))}
-      </div>
-
-      <p className="cr-wall-caption">
-        {wall.program} · {wall.issuer}
-        {wall.credentialUrl && (
-          <a href={wall.credentialUrl} target="_blank" rel="noopener noreferrer">
-            Verify credential <ExternalLink size={13} aria-hidden="true" />
-          </a>
-        )}
-      </p>
-
       <Room>
-        <Wall
-          key={wall.id}
-          ref={wallRef}
-          wall={wall}
-          activeIndex={index}
-          onOpen={open}
-          registerFrame={registerFrame}
-        />
+        <Wall ref={wallRef} certificates={hung} activeIndex={index} onOpen={open} registerFrame={registerFrame} />
       </Room>
 
       <p className="cr-help">
@@ -77,7 +54,7 @@ export default function CertificatesRoom() {
 
       {index !== null && (
         <Lightbox
-          items={wall.certificates}
+          items={hung}
           index={index}
           getSourceImage={getSourceImage}
           onNavigate={go}

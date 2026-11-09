@@ -87,7 +87,7 @@ export default function SiteHeader({
           </button>
 
           <a
-            href="/assets/resume.pdf"
+            href="/assets/Andrew_George_Resume.pdf"
             target="_blank"
             rel="noopener noreferrer"
             className="resume-btn"
@@ -169,7 +169,7 @@ export default function SiteHeader({
                 <a href="https://www.linkedin.com/in/andrew-george-610535309" target="_blank" rel="noopener noreferrer" className="nav-social-link" aria-label="LinkedIn">
                   <Linkedin size={20} />
                 </a>
-                <a href="/assets/resume.pdf" target="_blank" rel="noopener noreferrer" className="nav-social-link nav-resume-link">
+                <a href="/assets/Andrew_George_Resume.pdf" target="_blank" rel="noopener noreferrer" className="nav-social-link nav-resume-link">
                   Résumé
                 </a>
               </motion.div>

@@ -338,20 +338,23 @@ function AppContent({
             <div className="about-copy">
               <h2 className="about-heading">About Me</h2>
               <p>
-                Hi, I'm Andrew George — a Computer Science graduate from Nile
-                University and a passionate full-stack developer based in Cairo,
-                Egypt. I specialize in building modern, performant web
-                applications with React.js, Supabase, and API integration.
+                I'm Andrew George, a full-stack developer based in Cairo, Egypt,
+                with a BSc in Computer Science from Nile University. I design and
+                build complete products end to end: the database schema, access
+                control, server logic and the React or Next.js front end.
               </p>
               <p>
-                Currently working as a Full-Stack Developer at Streams Of Living
-                Water, where I architect cross-platform ERP systems spanning Web,
-                Mobile, and Desktop. I thrive on turning complex requirements
-                into clean, scalable code.
+                I work mainly in TypeScript with PostgreSQL and Supabase, building
+                secure, installable web apps with row-level security, audit
+                trails, offline support and bilingual English/Arabic interfaces.
+                At Streams Of Living Water I architected and built the
+                cross-platform ERP system (web, mobile and desktop) that unifies
+                the organization's core operations.
               </p>
               <blockquote className="about-quote">
-                I believe great software is built at the intersection of clean
-                architecture, user empathy, and relentless curiosity.
+                I deliver in small, reviewed increments backed by automated
+                tests, so every release can be seen working before the next one
+                begins.
               </blockquote>
             </div>
           </motion.div>
@@ -365,8 +368,8 @@ function AppContent({
             <div className="skills-copy">
               <h2 className="section-title skills-title">Skills</h2>
               <p className="skills-description">
-                A comprehensive toolkit spanning frontend frameworks to backend
-                architectures, mobile development, and DevOps.
+                The languages, frameworks and tools I use across front-end,
+                back-end and mobile development, testing and deployment.
               </p>
             </div>
 

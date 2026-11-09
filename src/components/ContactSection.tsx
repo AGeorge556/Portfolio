@@ -40,8 +40,8 @@ ${message}`;
           transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
         >
           <p className="contact-intro">
-            Have a project in mind or want to collaborate? I'd love to hear from you.
-            Let's build something great together.
+            Have a project or a role you'd like to discuss? Send a short description
+            of what you need and I'll reply by email or WhatsApp.
           </p>
 
           <div className="contact-details">

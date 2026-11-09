@@ -137,17 +137,6 @@ export default function ProjectCard({ project, index }: { project: Project; inde
                     ))}
                   </div>
 
-                  {Object.keys(project.metrics).length > 0 && (
-                    <div className="modal-metrics">
-                      {Object.entries(project.metrics).map(([key, val]) => (
-                        <div key={key} className="modal-metric">
-                          <span className="metric-value">{val}</span>
-                          <span className="metric-label">{key.replace(/([A-Z])/g, " $1").trim()}</span>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-
                   {project.nda && (
                     <p className="modal-nda-note">
                       Built under NDA. Client name, source code, and live system are not shared; the description above is intentionally general.

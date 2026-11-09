@@ -1045,37 +1045,6 @@ h1, h2, h3, h4, h5, h6 {
   border: 1px solid rgba(129, 140, 248, 0.2);
 }
 
-.modal-metrics {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-  gap: 12px;
-  margin-bottom: 24px;
-}
-
-.modal-metric {
-  padding: 12px;
-  background: rgba(129, 140, 248, 0.08);
-  border-radius: 12px;
-  border: 1px solid rgba(129, 140, 248, 0.12);
-  text-align: center;
-}
-
-.metric-value {
-  display: block;
-  color: var(--accent);
-  font-size: 1.1rem;
-  font-weight: 700;
-  margin-bottom: 4px;
-}
-
-.metric-label {
-  display: block;
-  color: rgba(255, 255, 255, 0.5);
-  font-size: 0.7rem;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-
 .modal-actions {
   display: flex;
   gap: 16px;

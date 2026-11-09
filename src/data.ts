@@ -152,7 +152,6 @@ export type Project = {
   demo: string;
   github: string;
   technicalHighlights: string[];
-  metrics: Record<string, string>;
   image: string;
   challenges: { problem: string; solution: string; impact: string }[];
   nda?: boolean;
@@ -169,7 +168,6 @@ export const projects: Project[] = [
       'TanStack Query persisted to localStorage and a PWA app shell so cached stock survives offline',
       'Excel export of stock and movements'
     ],
-    metrics: {},
     challenges: [],
     image: '/assets/projects/luminamed-stock.webp',
     technologies: ['React', 'TypeScript', 'Vite', 'Tailwind CSS', 'Supabase', 'PostgreSQL', 'TanStack Query', 'PWA'],
@@ -185,7 +183,6 @@ export const projects: Project[] = [
       'Phased roadmap with plan gates and owner rulings recorded per phase',
       'Zero-downtime deploys via PM2 with a separate scheduler process'
     ],
-    metrics: {},
     challenges: [],
     image: '/assets/projects/wdc-system.svg',
     technologies: ['Next.js', 'TypeScript', 'PostgreSQL', 'Drizzle ORM', 'Playwright', 'PM2'],
@@ -202,7 +199,6 @@ export const projects: Project[] = [
       'Privacy by design: no phone numbers, chat ids stored in one place, anonymous JSONL event log',
       '48-hour follow-up that records helped, turned away, or did not go, plus an opt-in callback'
     ],
-    metrics: {},
     challenges: [],
     image: '/assets/projects/impact-chatbot.webp',
     technologies: ['Node.js', 'Telegram Bot API', 'JavaScript'],
@@ -220,7 +216,6 @@ export const projects: Project[] = [
       'Daily web-push reminders from a Vercel Cron job that never include an amount or a name',
       'JSON backup, CSV export and restore'
     ],
-    metrics: {},
     challenges: [],
     image: '/assets/projects/till-financial-freedom.webp',
     technologies: ['Next.js', 'TypeScript', 'PostgreSQL', 'Drizzle ORM', 'Supabase', 'Tailwind CSS', 'Vitest', 'PWA'],
@@ -236,7 +231,6 @@ export const projects: Project[] = [
       'Typed HazardReport response model from a FastAPI endpoint',
       'React front end for upload and report review'
     ],
-    metrics: {},
     challenges: [],
     image: '/assets/projects/safesight.webp',
     technologies: ['Python', 'FastAPI', 'OpenAI', 'RAG', 'React', 'TypeScript'],
@@ -246,12 +240,6 @@ export const projects: Project[] = [
   {
     title: 'StayHealthy',
     description: 'Healthcare booking platform where patients book in-person appointments or start an instant online consultation with a doctor.',
-    metrics: {
-      performance: '95% Lighthouse',
-      accessibility: '100% WCAG 2.1',
-      userSatisfaction: '95% positive',
-      bookingTime: '60% faster booking'
-    },
     technicalHighlights: [
       'Implemented real-time WebSocket connections for instant doctor-patient communication',
       'Developed custom authentication system with JWT and role-based access control',
@@ -273,12 +261,6 @@ export const projects: Project[] = [
   {
     title: 'Clear View Clinics',
     description: 'Website for an ophthalmic surgery practice in Egypt, covering its medical services, patient information and appointment scheduling.',
-    metrics: {
-      performance: '98% Lighthouse',
-      accessibility: '100% WCAG 2.1',
-      userEngagement: '+40% bookings',
-      loadTime: '1.2s load time'
-    },
     technicalHighlights: [
       'Implemented responsive design with mobile-first approach',
       'Created custom animation system for smooth transitions',
@@ -300,12 +282,6 @@ export const projects: Project[] = [
   {
     title: 'Trust Pharma LTD',
     description: 'Company website for an Egyptian pharmaceutical company, presenting its products, services and company information.',
-    metrics: {
-      performance: '96% Lighthouse',
-      accessibility: '100% WCAG 2.1',
-      userEngagement: '+35% submissions',
-      loadTime: '1.5s load time'
-    },
     technicalHighlights: [
       'Animated page transitions and interface elements',
       'Created product catalog with search and filtering',

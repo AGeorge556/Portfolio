@@ -67,9 +67,16 @@ export type CourseCertificate = {
   honors: boolean;
 };
 
+/**
+ * Certificate images follow a naming convention: next to `name.webp` (800px) sit
+ * `name-400.webp` and `name-1600.webp`, rendered from `name.pdf` by
+ * scripts/render_certificate_images.py.
+ */
 export type CertificationGroup = {
   id: string;
   program: string;
+  /** Short label for this program's wall in the Certificates Room. */
+  wall: string;
   issuer: string;
   date: string;
   credential?: string;
@@ -82,6 +89,7 @@ export const certifications: CertificationGroup[] = [
   {
     id: 'ibm-front-end',
     program: 'IBM Front-End Developer Professional Certificate',
+    wall: 'Front-End',
     issuer: 'IBM via Coursera',
     date: 'Apr 7, 2025',
     credential: 'https://coursera.org/verify/professional-cert/DP6FKDNZET4B',
@@ -103,6 +111,7 @@ export const certifications: CertificationGroup[] = [
   {
     id: 'microsoft-back-end',
     program: 'Microsoft Back-End Developer Professional Certificate',
+    wall: 'Back-End',
     issuer: 'Microsoft via Coursera',
     date: 'Apr 28, 2026',
     credential: 'https://coursera.org/verify/professional-cert/E3XUQY3ZI8C7',
@@ -122,6 +131,7 @@ export const certifications: CertificationGroup[] = [
   {
     id: 'ibm-genai',
     program: 'IBM Generative AI',
+    wall: 'Generative AI',
     issuer: 'IBM via Coursera',
     date: 'Apr 22, 2026',
     courses: [

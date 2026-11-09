@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import type { Variants } from "framer-motion";
 import { Moon, Sun, Github, Linkedin } from "lucide-react";
@@ -9,7 +8,6 @@ type SiteHeaderProps = {
   isDarkMode: boolean;
   isMenuOpen: boolean;
   activeSection: string;
-  scrolled: boolean;
   navLinks: NavLink[];
   onToggleMenu: () => void;
   onToggleDarkMode: () => void;
@@ -46,23 +44,15 @@ export default function SiteHeader({
   isDarkMode,
   isMenuOpen,
   activeSection,
-  scrolled,
   navLinks,
   onToggleMenu,
   onToggleDarkMode,
   onNavigate,
 }: SiteHeaderProps) {
-  useEffect(() => {
-    if (!isMenuOpen) return;
-    const onKey = (e: KeyboardEvent) => e.key === "Escape" && onToggleMenu();
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [isMenuOpen, onToggleMenu]);
-
   return (
     <>
       <motion.header
-        className={`site-header${scrolled ? " scrolled" : ""}`}
+        className="site-header"
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1, duration: 0.8, ease: "easeOut" }}
@@ -108,7 +98,6 @@ export default function SiteHeader({
             className={`nav-btn ${isMenuOpen ? "open" : ""}`}
             type="button"
             aria-label="Toggle navigation"
-            aria-expanded={isMenuOpen}
             onClick={onToggleMenu}
           >
             <span className="nav-btn-lines" aria-hidden="true">
@@ -169,9 +158,6 @@ export default function SiteHeader({
                 <a href="https://www.linkedin.com/in/andrew-george-610535309" target="_blank" rel="noopener noreferrer" className="nav-social-link" aria-label="LinkedIn">
                   <Linkedin size={20} />
                 </a>
-                <a href="/assets/Andrew_George_Resume.pdf" target="_blank" rel="noopener noreferrer" className="nav-social-link nav-resume-link">
-                  Résumé
-                </a>
               </motion.div>
 
               <motion.div
@@ -181,7 +167,7 @@ export default function SiteHeader({
                 exit={{ opacity: 0, y: 10 }}
                 transition={{ delay: 0.6, duration: 0.5 }}
               >
-                <p className="nav-subtitle">FULL-STACK DEVELOPER — CAIRO, EGYPT</p>
+                <p className="nav-subtitle">FULL STACK DEVELOPER | CS GRADUATE</p>
               </motion.div>
             </div>
           </motion.nav>

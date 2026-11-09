@@ -38,5 +38,14 @@ export default defineConfig({
   build: {
     target: 'esnext',
     chunkSizeWarningLimit: 1200,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'three-core': ['three'],
+          'r3f': ['@react-three/fiber', '@react-three/drei'],
+          'framer-motion': ['framer-motion'],
+        },
+      },
+    },
   },
 });

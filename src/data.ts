@@ -14,6 +14,7 @@ export const experience = [
       'Defined MVP scope, sprint backlog and the long-term technical roadmap from foundation to production scale',
     ],
     technologies: ['React', 'Flutter', 'Supabase', 'PostgreSQL', 'TypeScript'],
+    image: '/assets/experience/streams.svg',
   },
   {
     title: 'Full-Stack Developer',
@@ -28,6 +29,7 @@ export const experience = [
       'Delivered SEO-optimized, mobile-first pages with custom form validation, on tight deadlines',
     ],
     technologies: ['React', 'JavaScript', 'REST APIs', 'Responsive Design'],
+    image: '/assets/experience/clearview.svg',
   },
   {
     title: 'Full-Stack Developer',
@@ -42,6 +44,7 @@ export const experience = [
       'Took part in code reviews to enforce best practices and maintain code quality',
     ],
     technologies: ['React', 'JavaScript', 'Git', 'Performance Optimization'],
+    image: '/assets/experience/trustpharma.svg',
   },
 ];
 
@@ -53,7 +56,9 @@ export const education = {
   graduated: 'Jul 2025',
   gpa: '3.24',
   gradProject: 'ImmerseAI - Educational video summarization and visualization web app using Deep Learning',
+  image: '/assets/experience/nile-uni.svg',
   gradProjectSubtitle: 'Deep Learning Web App',
+  gradProjectImage: '/assets/experience/immerse-ai.svg',
 };
 
 export type CourseCertificate = {
@@ -65,6 +70,11 @@ export type CourseCertificate = {
   honors: boolean;
 };
 
+/**
+ * Certificate images follow a naming convention: next to `name.webp` (800px) sit
+ * `name-400.webp` and `name-1600.webp`, rendered from `name.pdf` by
+ * scripts/render_certificate_images.py.
+ */
 export type CertificationGroup = {
   id: string;
   program: string;
@@ -138,6 +148,7 @@ export type Project = {
   github: string;
   technicalHighlights: string[];
   image: string;
+  challenges: { problem: string; solution: string; impact: string }[];
   nda?: boolean;
 };
 
@@ -152,6 +163,7 @@ export const projects: Project[] = [
       'TanStack Query persisted to localStorage and a PWA app shell so cached stock survives offline',
       'Excel export of stock and movements'
     ],
+    challenges: [],
     image: '/assets/projects/luminamed-stock.webp',
     technologies: ['React', 'TypeScript', 'Vite', 'Tailwind CSS', 'Supabase', 'PostgreSQL', 'TanStack Query', 'PWA'],
     demo: '',
@@ -166,7 +178,8 @@ export const projects: Project[] = [
       'Phased roadmap with plan gates and owner rulings recorded per phase',
       'Zero-downtime deploys via PM2 with a separate scheduler process'
     ],
-    image: '',
+    challenges: [],
+    image: '/assets/projects/wdc-system.svg',
     technologies: ['Next.js', 'TypeScript', 'PostgreSQL', 'Drizzle ORM', 'Playwright', 'PM2'],
     demo: '',
     github: '',
@@ -181,6 +194,7 @@ export const projects: Project[] = [
       'Privacy by design: no phone numbers, chat ids stored in one place, anonymous JSONL event log',
       '48-hour follow-up that records helped, turned away, or did not go, plus an opt-in callback'
     ],
+    challenges: [],
     image: '/assets/projects/impact-chatbot.webp',
     technologies: ['Node.js', 'Telegram Bot API', 'JavaScript'],
     demo: '',
@@ -197,6 +211,7 @@ export const projects: Project[] = [
       'Daily web-push reminders from a Vercel Cron job that never include an amount or a name',
       'JSON backup, CSV export and restore'
     ],
+    challenges: [],
     image: '/assets/projects/till-financial-freedom.webp',
     technologies: ['Next.js', 'TypeScript', 'PostgreSQL', 'Drizzle ORM', 'Supabase', 'Tailwind CSS', 'Vitest', 'PWA'],
     demo: '',
@@ -211,6 +226,7 @@ export const projects: Project[] = [
       'Typed HazardReport response model from a FastAPI endpoint',
       'React front end for upload and report review'
     ],
+    challenges: [],
     image: '/assets/projects/safesight.webp',
     technologies: ['Python', 'FastAPI', 'OpenAI', 'RAG', 'React', 'TypeScript'],
     demo: '',
@@ -224,6 +240,13 @@ export const projects: Project[] = [
       'Developed custom authentication system with JWT and role-based access control',
       'Optimized React performance using React.memo and useCallback',
       'Created responsive design system with mobile-first approach'
+    ],
+    challenges: [
+      {
+        problem: 'Real-time updates for appointment availability',
+        solution: 'Implemented WebSocket connections with fallback to polling',
+        impact: 'Reduced server load by 40% while maintaining real-time updates'
+      },
     ],
     image: '/assets/projects/stayhealthy.webp',
     technologies: ['React', 'React Router', 'CSS3', 'Node.js', 'Express.js', 'MongoDB', 'JWT'],
@@ -239,6 +262,13 @@ export const projects: Project[] = [
       'Developed SEO-optimized content structure',
       'Built custom form validation system'
     ],
+    challenges: [
+      {
+        problem: 'Complex appointment scheduling system',
+        solution: 'Created custom calendar component with real-time availability',
+        impact: 'Reduced scheduling errors by 75%'
+      }
+    ],
     image: '/assets/projects/clear-view-clinics.webp',
     technologies: ['React', 'JavaScript', 'Responsive Design'],
     demo: 'https://ageorge556.github.io/ClearViewClinics/',
@@ -252,6 +282,13 @@ export const projects: Project[] = [
       'Created product catalog with search and filtering',
       'Developed contact form with validation and spam protection',
       'Built responsive layout for all devices'
+    ],
+    challenges: [
+      {
+        problem: 'Large product catalog performance',
+        solution: 'Implemented virtual scrolling and lazy loading',
+        impact: 'Reduced initial load time by 60%'
+      }
     ],
     image: '/assets/projects/trust-pharma.webp',
     technologies: ['React', 'JavaScript', 'Responsive Design'],

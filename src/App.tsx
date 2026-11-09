@@ -1,11 +1,20 @@
 import React, { useState, useEffect, useMemo, useCallback, useRef } from "react";
 import {
   motion,
-  MotionConfig,
   AnimatePresence,
   useScroll,
   useTransform,
 } from "framer-motion";
+import {
+  Code2,
+  FileCode,
+  Globe,
+  Terminal,
+  Wind,
+  Smartphone,
+  Database,
+  Server,
+} from "lucide-react";
 import { projects } from "./data";
 import CursorLens from "./components/CursorLens";
 import SectionBlock from "./components/SectionBlock";
@@ -39,8 +48,8 @@ function useNearViewport(rootMargin = "400px") {
 const FloatingSkillsCloud = React.lazy(
   () => import("./components/FloatingSkillsCloud"),
 );
-const ExperienceSection = React.lazy(
-  () => import("./components/ExperienceSection"),
+const CertificationsCarousel = React.lazy(
+  () => import("./components/CertificationsCarousel"),
 );
 const ContactSection = React.lazy(
   () => import("./components/ContactSection"),
@@ -55,13 +64,21 @@ const navLinks = [
   { label: "CONTACT", id: "contact" },
 ];
 
-const blobTheme = {
-  dark: { backgroundColor: "#0E0A2E", blobColor: "#3D2FA8" },
-  light: { backgroundColor: "#F7F7FF", blobColor: "#AFA8BA" },
-};
+const techBadges = [
+  { label: "React", icon: Code2, left: "5%", top: "68%", delay: "0s" },
+  { label: "TypeScript", icon: FileCode, left: "12%", top: "42%", delay: "0.4s" },
+  { label: "Next.js", icon: Globe, left: "26%", top: "22%", delay: "0.8s" },
+  { label: "JavaScript", icon: Terminal, left: "44%", top: "12%", delay: "1.2s" },
+  { label: "Tailwind", icon: Wind, left: "62%", top: "14%", delay: "1.6s" },
+  { label: "Flutter", icon: Smartphone, left: "78%", top: "28%", delay: "2s" },
+  { label: "Supabase", icon: Database, left: "90%", top: "48%", delay: "2.4s" },
+  { label: "Node.js", icon: Server, left: "94%", top: "72%", delay: "2.8s" },
+];
 
 const sectionBlobs = {
   about: {
+    dark: { backgroundColor: "#0d0b1e", blobColor: "#818cf8" },
+    light: { backgroundColor: "#f0eeff", blobColor: "#c7d2fe" },
     blobCount: 9,
     mobileCount: 4,
     blobSize: 300,
@@ -70,6 +87,8 @@ const sectionBlobs = {
     strokeOpacity: { dark: 0.18, light: 0.3 },
   },
   skills: {
+    dark: { backgroundColor: "#0b0e18", blobColor: "#6366f1" },
+    light: { backgroundColor: "#eef0ff", blobColor: "#a5b4fc" },
     blobCount: 11,
     mobileCount: 4,
     blobSize: 260,
@@ -78,6 +97,8 @@ const sectionBlobs = {
     strokeOpacity: { dark: 0.15, light: 0.25 },
   },
   projects: {
+    dark: { backgroundColor: "#110d18", blobColor: "#a855f7" },
+    light: { backgroundColor: "#f3eeff", blobColor: "#d8b4fe" },
     blobCount: 10,
     mobileCount: 4,
     blobSize: 320,
@@ -86,6 +107,8 @@ const sectionBlobs = {
     strokeOpacity: { dark: 0.16, light: 0.28 },
   },
   experience: {
+    dark: { backgroundColor: "#0b0d14", blobColor: "#4f46e5" },
+    light: { backgroundColor: "#eef0ff", blobColor: "#c7d2fe" },
     blobCount: 8,
     mobileCount: 3,
     blobSize: 340,
@@ -94,6 +117,8 @@ const sectionBlobs = {
     strokeOpacity: { dark: 0.2, light: 0.3 },
   },
   contact: {
+    dark: { backgroundColor: "#0e0b1a", blobColor: "#7c3aed" },
+    light: { backgroundColor: "#f0eeff", blobColor: "#c4b5fd" },
     blobCount: 9,
     mobileCount: 4,
     blobSize: 290,
@@ -138,13 +163,13 @@ function SkillsCloudDeferred() {
   );
 }
 
-function ExperienceSectionDeferred() {
+function CertificationsCarouselDeferred() {
   const { ref, isNear } = useNearViewport("300px");
   return (
     <div ref={ref}>
       {isNear ? (
         <React.Suspense fallback={<div className="section-loading-fallback padded">Loading Experience...</div>}>
-          <ExperienceSection />
+          <CertificationsCarousel />
         </React.Suspense>
       ) : (
         <div className="section-loading-fallback padded" style={{ minHeight: "340px" }} />
@@ -248,8 +273,8 @@ function AppContent({
       Object.entries(sectionBlobs).map(([key, cfg]) => [
         key,
         {
-          backgroundColor: isDarkMode ? blobTheme.dark.backgroundColor : blobTheme.light.backgroundColor,
-          blobColor: isDarkMode ? blobTheme.dark.blobColor : blobTheme.light.blobColor,
+          backgroundColor: isDarkMode ? cfg.dark.backgroundColor : cfg.light.backgroundColor,
+          blobColor: isDarkMode ? cfg.dark.blobColor : cfg.light.blobColor,
           blobCount: isMobile ? cfg.mobileCount : cfg.blobCount,
           blobSize: Math.round(cfg.blobSize * sizeMult),
           blobComplexity: Math.round(cfg.blobComplexity * complexMult),
@@ -274,7 +299,6 @@ function AppContent({
         isDarkMode={isDarkMode}
         isMenuOpen={isMenuOpen}
         activeSection={activeSection}
-        scrolled={heroParked && !isMenuOpen}
         navLinks={navLinks}
         onToggleMenu={() => setIsMenuOpen((prev) => !prev)}
         onToggleDarkMode={toggleDarkMode}
@@ -286,13 +310,13 @@ function AppContent({
         id="hero"
         className={heroParked ? "hero-section hero-parked" : "hero-section"}
       >
-        <HeroHud />
+        <HeroHud badges={techBadges} />
         <CursorLens
           baseImage="/assets/hero-top.webp"
           revealImage="/assets/hero-reveal.webp"
           imageHeight={0.78}
-          backgroundColor={isDarkMode ? "#0E0A2E" : "#F7F7FF"}
-          blobOutlineColor={isDarkMode ? "#3D2FA8" : "#AFA8BA"}
+          backgroundColor={isDarkMode ? "#0f0e1a" : "#f5f5ff"}
+          blobOutlineColor={isDarkMode ? "#4f46e5" : "#a5b4fc"}
           parallaxStrength={8}
           showBackground={true}
           bgBlobCount={isMobile ? 5 : 11}
@@ -370,6 +394,9 @@ function AppContent({
               <p className="skills-description">
                 The languages, frameworks and tools I use across front-end,
                 back-end and mobile development, testing and deployment.
+                <br />
+                <br />
+                Drag and rotate the 3D cloud to explore them.
               </p>
             </div>
 
@@ -403,7 +430,7 @@ function AppContent({
         blob={blobConfigs.experience}
       >
         <SectionReveal>
-          <ExperienceSectionDeferred />
+          <CertificationsCarouselDeferred />
         </SectionReveal>
       </SectionBlock>
 
@@ -422,11 +449,6 @@ function AppContent({
       <footer className="site-footer">
         <div className="footer-content">
           <div className="footer-brand">Andrew George</div>
-          <p className="footer-text">
-            <a href="mailto:gn.farag02@gmail.com">Email</a>
-            <a href="https://github.com/AGeorge556" target="_blank" rel="noopener noreferrer">GitHub</a>
-            <a href="https://www.linkedin.com/in/andrew-george-610535309" target="_blank" rel="noopener noreferrer">LinkedIn</a>
-          </p>
           <p className="footer-text">
             &copy; {new Date().getFullYear()} &mdash; Built with React,
             TypeScript & Three.js
@@ -469,7 +491,7 @@ function App() {
   }, []);
 
   return (
-    <MotionConfig reducedMotion="user">
+    <>
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: loaded ? 1 : 0 }}
@@ -481,7 +503,7 @@ function App() {
       <AnimatePresence>
         {!loaded && <LoadingScreen key="loader" onDone={onDone} />}
       </AnimatePresence>
-    </MotionConfig>
+    </>
   );
 }
 

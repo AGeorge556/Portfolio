@@ -14,14 +14,11 @@ type CarouselCard = {
   image: string;
 };
 
-const gradients = [
-  "linear-gradient(135deg, #4f46e5, #6366f1)",
-  "linear-gradient(135deg, #7c3aed, #a78bfa)",
-  "linear-gradient(135deg, #2563eb, #60a5fa)",
-  "linear-gradient(135deg, #059669, #34d399)",
-  "linear-gradient(135deg, #0891b2, #67e8f9)",
-  "linear-gradient(135deg, #d946ef, #f0abfc)",
-];
+// Three ramps from the site palette, each dark enough for white card text.
+const poppy = "linear-gradient(135deg, #b3242b, #dc343b)";
+const slate = "linear-gradient(135deg, #1b1e25, #2e343f)"; // raven, lifted
+const teal = "linear-gradient(135deg, #245a63, #3a7d88)"; // powder blue, deepened
+const gradients = [poppy, slate, teal, slate, teal, poppy];
 
 const gradProjectTitle = education.gradProject.split(" - ")[0];
 

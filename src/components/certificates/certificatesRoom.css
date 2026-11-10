@@ -10,22 +10,22 @@
   --cr-floor: #9A6A45;           /* floor tone */
   --cr-floor-seam: #6B4428;      /* gaps between planks */
   --cr-plank: 92px;              /* plank width */
-  --cr-frame: #1B1726;           /* frame moulding: matte black */
-  --cr-frame-hi: #3B3449;        /* moulding highlight */
+  --cr-frame: #16181D;           /* frame moulding: matte black */
+  --cr-frame-hi: #383D47;        /* moulding highlight */
   --cr-mat: #FBFAF6;             /* passe-partout */
   --cr-brass: #C9A55C;           /* name plates */
   --cr-brass-hi: #E6CB8C;
   --cr-brass-dark: #9B7838;
   --cr-brass-ink: #3B2A0C;
   --cr-light: rgba(255, 246, 226, 0.95);  /* light pool on the back wall */
-  --cr-shadow: 14, 9, 36;        /* rgb of every shadow (site navy) */
+  --cr-shadow: 10, 11, 14;       /* rgb of every shadow (site raven black) */
   --cr-parallax: 4;              /* max room tilt, degrees (read by Room.tsx) */
   --cr-perspective: 1200px;
   --cr-depth: 300px;             /* how deep the room is */
   --cr-height: clamp(560px, 88vh, 860px);
   --cr-radius: 16px;
   --cr-ink: var(--text-dark);
-  --cr-ink-soft: rgba(30, 27, 75, 0.75);
+  --cr-ink-soft: rgba(14, 15, 18, 0.75);
   --cr-accent: var(--accent-strong);       /* View hint, active dot */
   --cr-focus: var(--accent-strong);        /* keyboard focus ring */
   /* ─────────────────────────────────────────────────────────────── */
@@ -38,18 +38,18 @@
 }
 
 .dark .cr {
-  --cr-wall: #241C52;
-  --cr-wall-shade: #120E33;
-  --cr-ceiling: #110D2E;
+  --cr-wall: #22262E;
+  --cr-wall-shade: #111317;
+  --cr-ceiling: #101216;
   --cr-floor: #4B3223;
   --cr-floor-seam: #24170F;
-  --cr-frame: #0B0914;
-  --cr-frame-hi: #2B2541;
+  --cr-frame: #08090B;
+  --cr-frame-hi: #2A2E36;
   --cr-mat: #F3F1EA;
   --cr-light: rgba(255, 222, 176, 0.24);
-  --cr-shadow: 3, 2, 12;
+  --cr-shadow: 2, 3, 4;
   --cr-ink: var(--text-cream);
-  --cr-ink-soft: rgba(226, 224, 212, 0.75);
+  --cr-ink-soft: rgba(176, 224, 230, 0.75);
   --cr-focus: var(--accent);
 }
 
@@ -429,14 +429,14 @@
   inset: 0;
   z-index: 2000;
   height: 100dvh;
-  color: #F7F7FF;
+  color: #F4FBFC;
   font-family: var(--body-font);
 }
 
 .cr-lb-backdrop {
   position: absolute;
   inset: 0;
-  background: rgba(8, 5, 26, 0.84);
+  background: rgba(8, 9, 11, 0.86);
   -webkit-backdrop-filter: blur(14px);
   backdrop-filter: blur(14px);
 }
@@ -479,7 +479,7 @@
 
 .cr-lb-btn:hover { background: rgba(255, 255, 255, 0.22); border-color: rgba(255, 255, 255, 0.5); }
 .cr-lb-btn:active { background: rgba(255, 255, 255, 0.3); }
-.cr-lb-btn:focus-visible { outline: 3px solid #A5B4FC; outline-offset: 3px; }
+.cr-lb-btn:focus-visible { outline: 3px solid #B0E0E6; outline-offset: 3px; }
 
 .cr-lb-close {
   top: calc(env(safe-area-inset-top) + 14px);
@@ -494,7 +494,7 @@
   position: absolute;
   top: calc(env(safe-area-inset-top) + 26px);
   left: calc(env(safe-area-inset-left) + 24px);
-  color: rgba(247, 247, 255, 0.75);
+  color: rgba(244, 251, 252, 0.75);
   font-size: 0.85rem;
   font-variant-numeric: tabular-nums;
 }
@@ -518,7 +518,7 @@
 
 .cr-lb-meta {
   margin-top: 2px;
-  color: rgba(247, 247, 255, 0.75);
+  color: rgba(244, 251, 252, 0.75);
   font-size: 0.85rem;
 }
 
@@ -527,13 +527,13 @@
   align-items: center;
   gap: 6px;
   min-height: 44px;
-  color: #A5B4FC;
+  color: #B0E0E6;
   font-size: 0.9rem;
   font-weight: 600;
 }
 
 .cr-lb-verify:hover { text-decoration: underline; }
-.cr-lb-verify:focus-visible { outline: 3px solid #A5B4FC; outline-offset: 2px; border-radius: 4px; }
+.cr-lb-verify:focus-visible { outline: 3px solid #B0E0E6; outline-offset: 2px; border-radius: 4px; }
 
 @media (max-width: 767px) {
   .cr-lb-stage {

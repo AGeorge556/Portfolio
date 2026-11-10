@@ -77,8 +77,8 @@ const techBadges = [
 
 const sectionBlobs = {
   about: {
-    dark: { backgroundColor: "#0d0b1e", blobColor: "#818cf8" },
-    light: { backgroundColor: "#f0eeff", blobColor: "#c7d2fe" },
+    dark: { backgroundColor: "#0e0f12", blobColor: "#b0e0e6" },
+    light: { backgroundColor: "#eef8fa", blobColor: "#7fbfc9" },
     blobCount: 9,
     mobileCount: 4,
     blobSize: 300,
@@ -87,8 +87,8 @@ const sectionBlobs = {
     strokeOpacity: { dark: 0.18, light: 0.3 },
   },
   skills: {
-    dark: { backgroundColor: "#0b0e18", blobColor: "#6366f1" },
-    light: { backgroundColor: "#eef0ff", blobColor: "#a5b4fc" },
+    dark: { backgroundColor: "#0c1013", blobColor: "#b0e0e6" },
+    light: { backgroundColor: "#e9f5f7", blobColor: "#7fbfc9" },
     blobCount: 11,
     mobileCount: 4,
     blobSize: 260,
@@ -97,8 +97,8 @@ const sectionBlobs = {
     strokeOpacity: { dark: 0.15, light: 0.25 },
   },
   projects: {
-    dark: { backgroundColor: "#110d18", blobColor: "#a855f7" },
-    light: { backgroundColor: "#f3eeff", blobColor: "#d8b4fe" },
+    dark: { backgroundColor: "#101216", blobColor: "#dc343b" },
+    light: { backgroundColor: "#f1f9fa", blobColor: "#e58a8e" },
     blobCount: 10,
     mobileCount: 4,
     blobSize: 320,
@@ -107,8 +107,8 @@ const sectionBlobs = {
     strokeOpacity: { dark: 0.16, light: 0.28 },
   },
   experience: {
-    dark: { backgroundColor: "#0b0d14", blobColor: "#4f46e5" },
-    light: { backgroundColor: "#eef0ff", blobColor: "#c7d2fe" },
+    dark: { backgroundColor: "#0b0d10", blobColor: "#b0e0e6" },
+    light: { backgroundColor: "#e9f5f7", blobColor: "#7fbfc9" },
     blobCount: 8,
     mobileCount: 3,
     blobSize: 340,
@@ -117,8 +117,8 @@ const sectionBlobs = {
     strokeOpacity: { dark: 0.2, light: 0.3 },
   },
   contact: {
-    dark: { backgroundColor: "#0e0b1a", blobColor: "#7c3aed" },
-    light: { backgroundColor: "#f0eeff", blobColor: "#c4b5fd" },
+    dark: { backgroundColor: "#0e1114", blobColor: "#dc343b" },
+    light: { backgroundColor: "#eef8fa", blobColor: "#e58a8e" },
     blobCount: 9,
     mobileCount: 4,
     blobSize: 290,
@@ -315,8 +315,8 @@ function AppContent({
           baseImage="/assets/hero-top.webp"
           revealImage="/assets/hero-reveal.webp"
           imageHeight={0.78}
-          backgroundColor={isDarkMode ? "#0f0e1a" : "#f5f5ff"}
-          blobOutlineColor={isDarkMode ? "#4f46e5" : "#a5b4fc"}
+          backgroundColor={isDarkMode ? "#0e0f12" : "#f4fbfc"}
+          blobOutlineColor={isDarkMode ? "#3a7d88" : "#7fbfc9"}
           parallaxStrength={8}
           showBackground={true}
           bgBlobCount={isMobile ? 5 : 11}

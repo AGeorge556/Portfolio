@@ -35,7 +35,7 @@ type SkillDef = {
 const allSkills: SkillDef[] = [
   { name: "React.js",      color: "#61dafb", Icon: SiReact },
   { name: "TypeScript",    color: "#3178c6", Icon: SiTypescript },
-  { name: "Next.js",       color: "#a78bfa", Icon: SiNextdotjs },
+  { name: "Next.js",       color: "#b0e0e6", Icon: SiNextdotjs },
   { name: "JavaScript",    color: "#f7df1e", Icon: SiJavascript },
   { name: "HTML5",         color: "#e34f26", Icon: SiHtml5 },
   { name: "CSS3",          color: "#1572b6", Icon: SiCss },
@@ -49,7 +49,7 @@ const allSkills: SkillDef[] = [
   { name: "MongoDB",       color: "#47a248", Icon: SiMongodb },
   { name: "REST APIs",     color: "#ff6c37", Icon: Network },
   { name: "Git",           color: "#f05032", Icon: SiGit },
-  { name: "Vercel",        color: "#818cf8", Icon: SiVercel },
+  { name: "Vercel",        color: "#b0e0e6", Icon: SiVercel },
   { name: "Figma",         color: "#f24e1e", Icon: SiFigma },
   { name: "VS Code",       color: "#007acc", Icon: Code2 },
   { name: "Docker",        color: "#00C5CC", Icon: SiDocker },
@@ -170,7 +170,7 @@ function SpinningCloud({
       <mesh>
         <sphereGeometry args={[radius * 0.985, isMobile ? 18 : 32, isMobile ? 12 : 20]} />
         <meshBasicMaterial
-          color="#818cf8"
+          color="#b0e0e6"
           wireframe
           transparent
           opacity={0.10}
@@ -181,7 +181,7 @@ function SpinningCloud({
       <mesh>
         <sphereGeometry args={[radius * 0.97, 24, 16]} />
         <meshBasicMaterial
-          color="#312e81"
+          color="#245a63"
           transparent
           opacity={0.12}
           depthWrite={false}
@@ -191,7 +191,7 @@ function SpinningCloud({
 
       <lineSegments geometry={linkGeometry}>
         <lineBasicMaterial
-          color="#a5b4fc"
+          color="#b0e0e6"
           transparent
           opacity={0.28}
           depthWrite={false}
@@ -252,8 +252,8 @@ export default function FloatingSkillsCloud() {
         performance={{ min: 0.5 }}
       >
         <ambientLight intensity={0.4} />
-        <pointLight position={[-10, 10, -10]} color="#818cf8" intensity={2} />
-        <pointLight position={[10, -10, 10]} color="#a855f7" intensity={1.5} />
+        <pointLight position={[-10, 10, -10]} color="#b0e0e6" intensity={2} />
+        <pointLight position={[10, -10, 10]} color="#dc343b" intensity={1.5} />
 
         <SpinningCloud positions={positions} radius={radius} isMobile={isMobile} />
 

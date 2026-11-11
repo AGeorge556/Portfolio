@@ -14,7 +14,6 @@ export const experience = [
       'Defined MVP scope, sprint backlog and the long-term technical roadmap from foundation to production scale',
     ],
     technologies: ['React', 'Flutter', 'Supabase', 'PostgreSQL', 'TypeScript'],
-    image: '/assets/experience/streams.svg',
   },
   {
     title: 'Full-Stack Developer',
@@ -29,7 +28,6 @@ export const experience = [
       'Delivered SEO-optimized, mobile-first pages with custom form validation, on tight deadlines',
     ],
     technologies: ['React', 'JavaScript', 'REST APIs', 'Responsive Design'],
-    image: '/assets/experience/clearview.svg',
   },
   {
     title: 'Full-Stack Developer',
@@ -44,7 +42,6 @@ export const experience = [
       'Took part in code reviews to enforce best practices and maintain code quality',
     ],
     technologies: ['React', 'JavaScript', 'Git', 'Performance Optimization'],
-    image: '/assets/experience/trustpharma.svg',
   },
 ];
 
@@ -56,9 +53,6 @@ export const education = {
   graduated: 'Jul 2025',
   gpa: '3.24',
   gradProject: 'ImmerseAI - Educational video summarization and visualization web app using Deep Learning',
-  image: '/assets/experience/nile-uni.svg',
-  gradProjectSubtitle: 'Deep Learning Web App',
-  gradProjectImage: '/assets/experience/immerse-ai.svg',
 };
 
 export type CourseCertificate = {

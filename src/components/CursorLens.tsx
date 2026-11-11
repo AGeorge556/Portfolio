@@ -21,10 +21,12 @@ if (typeof window !== "undefined") {
   );
 }
 
-// Portrait cutouts end in a hard horizontal cut at the shoulders; dissolve it into the hero's bottom edge.
 const TOUCH_LINGER_MS = 1200;
 const MASK_REPAINT_TAIL_MS = 800;
-const BOTTOM_FADE = "linear-gradient(to bottom, black 82%, transparent 100%)";
+const IS_WEBKIT =
+  typeof navigator !== "undefined" &&
+  navigator.userAgent.includes("AppleWebKit") &&
+  !navigator.userAgent.includes("Chrome");
 
 type CursorLensProps = {
   baseImage?: string;
@@ -217,7 +219,7 @@ export default function CursorLens({
     // WebKit does not repaint a masked element when only the <mask> contents change,
     // so the reveal stayed invisible on iPhone. Re-setting the attribute forces the
     // repaint; keep doing it through the close animation so it does not freeze open.
-    if (t - lastHoverTime.current < MASK_REPAINT_TAIL_MS) {
+    if (IS_WEBKIT && t - lastHoverTime.current < MASK_REPAINT_TAIL_MS) {
       maskedRef.current?.setAttribute("mask", `url(#${maskId})`);
     }
     if (!isHoveringRef.current) return;
@@ -246,8 +248,7 @@ export default function CursorLens({
     width: "100%",
     height: "100%",
     pointerEvents: "none",
-    maskImage: BOTTOM_FADE,
-    WebkitMaskImage: BOTTOM_FADE,
+    willChange: "transform",
   };
 
   const imageBox = {
@@ -278,77 +279,94 @@ export default function CursorLens({
         />
       )}
 
-      {baseImage && (
-        <svg style={{ ...layerStyle, zIndex: 10 }}>
-          <motion.g style={{ x: parallaxX, y: parallaxY }}>
+      {/* The mask moves with the parallax too (at most parallaxStrength px), far below the blob radius. */}
+      <motion.div
+        style={{
+          position: "absolute",
+          inset: 0,
+          zIndex: 10,
+          pointerEvents: "none",
+          willChange: "transform",
+          x: parallaxX,
+          y: parallaxY,
+        }}
+      >
+        {baseImage && (
+          <svg style={{ ...layerStyle, zIndex: 10 }}>
             <image href={baseImage} {...imageBox} />
-          </motion.g>
-        </svg>
-      )}
-
-      <svg style={{ ...layerStyle, zIndex: 20 }}>
-        <defs>
-          <filter id={cursorFilterId}>
-            <feTurbulence
-              type="fractalNoise"
-              baseFrequency="0.015"
-              numOctaves="2"
-              result="noise"
-            />
-            <feDisplacementMap
-              in="SourceGraphic"
-              in2="noise"
-              scale={roughness}
-              xChannelSelector="R"
-              yChannelSelector="G"
-              result="distorted"
-            />
-            <feGaussianBlur in="distorted" stdDeviation="8" result="blur" />
-            <feColorMatrix
-              in="blur"
-              mode="matrix"
-              values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 20 -9"
-              result="goo"
-            />
-            <feComposite in="SourceGraphic" in2="goo" operator="atop" />
-          </filter>
-          <mask id={maskId}>
-            <g filter={`url(#${cursorFilterId})`}>
-              <motion.g
-                animate={{
-                  opacity: isHovering ? 1 : 0,
-                  scale: isHovering ? 1 : 0.6,
-                }}
-                transition={{
-                  opacity: {
-                    duration: isHovering ? 0.35 : 0.55,
-                    ease: isHovering ? "easeOut" : "easeIn",
-                  },
-                  scale: {
-                    duration: isHovering ? 0.4 : 0.6,
-                    ease: isHovering ? "easeOut" : "easeIn",
-                  },
-                }}
-                style={{ transformOrigin: "center" }}
-              >
-                <motion.circle cx={sat1X} cy={sat1Y} r={blobSize * 0.6} fill="white" />
-                <motion.circle cx={sat2X} cy={sat2Y} r={blobSize * 0.5} fill="white" />
-                <motion.circle cx={head.x} cy={head.y} r={blobSize * 0.7} fill="white" />
-                <motion.circle cx={body1.x} cy={body1.y} r={blobSize * 0.6} fill="white" />
-                <motion.circle cx={body2.x} cy={body2.y} r={blobSize * 0.5} fill="white" />
-                <motion.circle cx={tail.x} cy={tail.y} r={blobSize * 0.3} fill="white" />
-              </motion.g>
-            </g>
-          </mask>
-        </defs>
-        {revealImage && (
-          <g ref={maskedRef} mask={`url(#${maskId})`}>
-            <motion.g style={{ x: parallaxX, y: parallaxY }}>
-              <image href={revealImage} {...imageBox} />
-            </motion.g>
-          </g>
+          </svg>
         )}
-      </svg>
+
+        <svg style={{ ...layerStyle, zIndex: 20 }}>
+          <defs>
+            <filter id={cursorFilterId}>
+              {roughness > 0 && (
+                <>
+                  <feTurbulence
+                    type="fractalNoise"
+                    baseFrequency="0.015"
+                    numOctaves="2"
+                    result="noise"
+                  />
+                  <feDisplacementMap
+                    in="SourceGraphic"
+                    in2="noise"
+                    scale={roughness}
+                    xChannelSelector="R"
+                    yChannelSelector="G"
+                    result="distorted"
+                  />
+                </>
+              )}
+              <feGaussianBlur
+                in={roughness > 0 ? "distorted" : "SourceGraphic"}
+                stdDeviation="8"
+                result="blur"
+              />
+              <feColorMatrix
+                in="blur"
+                mode="matrix"
+                values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 20 -9"
+                result="goo"
+              />
+              <feComposite in="SourceGraphic" in2="goo" operator="atop" />
+            </filter>
+            <mask id={maskId}>
+              <g filter={`url(#${cursorFilterId})`}>
+                <motion.g
+                  animate={{
+                    opacity: isHovering ? 1 : 0,
+                    scale: isHovering ? 1 : 0.6,
+                  }}
+                  transition={{
+                    opacity: {
+                      duration: isHovering ? 0.35 : 0.55,
+                      ease: isHovering ? "easeOut" : "easeIn",
+                    },
+                    scale: {
+                      duration: isHovering ? 0.4 : 0.6,
+                      ease: isHovering ? "easeOut" : "easeIn",
+                    },
+                  }}
+                  style={{ transformOrigin: "center" }}
+                >
+                  <motion.circle cx={sat1X} cy={sat1Y} r={blobSize * 0.6} fill="white" />
+                  <motion.circle cx={sat2X} cy={sat2Y} r={blobSize * 0.5} fill="white" />
+                  <motion.circle cx={head.x} cy={head.y} r={blobSize * 0.7} fill="white" />
+                  <motion.circle cx={body1.x} cy={body1.y} r={blobSize * 0.6} fill="white" />
+                  <motion.circle cx={body2.x} cy={body2.y} r={blobSize * 0.5} fill="white" />
+                  <motion.circle cx={tail.x} cy={tail.y} r={blobSize * 0.3} fill="white" />
+                </motion.g>
+              </g>
+            </mask>
+          </defs>
+          {revealImage && (
+            <g ref={maskedRef} mask={`url(#${maskId})`}>
+              <image href={revealImage} {...imageBox} />
+            </g>
+          )}
+        </svg>
+      </motion.div>
     </div>
   );
 }

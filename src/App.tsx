@@ -48,8 +48,8 @@ function useNearViewport(rootMargin = "400px") {
 const FloatingSkillsCloud = React.lazy(
   () => import("./components/FloatingSkillsCloud"),
 );
-const CertificationsCarousel = React.lazy(
-  () => import("./components/CertificationsCarousel"),
+const ExperienceSection = React.lazy(
+  () => import("./components/ExperienceSection"),
 );
 const ContactSection = React.lazy(
   () => import("./components/ContactSection"),
@@ -163,13 +163,13 @@ function SkillsCloudDeferred() {
   );
 }
 
-function CertificationsCarouselDeferred() {
+function ExperienceSectionDeferred() {
   const { ref, isNear } = useNearViewport("300px");
   return (
     <div ref={ref}>
       {isNear ? (
         <React.Suspense fallback={<div className="section-loading-fallback padded">Loading Experience...</div>}>
-          <CertificationsCarousel />
+          <ExperienceSection />
         </React.Suspense>
       ) : (
         <div className="section-loading-fallback padded" style={{ minHeight: "340px" }} />
@@ -237,7 +237,9 @@ function AppContent({
           if (entry.isIntersecting) setActiveSection(entry.target.id);
         });
       },
-      { threshold: 0.4 },
+      // Active = the section crossing the viewport's centre line; a visible-share
+      // threshold can never be met by a section several viewports tall.
+      { rootMargin: "-50% 0px -50% 0px", threshold: 0 },
     );
     navLinks.forEach(({ id }) => {
       const el = document.getElementById(id);
@@ -245,8 +247,8 @@ function AppContent({
     });
 
     // Park the hero (and its filter chains) once it is fully scrolled past.
-    // The hero is position:sticky, so its own rect never leaves the viewport —
-    // observe a 1px sentinel sitting at the end of the hero's flow box instead.
+    // A 1px sentinel marks the end of the hero's flow box; once it leaves the
+    // viewport, the whole hero has been scrolled past.
     const heroObserver = new IntersectionObserver(
       ([entry]) => setHeroParked(!entry.isIntersecting),
       { threshold: 0 },
@@ -430,7 +432,7 @@ function AppContent({
         blob={blobConfigs.experience}
       >
         <SectionReveal>
-          <CertificationsCarouselDeferred />
+          <ExperienceSectionDeferred />
         </SectionReveal>
       </SectionBlock>
 
